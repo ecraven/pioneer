@@ -368,6 +368,9 @@ void ImGui_ImplSdlGL3_NewFrame(SDL_Window* window)
     Uint32	time = SDL_GetTicks();
     double current_time = time / 1000.0;
     io.DeltaTime = g_Time > 0.0 ? (float)(current_time - g_Time) : (float)(1.0f / 60.0f);
+	if(io.DeltaTime < 0.0) {
+		printf("ERROR: DeltaTime < 0.0: last frame time: %f, current_time: %f\n", g_Time, current_time);
+	}
     g_Time = current_time;
 
     // Setup inputs
