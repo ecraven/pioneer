@@ -70,14 +70,31 @@ ui.registerHandler = function(name, fun)
 	pigui.handlers[name] = fun
 end
 
+ui.circleSegments = function(radius)
+	if radius < 5 then
+		return 8
+	elseif radius < 20 then
+		return 16
+	elseif radius < 50 then
+		return 32
+	elseif radius < 100 then
+		return 64
+	else
+		return 128
+	end
+end
+
+
 -- Forward selected functions
 ui.screenWidth = pigui.screen_width
 ui.screenHeight = pigui.screen_height
 ui.setNextWindowPos = pigui.SetNextWindowPos
+ui.setNextWindowSize = pigui.SetNextWindowSize
 ui.dummy = pigui.Dummy
 ui.sameLine = pigui.SameLine
 ui.text = pigui.Text
 ui.progressBar = pigui.ProgressBar
-ui.CalcTextSize = pigui.CalcTextSize
+ui.calcTextSize = pigui.CalcTextSize
+ui.addCircle = pigui.AddCircle
 
 return ui
