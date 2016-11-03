@@ -21,7 +21,7 @@ ui.registerHandler(
 						ui.window("test", {"NoTitleBar", "NoResize", "NoMove"}, function()
 									  local age = string.format("%.1f", 13.7 * progress)
 									  local agestring = string.interp(lui.SIMULATING_UNIVERSE_EVOLUTION_N_BYEARS, { age = age })
-									  local size = ui.CalcTextSize(agestring)
+									  local size = ui.calcTextSize(agestring)
 
 									  ui.dummy(Vector((ui.screenWidth - size.x) / 2, 0))
 									  ui.sameLine()
