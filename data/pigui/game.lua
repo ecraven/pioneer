@@ -25,9 +25,9 @@ ui.registerHandler(
 		ui.setNextWindowSize(Vector(ui.screenWidth, ui.screenHeight), "Always")
 		ui.withStyleColors({ ["WindowBg"] = colors.transparent }, function()
 				ui.window("HUD", {"NoTitleBar", "NoResize", "NoMove", "NoInputs", "NoSavedSettings", "NoFocusOnAppearing", "NoBringToFrontOnFocus"}, function()
-							  local center = Vector(ui.screenWidth / 2, ui.screenHeight / 2)
-							  -- reticule circle
-							  ui.addCircle(center, reticuleCircleRadius, colors.reticuleCircle, ui.circleSegments(reticuleCircleRadius), reticuleCircleThickness)
+										local center = Vector(ui.screenWidth / 2, ui.screenHeight / 2)
+										-- reticule circle
+										ui.addCircle(center, reticuleCircleRadius, colors.reticuleCircle, ui.circleSegments(reticuleCircleRadius), reticuleCircleThickness)
 				end)
 		end)
 end)
