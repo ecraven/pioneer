@@ -39,7 +39,11 @@ ui.registerHandler(
 											position = ui.pointOnClock(center, reticuleCircleRadius, 2)
 											local velocity = Vector(player:GetVelocityRelTo(navTarget))
 											local speed,unit = ui.Format.Speed(velocity:magnitude())
-											ui.addStyledText(position, speed + "" + unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The relative speed of the navigational target")
+											ui.addStyledText(position, speed .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The relative speed of the navigational target")
+
+                      local distance,unit = ui.Format.Distance(player:DistanceTo(navTarget))
+											position = ui.pointOnClock(center, reticuleCircleRadius, 3)
+											ui.addStyledText(position, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The distance to the navigational target")
 										end
 				end)
 		end)

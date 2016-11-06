@@ -1751,6 +1751,30 @@
       "description" : "Duration unit: one second",
       "message" : "s"
    },
+	 "UNIT_METERS_PER_SECOND" : {
+      "description" : "Speed unit: one meter per second",
+      "message" : "m/s"
+	 },
+	 "UNIT_KILOMETERS_PER_SECOND" : {
+      "description" : "Speed unit: one kilometer per second",
+      "message" : "km/s"
+	 },
+	 "UNIT_MILLION_METERS_PER_SECOND" : {
+      "description" : "Speed unit: one million meters per second",
+      "message" : "Mm/s"
+	 },
+	 "UNIT_METERS" : {
+      "description" : "Distance unit: one meter",
+      "message" : "m"
+	 },
+	 "UNIT_KILOMETERS" : {
+      "description" : "Distance unit: one kilometer",
+      "message" : "km"
+	 },
+	 "UNIT_MILLION_METERS" : {
+      "description" : "Distance unit: one million meters",
+      "message" : "Mm"
+	 },
    "UNKNOWN" : {
       "description" : "",
       "message" : "<unknown>"

@@ -154,12 +154,12 @@ ui.Format = {
 			return math.floor(distance), lc.UNIT_METERS
 		end
 		if d < 1000*1000 then
-			return string.format("%0.1f", distance / 1000), lc.UNIT_KILOMETERS
+			return string.format("%0.2f", distance / 1000), lc.UNIT_KILOMETERS
 		end
 		if d < 1000*1000*1000 then
-			return string.format("%0.1f", distance / 1000 / 1000), lc.UNIT_MILLION_METERS
+			return string.format("%0.2f", distance / 1000 / 1000), lc.UNIT_MILLION_METERS
 		end
-		return string.format("%0.1f", distance / 1.4960e11), lc.UNIT_AU
+		return string.format("%0.2f", distance / 1.4960e11), lc.UNIT_AU
 	end,
 	Speed = function(distance)
 		local d = math.abs(distance)
@@ -167,9 +167,9 @@ ui.Format = {
 			return math.floor(distance), lc.UNIT_METERS_PER_SECOND
 		end
 		if d < 1000*1000 then
-			return string.format("%0.1f", distance / 1000), lc.UNIT_KILOMETERS_PER_SECOND
+			return string.format("%0.2f", distance / 1000), lc.UNIT_KILOMETERS_PER_SECOND
 		end
-		return string.format("%0.1f", distance / 1000 / 1000), lc.UNIT_MILLION_METERS_PER_SECOND
+		return string.format("%0.2f", distance / 1000 / 1000), lc.UNIT_MILLION_METERS_PER_SECOND
 		-- no need for au/s
 	end,
 }
