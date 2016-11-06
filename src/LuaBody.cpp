@@ -11,6 +11,7 @@
 #include "TerrainBody.h"
 #include "Pi.h"
 #include "Game.h"
+#include "LuaPiGui.h"
 
 #include "ModelBody.h"
 #include "Ship.h"
@@ -103,6 +104,15 @@ static int l_body_attr_path(lua_State *l)
 	const SystemPath path(sbody->GetPath());
 	LuaObject<SystemPath>::PushToLua(path);
 
+	return 1;
+}
+
+static int l_body_get_velocity_rel_to(lua_State *l)
+{
+	Body *b = LuaObject<Body>::CheckFromLua(1);
+	const Body *other = LuaObject<Body>::CheckFromLua(2);
+	vector3d velocity = b->GetVelocityRelTo(other);
+	LuaPush(l, velocity);
 	return 1;
 }
 
@@ -456,6 +466,7 @@ template <> void LuaObject<Body>::RegisterClass()
 		{ "DistanceTo", l_body_distance_to },
 		{ "GetGroundPosition", l_body_get_ground_position },
 		{ "FindNearestTo", l_body_find_nearest_to },
+		{ "GetVelocityRelTo",  l_body_get_velocity_rel_to },
 		{ 0, 0 }
 	};
 

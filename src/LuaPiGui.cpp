@@ -225,6 +225,10 @@ static void pi_lua_generic_push(lua_State *l, const ImVec2 &v) {
 	pi_lua_pushVector(l, v.x, v.y, 0);
 }
 
+void pi_lua_generic_push(lua_State *l, const vector3d &v) {
+	pi_lua_pushVector(l, v.x, v.y, v.z);
+}
+
 /* ****************************** Lua imgui functions ****************************** */
 static int l_pigui_begin(lua_State *l) {
 	const std::string name = LuaPull<std::string>(l, 1);
