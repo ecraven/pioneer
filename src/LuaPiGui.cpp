@@ -1031,7 +1031,7 @@ template <> void LuaObject<PiGui>::RegisterClass()
 		{ "SetNextWindowFocus",     l_pigui_set_next_window_focus },
 		{ "SetWindowFocus",         l_pigui_set_window_focus },
 		//		{ "GetHUDMarker",           l_pigui_get_hud_marker },
-		//		{ "GetVelocity",            l_pigui_get_velocity },
+		//    { "GetVelocity",            l_pigui_get_velocity },
 		{ "PushStyleColor",         l_pigui_push_style_color },
 		{ "PopStyleColor",          l_pigui_pop_style_color },
 		{ "PushStyleVar",           l_pigui_push_style_var },
