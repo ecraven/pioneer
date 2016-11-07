@@ -65,9 +65,11 @@ ui.registerHandler(
 
 											-- current altitude
 											uiPos = ui.pointOnClock(center, reticuleCircleRadius, 4.5)
-											local distance,unit = ui.Format.Distance(player:GetAltitude(navTarget))
-											ui.addStyledText(uiPos, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.top, "The current altitude above the navigational target")
-
+											local altitude = player:GetAltitudeRelTo(navTarget)
+											if altitude then
+												local distance,unit = ui.Format.Distance(altitude)
+												ui.addStyledText(uiPos, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.top, "The current altitude above the navigational target")
+											end
 										end
 				end)
 		end)
