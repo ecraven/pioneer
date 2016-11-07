@@ -129,7 +129,22 @@ static int l_body_get_altitude_rel_to(lua_State *l)
 {
 	Body *b = LuaObject<Body>::CheckFromLua(1);
 	const Body *other = LuaObject<Body>::CheckFromLua(2);
-	
+	if(other && other->IsType(Object::TERRAINBODY)) {
+		vector3d pos = Pi::player->GetPositionRelTo(other);
+		double center_dist = pos.Length();
+		const TerrainBody* terrain = static_cast<const TerrainBody*>(other);
+		vector3d surface_pos = pos.Normalized();
+		double radius = 0.0;
+		if (center_dist <= 3.0 * terrain->GetMaxFeatureRadius()) {
+			radius = terrain->GetTerrainHeight(surface_pos);
+		}
+		double altitude = center_dist - radius;
+		if (altitude < 0)
+			altitude = 0;
+		LuaPush(l, altitude);
+		return 1;
+	}
+	return 0;
 }
 
 /*
@@ -437,35 +452,35 @@ static bool _body_deserializer(const char *pos, const char **next)
 	Body *body = Pi::game->GetSpace()->GetBodyByIndex(n);
 
 	switch (body->GetType()) {
-		case Object::BODY:
-			LuaObject<Body>::PushToLua(body);
-			break;
-		case Object::MODELBODY:
-			LuaObject<Body>::PushToLua(dynamic_cast<ModelBody*>(body));
-			break;
-		case Object::SHIP:
-			LuaObject<Ship>::PushToLua(dynamic_cast<Ship*>(body));
-			break;
-		case Object::PLAYER:
-			LuaObject<Player>::PushToLua(dynamic_cast<Player*>(body));
-			break;
-		case Object::SPACESTATION:
-			LuaObject<SpaceStation>::PushToLua(dynamic_cast<SpaceStation*>(body));
-			break;
-		case Object::PLANET:
-			LuaObject<Planet>::PushToLua(dynamic_cast<Planet*>(body));
-			break;
-		case Object::STAR:
-			LuaObject<Star>::PushToLua(dynamic_cast<Star*>(body));
-			break;
-		case Object::CARGOBODY:
-			LuaObject<Star>::PushToLua(dynamic_cast<CargoBody*>(body));
-			break;
-		case Object::MISSILE:
-			LuaObject<Missile>::PushToLua(dynamic_cast<Missile*>(body));
-			break;
-		default:
-			return false;
+	case Object::BODY:
+		LuaObject<Body>::PushToLua(body);
+		break;
+	case Object::MODELBODY:
+		LuaObject<Body>::PushToLua(dynamic_cast<ModelBody*>(body));
+		break;
+	case Object::SHIP:
+		LuaObject<Ship>::PushToLua(dynamic_cast<Ship*>(body));
+		break;
+	case Object::PLAYER:
+		LuaObject<Player>::PushToLua(dynamic_cast<Player*>(body));
+		break;
+	case Object::SPACESTATION:
+		LuaObject<SpaceStation>::PushToLua(dynamic_cast<SpaceStation*>(body));
+		break;
+	case Object::PLANET:
+		LuaObject<Planet>::PushToLua(dynamic_cast<Planet*>(body));
+		break;
+	case Object::STAR:
+		LuaObject<Star>::PushToLua(dynamic_cast<Star*>(body));
+		break;
+	case Object::CARGOBODY:
+		LuaObject<Star>::PushToLua(dynamic_cast<CargoBody*>(body));
+		break;
+	case Object::MISSILE:
+		LuaObject<Missile>::PushToLua(dynamic_cast<Missile*>(body));
+		break;
+	default:
+		return false;
 	}
 
 	return true;
