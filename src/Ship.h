@@ -86,6 +86,7 @@ public:
 	double GetAccelFwd() const { return -m_type->linThrust[ShipType::THRUSTER_FORWARD] / GetMass(); }
 	double GetAccelRev() const { return m_type->linThrust[ShipType::THRUSTER_REVERSE] / GetMass(); }
 	double GetAccelUp() const { return m_type->linThrust[ShipType::THRUSTER_UP] / GetMass(); }
+	double GetAccel(ShipType::Thruster thruster) const { return fabs(m_type->linThrust[thruster] / GetMass()); }
 	double GetAccelMin() const;
 
 	void UpdateLuaStats();

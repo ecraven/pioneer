@@ -47,18 +47,27 @@ ui.registerHandler(
 											local speed,unit = ui.Format.Speed(velocity:magnitude())
 											ui.addStyledText(uiPos, speed .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The relative speed of the navigational target")
 
-											-- current speed of approach
-											uiPos = ui.pointOnClock(center, reticuleCircleRadius, 2.5)
-											local proj = position:dot(velocity) / position:magnitude()
-											local speed,unit = ui.Format.Speed(proj)
-											ui.addStyledText(uiPos, speed .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The speed of approach of the navigational target")
-											
 											-- current distance
-											uiPos = ui.pointOnClock(center, reticuleCircleRadius, 3)
+											uiPos = ui.pointOnClock(center, reticuleCircleRadius, 2.5)
                       local distance,unit = ui.Format.Distance(player:DistanceTo(navTarget))
 											ui.addStyledText(uiPos, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The distance to the navigational target")
 
-											
+											-- current brake distance
+											uiPos = ui.pointOnClock(center, reticuleCircleRadius, 3)
+                      local distance,unit = ui.Format.Distance(player:GetDistanceToZeroV(velocity:magnitude(),"forward"))
+											ui.addStyledText(uiPos, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The braking distance using the forward thrusters.")
+
+											-- current speed of approach
+											uiPos = ui.pointOnClock(center, reticuleCircleRadius, 4)
+											local proj = position:dot(velocity) / position:magnitude()
+											local speed,unit = ui.Format.Speed(proj)
+											ui.addStyledText(uiPos, speed .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.top, "The speed of approach of the navigational target")
+
+											-- current altitude
+											uiPos = ui.pointOnClock(center, reticuleCircleRadius, 4.5)
+											local distance,unit = ui.Format.Distance(player:GetAltitude(navTarget))
+											ui.addStyledText(uiPos, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.top, "The current altitude above the navigational target")
+
 										end
 				end)
 		end)
