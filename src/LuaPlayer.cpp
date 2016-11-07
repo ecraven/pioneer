@@ -208,6 +208,21 @@ static int l_set_hyperspace_target(lua_State *l)
 		return luaL_error(l, "Player:SetHyperspaceTarget() cannot be used while in hyperspace");
 }
 
+static std::map<std::string, ShipType::Thruster> thrusters_map = { { "forward", ShipType::THRUSTER_FORWARD },
+																										{ "reverse", ShipType::THRUSTER_REVERSE } ,
+};
+
+static int l_get_distance_to_zero_v(lua_State *l)
+{
+	Player *player = LuaObject<Player>::CheckFromLua(1);
+	double speed = LuaPull<double>(l, 2);
+	std::string thruster = LuaPull<std::string>(l, 3);
+	double acceleration = player->GetAccel(thrusters_map.at(thruster));
+	// approximation, ignores mass change
+	LuaPush(l, speed * speed / (2 * acceleration));
+	return 1;
+}
+
 template <> const char *LuaObject<Player>::s_type = "Player";
 
 template <> void LuaObject<Player>::RegisterClass()
@@ -223,6 +238,7 @@ template <> void LuaObject<Player>::RegisterClass()
 		{ "SetCombatTarget", l_set_combat_target },
 		{ "GetHyperspaceTarget", l_get_hyperspace_target },
 		{ "SetHyperspaceTarget", l_set_hyperspace_target },
+		{ "GetDistanceToZeroV",  l_get_distance_to_zero_v },
 		{ 0, 0 }
 	};
 

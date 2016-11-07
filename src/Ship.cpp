@@ -1481,3 +1481,4 @@ void Ship::SetRelations(Body *other, Uint8 percent)
 	m_relationsMap[other] = percent;
 	if (m_sensors.get()) m_sensors->UpdateIFF(other);
 }
+
