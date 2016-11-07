@@ -35,32 +35,31 @@ ui.registerHandler(
 										-- nav target
 										local navTarget = player:GetNavTarget()
 										if navTarget then
-											local position = ui.pointOnClock(center, reticuleCircleRadius, 1.35)
-											ui.addStyledText(position, navTarget.label, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The current navigational target")
-											position = ui.pointOnClock(center, reticuleCircleRadius, 2)
-											local velocity = Vector(player:GetVelocityRelTo(navTarget))
-											local speed,unit = ui.Format.Speed(velocity:magnitude())
-											ui.addStyledText(position, speed .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The relative speed of the navigational target")
+											local uiPos = ui.pointOnClock(center, reticuleCircleRadius, 1.35)
+											local velocity = player:GetVelocityRelTo(navTarget)
+											local position = player:GetPositionRelTo(navTarget)
 
+											-- label of target
+											ui.addStyledText(uiPos, navTarget.label, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The current navigational target")
+
+											-- current relative speed
+											uiPos = ui.pointOnClock(center, reticuleCircleRadius, 2)
+											local speed,unit = ui.Format.Speed(velocity:magnitude())
+											ui.addStyledText(uiPos, speed .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The relative speed of the navigational target")
+
+											-- current speed of approach
+											uiPos = ui.pointOnClock(center, reticuleCircleRadius, 2.5)
+											local proj = position:dot(velocity) / position:magnitude()
+											local speed,unit = ui.Format.Speed(proj)
+											ui.addStyledText(uiPos, speed .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The speed of approach of the navigational target")
+											
+											-- current distance
+											uiPos = ui.pointOnClock(center, reticuleCircleRadius, 3)
                       local distance,unit = ui.Format.Distance(player:DistanceTo(navTarget))
-											position = ui.pointOnClock(center, reticuleCircleRadius, 3)
-											ui.addStyledText(position, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The distance to the navigational target")
-										end
-										-- frame
-										local frame = player.frameBody
-										if frame then
-											local position = ui.pointOnClock(center, reticuleCircleRadius, -1.35)
-											ui.addStyledText(position, frame.label, colors.frame, ui.fonts.pionillium.medium, ui.anchor.right, ui.anchor.bottom, "The current navigational target")
-											position = ui.pointOnClock(center, reticuleCircleRadius, -2)
-											local velocity = Vector(player:GetVelocityRelTo(frame))
-											local speed,unit = ui.Format.Speed(velocity:magnitude())
-											ui.addStyledText(position, speed .. "" .. unit, colors.frame, ui.fonts.pionillium.medium, ui.anchor.right, ui.anchor.bottom, "The relative speed of the frame")
+											ui.addStyledText(uiPos, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The distance to the navigational target")
 
-                      local distance,unit = ui.Format.Distance(player:DistanceTo(frame))
-											position = ui.pointOnClock(center, reticuleCircleRadius, -3)
-											ui.addStyledText(position, distance .. "" .. unit, colors.frame, ui.fonts.pionillium.medium, ui.anchor.right, ui.anchor.bottom, "The distance to the frame")
+											
 										end
-					
 				end)
 		end)
 end)

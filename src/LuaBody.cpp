@@ -116,6 +116,15 @@ static int l_body_get_velocity_rel_to(lua_State *l)
 	return 1;
 }
 
+static int l_body_get_position_rel_to(lua_State *l)
+{
+	Body *b = LuaObject<Body>::CheckFromLua(1);
+	const Body *other = LuaObject<Body>::CheckFromLua(2);
+	vector3d velocity = b->GetPositionRelTo(other);
+	LuaPush(l, velocity);
+	return 1;
+}
+
 /*
  * Attribute: type
  *
@@ -467,6 +476,7 @@ template <> void LuaObject<Body>::RegisterClass()
 		{ "GetGroundPosition", l_body_get_ground_position },
 		{ "FindNearestTo", l_body_find_nearest_to },
 		{ "GetVelocityRelTo",  l_body_get_velocity_rel_to },
+		{ "GetPositionRelTo",  l_body_get_position_rel_to },
 		{ 0, 0 }
 	};
 
