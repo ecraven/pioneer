@@ -223,10 +223,9 @@ static int l_get_distance_to_zero_v(lua_State *l)
 	return 1;
 }
 
-static int l_get_heading_pitch(lua_State *l)
+static int l_get_heading_pitch_roll(lua_State *l)
 {
-  // 	Player *player = LuaObject<Player>::CheckFromLua(1);
-  // player is unused
+  Player *player = LuaObject<Player>::CheckFromLua(1);
   std::string type = LuaPull<std::string>(l, 2);
   PlaneType pt = PlaneType::PARENT;
   if(!type.compare("system-wide")) {
@@ -236,9 +235,28 @@ static int l_get_heading_pitch(lua_State *l)
   } // TODO: else error
 	
   std::pair<double,double> res = Pi::game->GetWorldView()->CalculateHeadingPitch(pt);
-  lua_pushnumber(l, res.first);
-  lua_pushnumber(l, res.second);
-  return 2;
+  // player position
+  auto position = player->GetPosition().Normalized();
+
+  // ship up vector
+  auto up = (player->GetOrient() * vector3d(0,1,0)).Normalized();
+  auto right = (player->GetOrient() * vector3d(1,0,0)).Normalized();
+  auto forward = (player->GetOrient() * vector3d(0,0,-1)).Normalized();
+  // normal to position / up
+  auto xnormal = position.Cross(up).Normalized();
+  // normal to position through up
+  auto normal = up.Cross(xnormal).Normalized();
+  // project up onto the position plane
+  auto projected = (up - normal * up.Dot(normal)).Normalized();
+  // calculate angle
+  // auto dot = position.Dot(projected);
+  auto dot = right.Dot(position);
+  auto roll = acos(dot);
+
+  LuaPush(l, res.first);
+  LuaPush(l, res.second);
+  LuaPush(l, roll);
+  return 3;
 }
 
 template <> const char *LuaObject<Player>::s_type = "Player";
@@ -257,7 +275,7 @@ template <> void LuaObject<Player>::RegisterClass()
 		{ "GetHyperspaceTarget", l_get_hyperspace_target },
 		{ "SetHyperspaceTarget", l_set_hyperspace_target },
 		{ "GetDistanceToZeroV",  l_get_distance_to_zero_v },
-		{ "GetHeadingPitch",     l_get_heading_pitch },
+		{ "GetHeadingPitchRoll",     l_get_heading_pitch_roll },
 		{ 0, 0 }
 	};
 
