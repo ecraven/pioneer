@@ -224,12 +224,12 @@ local function displayReticule(center)
 	local size = 24
 	ui.addIcon(uiPos, ui.theme.icons.moon, frameColor, size, ui.anchor.left, ui.anchor.bottom, "Show frame")
 	if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
-		reticuleTargetsFrame = true
+		reticuleTargetsFrame = not reticuleTargetsFrame
 	end
 	uiPos = uiPos + Vector(size,0)
 	ui.addIcon(uiPos, ui.theme.icons.forward, navTargetColor, size, ui.anchor.left, ui.anchor.bottom, "Show nav target")
 	if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
-		reticuleTargetsFrame = false
+		reticuleTargetsFrame = not reticuleTargetsFrame
 	end
 
 	-- heading, pitch and roll
