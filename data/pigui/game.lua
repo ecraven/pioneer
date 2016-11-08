@@ -15,17 +15,7 @@ local reticuleCircleRadius = math.min(ui.screenWidth, ui.screenHeight) / 13
 local reticuleCircleThickness = 2.0
 
 local showNavigationalNumbers = false
-local colors = {
-	reticuleCircle = Color(200, 200, 200),
-	transparent = Color(0, 0, 0, 0),
-	navTarget = Color(0, 255, 0),
-	frame = Color(200, 200, 200),
-	navigationalElements = Color(200, 200, 200),
-	deltaVCurrent = Color(150, 150, 150),
-	deltaVManeuver = Color(168, 168, 255),
-	deltaVRemaining = Color(250, 250, 250),
-	deltaVTotal = Color(100, 100, 100, 200),
-}
+
 
 local function displayReticulePitch(center, pitch_degrees)
 	local function pitchline(hrs, length, color, thickness)
@@ -34,14 +24,14 @@ local function displayReticulePitch(center, pitch_degrees)
 		ui.addLine(a, b, color, thickness)
 	end
 	local size = 2
-	pitchline(3, size * 2, colors.reticuleCircle, 1)
-	pitchline(2.25, size, colors.reticuleCircle, 1)
-	pitchline(3.75, size, colors.reticuleCircle, 1)
-	pitchline(1.5, size * 2, colors.reticuleCircle, 1)
-	pitchline(4.5, size * 2, colors.reticuleCircle, 1)
+	pitchline(3, size * 2, ui.theme.colors.reticuleCircle, 1)
+	pitchline(2.25, size, ui.theme.colors.reticuleCircle, 1)
+	pitchline(3.75, size, ui.theme.colors.reticuleCircle, 1)
+	pitchline(1.5, size * 2, ui.theme.colors.reticuleCircle, 1)
+	pitchline(4.5, size * 2, ui.theme.colors.reticuleCircle, 1)
 	local xpitch = (pitch_degrees + 90) / 180
 	local xpitch_h = 4.5 - xpitch * 3
-	pitchline(xpitch_h, size * 3, colors.navigationalElements, 2)
+	pitchline(xpitch_h, size * 3, ui.theme.colors.navigationalElements, 2)
 end
 
 local function displayReticuleHorizon(center, roll_degrees)
@@ -52,23 +42,23 @@ local function displayReticuleHorizon(center, roll_degrees)
 	-- left hook
 	ui.addLine(ui.pointOnClock(center, reticuleCircleRadius - offset, hrs),
 						 ui.pointOnClock(center, reticuleCircleRadius - offset - width, hrs),
-						 colors.navigationalElements, 1)
+						 ui.theme.colors.navigationalElements, 1)
 	ui.addLine(ui.pointOnClock(center, reticuleCircleRadius - offset, hrs),
 						 ui.pointOnClock(center, reticuleCircleRadius - offset, hrs + height_hrs),
-						 colors.navigationalElements, 1)
+						 ui.theme.colors.navigationalElements, 1)
 	ui.addLine(ui.pointOnClock(center, reticuleCircleRadius - offset, -3),
 						 ui.pointOnClock(center, reticuleCircleRadius - offset + width/2, -3),
-						 colors.navigationalElements, 1)
+						 ui.theme.colors.navigationalElements, 1)
 	-- right hook
 	ui.addLine(ui.pointOnClock(center, reticuleCircleRadius - offset, hrs + 6),
 						 ui.pointOnClock(center, reticuleCircleRadius - offset - width, hrs + 6),
-						 colors.navigationalElements, 1)
+						 ui.theme.colors.navigationalElements, 1)
 	ui.addLine(ui.pointOnClock(center, reticuleCircleRadius - offset, hrs + 6),
 						 ui.pointOnClock(center, reticuleCircleRadius - offset, hrs + 6 - height_hrs),
-						 colors.navigationalElements, 1)
+						 ui.theme.colors.navigationalElements, 1)
 	ui.addLine(ui.pointOnClock(center, reticuleCircleRadius - offset, 3),
 						 ui.pointOnClock(center, reticuleCircleRadius - offset + width/2, 3),
-						 colors.navigationalElements, 1)
+						 ui.theme.colors.navigationalElements, 1)
 
 
 
@@ -94,13 +84,13 @@ local function displayReticuleCompass(center, heading)
 		if d % n == 0 then
 			local a = ui.pointOnClock(center, reticuleCircleRadius, 2.8 * p - 1.4)
 			local b = ui.pointOnClock(center, reticuleCircleRadius + height, 2.8 * p - 1.4)
-			ui.addLine(a, b, colors.reticuleCircle, thickness)
+			ui.addLine(a, b, ui.theme.colors.reticuleCircle, thickness)
 		end
 	end
 
 	ui.addLine(ui.pointOnClock(center, reticuleCircleRadius, 0),
 						 ui.pointOnClock(center, reticuleCircleRadius - 3, 0),
-						 colors.reticuleCircle, 1)
+						 ui.theme.colors.reticuleCircle, 1)
 
 	while true do
 		if d > right then
@@ -113,7 +103,7 @@ local function displayReticuleCompass(center, heading)
 		for k,v in pairs(directions) do
 			if cl(k) == cl(d) then
 				local a = ui.pointOnClock(center, reticuleCircleRadius + 8, 3 * p - 1.5)
-				ui.addStyledText(a, v, colors.navigationalElements, ui.fonts.pionillium.small, ui.anchor.center, ui.anchor.bottom, "")
+				ui.addStyledText(a, v, ui.theme.colors.navigationalElements, ui.fonts.pionillium.tiny, ui.anchor.center, ui.anchor.bottom, "")
 			end
 		end
 		d = d + 1
@@ -148,15 +138,15 @@ local function displayReticuleDeltaV(center)
 	local deltav_current = player:GetCurrentDeltaV()
 	local dvc = deltav_current / deltav_max
 
-	deltav_gauge(1.0, center, reticuleCircleRadius + offset, colors.deltaVTotal, thickness)
+	deltav_gauge(1.0, center, reticuleCircleRadius + offset, ui.theme.colors.deltaVTotal, thickness)
 	if dvr > 0 then
-	  deltav_gauge(dvr, center, reticuleCircleRadius + offset, colors.deltaVRemaining, thickness)
+	  deltav_gauge(dvr, center, reticuleCircleRadius + offset, ui.theme.colors.deltaVRemaining, thickness)
 	end
 	if dvm > 0 then
-	  deltav_gauge(dvm, center, reticuleCircleRadius + offset + thickness / 4, colors.deltaVManeuver, thickness / 2)
+	  deltav_gauge(dvm, center, reticuleCircleRadius + offset + thickness / 4, ui.theme.colors.deltaVManeuver, thickness / 2)
 	end
 	if dvc > 0 then
-	  deltav_gauge(dvc, center, reticuleCircleRadius + offset + thickness, colors.deltaVCurrent, thickness)
+	  deltav_gauge(dvc, center, reticuleCircleRadius + offset + thickness, ui.theme.colors.deltaVCurrent, thickness)
 	end
 
 end
@@ -164,58 +154,72 @@ end
 local function displayReticule(center)
 	local player = Game.player
 	-- reticule circle
-	ui.addCircle(center, reticuleCircleRadius, colors.reticuleCircle, ui.circleSegments(reticuleCircleRadius), reticuleCircleThickness)
+	ui.addCircle(center, reticuleCircleRadius, ui.theme.colors.reticuleCircle, ui.circleSegments(reticuleCircleRadius), reticuleCircleThickness)
 	-- nav target
 	local navTarget = player:GetNavTarget()
 	if navTarget then
 		local radius = reticuleCircleRadius + 10
-		local uiPos = ui.pointOnClock(center, radius, 2)
 		local velocity = player:GetVelocityRelTo(navTarget)
 		local position = player:GetPositionRelTo(navTarget)
 
+		local uiPos = ui.pointOnClock(center, radius, 2)
 		-- label of target
-		ui.addStyledText(uiPos, navTarget.label, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The current navigational target")
+		ui.addStyledText(uiPos, navTarget.label, ui.theme.colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.baseline, "The current navigational target")
 
-		-- current relative speed
+		-- current distance, relative speed
 		uiPos = ui.pointOnClock(center, radius, 2.5)
-		local speed,unit = ui.Format.Speed(velocity:magnitude())
-		ui.addStyledText(uiPos, speed .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The relative speed of the navigational target")
-
-		-- current distance
-		uiPos = ui.pointOnClock(center, radius, 3)
-		local distance,unit = ui.Format.Distance(player:DistanceTo(navTarget))
-		ui.addStyledText(uiPos, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The distance to the navigational target")
+		local distance, distance_unit = ui.Format.Distance(player:DistanceTo(navTarget))
+		local speed, speed_unit = ui.Format.Speed(velocity:magnitude())
+				
+		ui.addFancyText(uiPos,
+										{ distance, distance_unit, " " .. speed, speed_unit },
+										{ ui.theme.colors.navTarget, ui.theme.colors.navTargetDark, ui.theme.colors.navTarget, ui.theme.colors.navTargetDark },
+										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
+										ui.anchor.left, ui.anchor.baseline,
+										{ "The distance to the navigational target", "The distance to the navigational target", "The speed relative to the navigational target", "The speed relative to the navigational target" })
 
 		-- current brake distance
-		uiPos = ui.pointOnClock(center, radius, 3.5)
+		uiPos = ui.pointOnClock(center, radius, 3)
 		local distance,unit = ui.Format.Distance(player:GetDistanceToZeroV(velocity:magnitude(),"forward"))
-		ui.addStyledText(uiPos, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.bottom, "The braking distance using the forward thrusters.")
+		ui.addFancyText(uiPos,
+										{ "~" .. distance, unit },
+										{ ui.theme.colors.navTargetDark, ui.theme.colors.navTargetDark },
+										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
+										ui.anchor.left, ui.anchor.baseline,
+										{ "The braking distance using the main thrusters.", "The braking distance using the main thrusters." })
 
-		-- current speed of approach
-		uiPos = ui.pointOnClock(center, radius, 4)
-		local proj = position:dot(velocity) / position:magnitude()
-		local speed,unit = ui.Format.Speed(proj)
-		ui.addStyledText(uiPos, speed .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.top, "The speed of approach of the navigational target")
-
-		-- current altitude
-		uiPos = ui.pointOnClock(center, radius, 4.5)
-		local altitude = player:GetAltitudeRelTo(navTarget)
-		if altitude then
-			local distance,unit = ui.Format.Distance(altitude)
-			ui.addStyledText(uiPos, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.top, "The current altitude above the navigational target")
+		-- current altitude, current speed of approach
+		uiPos = ui.pointOnClock(center, radius, 3.5)
+		local alt = player:GetAltitudeRelTo(navTarget)
+		local altitude, altitude_unit
+		if alt then
+			altitude, altitude_unit = ui.Format.Distance(alt)
+		else
+			altitude = ""
+			altitude_unit = ""
 		end
+		local proj = position:dot(velocity) / position:magnitude()
+		local speed, speed_unit = ui.Format.Speed(proj)
+		local dist = alt and " " or ""
+		ui.addFancyText(uiPos,
+										{ altitude, altitude_unit, dist .. speed, speed_unit },
+										{ ui.theme.colors.navTarget, ui.theme.colors.navTargetDark, ui.theme.colors.navTarget, ui.theme.colors.navTargetDark },
+										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
+										ui.anchor.left, ui.anchor.baseline,
+										{ "The altitude above the navigational target", "The altitude above the navigational target", "The speed of approach of the navigational target", "The speed of approach of the navigational target" })
+
 	end
 	-- heading, pitch and roll
 	do
 		if showNavigationalNumbers then
 			local uiPos = ui.pointOnClock(center, reticuleCircleRadius - size * 2, 3)
-			ui.addStyledText(uiPos, math.floor(pitch_degrees + 0.5) .. "°", colors.reticuleCircle, ui.fonts.pionillium.small, ui.anchor.right, ui.anchor.center, "Current pitch")
+			ui.addStyledText(uiPos, math.floor(pitch_degrees + 0.5) .. "°", ui.theme.colors.reticuleCircle, ui.fonts.pionillium.small, ui.anchor.right, ui.anchor.center, "Current pitch")
 
 			local uiPos = ui.pointOnClock(center, reticuleCircleRadius - size * 2, 0)
-			ui.addStyledText(uiPos, math.floor(heading_degrees + 0.5) .. "°", colors.reticuleCircle, ui.fonts.pionillium.small, ui.anchor.center, ui.anchor.top, "Current heading")
+			ui.addStyledText(uiPos, math.floor(heading_degrees + 0.5) .. "°", ui.theme.colors.reticuleCircle, ui.fonts.pionillium.small, ui.anchor.center, ui.anchor.top, "Current heading")
 
 			local uiPos = ui.pointOnClock(center, reticuleCircleRadius, 6)
-			ui.addStyledText(uiPos, math.floor(roll_degrees + 0.5) .. "°", colors.reticuleCircle, ui.fonts.pionillium.small, ui.anchor.center, ui.anchor.top, "Current roll")
+			ui.addStyledText(uiPos, math.floor(roll_degrees + 0.5) .. "°", ui.theme.colors.reticuleCircle, ui.fonts.pionillium.small, ui.anchor.center, ui.anchor.top, "Current roll")
 		end
 
 		local heading, pitch, roll = player:GetHeadingPitchRoll("planet")
@@ -239,7 +243,7 @@ ui.registerHandler(
 	function(delta_t)
 		ui.setNextWindowPos(Vector(0, 0), "Always")
 		ui.setNextWindowSize(Vector(ui.screenWidth, ui.screenHeight), "Always")
-		ui.withStyleColors({ ["WindowBg"] = colors.transparent }, function()
+		ui.withStyleColors({ ["WindowBg"] = ui.theme.colors.transparent }, function()
 				ui.window("HUD", {"NoTitleBar", "NoResize", "NoMove", "NoInputs", "NoSavedSettings", "NoFocusOnAppearing", "NoBringToFrontOnFocus"}, function()
 										local center = Vector(ui.screenWidth / 2, ui.screenHeight / 2)
 										if Game.CurrentView() == "world" then

@@ -42,7 +42,7 @@ void *pi_lua_checklightuserdata(lua_State *l, int index) {
 	if(lua_islightuserdata(l, index))
 		return lua_touserdata(l, index);
 	else
-		Error("Expected light user data at %d", index);
+		Error("Expected light user data at index %d, but got %s", index, lua_typename(l, index));
 }
 
 void pi_lua_generic_pull(lua_State *l, int index, ImVec2 &vector) {
@@ -689,6 +689,7 @@ static ImFont *get_font(std::string fontname, int size) {
 	ImFont *font;
 	if(!fontname.compare("pionillium")) {
 		switch(size) {
+		case 9: font = PiGui::pionillium9; break;
 		case 12: font = PiGui::pionillium12; break;
 		case 15: font = PiGui::pionillium15; break;
 		case 18: font = PiGui::pionillium18; break;

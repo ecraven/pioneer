@@ -72,6 +72,14 @@ pigui.handlers.MAINMENU = function(deltat)
 	end
 end
 
+local function get_icon_tex_coords(icon)
+   assert(icon, "no icon given")
+   local count = 16.0 -- icons per row/column
+   local rem = math.floor(icon % count)
+   local quot = math.floor(icon / count)
+   return Vector(rem / count, quot/count), Vector((rem+1) / count, (quot+1)/count)
+end
+
 ui.registerHandler = function(name, fun)
 	pigui.handlers[name] = fun
 end
@@ -191,7 +199,8 @@ ui.fonts = {
 		large = { name = "pionillium", size = 30, offset = 24 },
 		medium = { name = "pionillium", size = 18, offset = 14 },
 		-- 		medsmall = { name = "pionillium", size = 15, offset = 12 },
-		small = { name = "pionillium", size = 12, offset = 10 }
+		small = { name = "pionillium", size = 12, offset = 10 },
+		tiny = { name = "pionillium", size = 9, offset = 7 },
 	}
 }
 
@@ -218,6 +227,67 @@ ui.calcTextAlignment = function(pos, size, anchor_horizontal, anchor_vertical)
 	  error("show_text: incorrect vertical anchor " .. anchor_vertical)
 	end
 	return position
+end
+
+ui.addIcon = function(position, icon, color, size, anchor_horizontal, anchor_vertical, tooltip, angle_rad)
+   local pos = ui.calcTextAlignment(position, Vector(size, size), anchor_horizontal, anchor_vertical)
+   local uv0, uv1 = get_icon_tex_coords(icon)
+   if angle_rad then
+	  local center = (pos + pos + Vector(size,size)) / 2
+	  local up_left = Vector(-size/2, size/2):rotate2d(angle_rad)
+	  local up_right = up_left:right()
+	  local down_left = up_left:left()
+	  local down_right = -up_left
+	  pigui.AddImageQuad(ui.icons_texture, center + up_left, center + up_right, center + down_right, center + down_left, uv0, Vector(uv1.x, uv0.y), uv1, Vector(uv0.x, uv1.y), color)
+   else
+	  pigui.AddImage(ui.icons_texture, pos, pos + Vector(size, size), uv0, uv1, color)
+   end
+   return Vector(size, size)
+end
+
+ui.addFancyText = function(position, texts, colors, fonts, anchor_horizontal, anchor_vertical, tooltips)
+   -- always align texts at baseline
+   local spacing = 2
+   local size = Vector(0, 0)
+   local max_offset = 0
+   assert(#texts == #colors and #texts == #fonts, "not the same number of texts, colors and fonts")
+   for i=1,#texts do
+	  local is_icon = fonts[i].name ~= "icons"
+	  local s
+	  if is_icon then
+		 pigui.PushFont(fonts[i].name, fonts[i].size)
+		 s = pigui.CalcTextSize(texts[i])
+	  else
+		 s = Vector(fonts[i].size, fonts[i].size)
+	  end
+	  size.x = size.x + s.x
+	  size.x = size.x + spacing -- spacing
+	  size.y = math.max(size.y, s.y)
+	  max_offset = math.max(max_offset, fonts[i].offset)
+	  if is_icon then
+		 pigui.PopFont()
+	  end
+   end
+   size.x = size.x - spacing -- remove last spacing
+   position = ui.calcTextAlignment(position, size, anchor_horizontal, nil)
+   if anchor_vertical == ui.anchor.top then
+	  position.y = position.y + max_offset
+   elseif anchor_vertical == ui.anchor.bottom then
+	  position.y = position.y - (size.y - max_offset)
+   end
+   for i=1,#texts do
+	  local is_icon = fonts[i].name ~= "icons"
+	  if is_icon then
+		 ui.withFont(fonts[i].name, fonts[i].size, function()
+					 local s = ui.addStyledText(position, texts[i], colors[i], fonts[i], ui.anchor.left, ui.anchor.baseline, tooltips and tooltips[i] or nil)
+					 position.x = position.x + s.x + spacing
+		 end)
+	  else
+		 local s = ui.addIcon(position, texts[i], colors[i], fonts[i].size, ui.anchor.left, ui.anchor.bottom, tooltips[i])
+		 position.x = position.x + s.x + spacing
+	  end
+   end
+   return size
 end
 
 ui.addStyledText = function(position, text, color, font, anchor_horizontal, anchor_vertical, tooltip)
@@ -264,4 +334,9 @@ ui.twoPi = two_pi
 ui.pi_2 = pi_2
 ui.pi_4 = pi_4
 ui.pi = pi
+
+local defaultTheme = import("themes/default")
+
+ui.theme = defaultTheme
+
 return ui

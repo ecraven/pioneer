@@ -13,6 +13,7 @@
 /* Class to wrap ImGui. */
 class PiGui : public RefCounted {
 public:
+	static ImFont *pionillium9;
 	static ImFont *pionillium12;
 	static ImFont *pionillium15;
 	static ImFont *pionillium18;
