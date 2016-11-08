@@ -256,6 +256,7 @@ static int l_get_heading_pitch_roll(lua_State *l)
   LuaPush(l, res.first);
   LuaPush(l, res.second);
   LuaPush(l, roll);
+  Output("roll: %.0f\n", roll / (2 * M_PI) * 360);
   return 3;
 }
 
