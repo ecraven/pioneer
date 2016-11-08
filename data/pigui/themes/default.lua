@@ -4,12 +4,14 @@ local theme = {}
 
 theme.colors = {
 	reticuleCircle = Color(200, 200, 200),
+	reticuleCircleDark = Color(140, 140, 140),
+	frame = Color(200, 200, 200),
+	frameDark = Color(160, 160, 160),
 	transparent = Color(0, 0, 0, 0),
 	navTarget = Color(237, 237, 112),
 	navTargetDark = Color(196, 196, 93),
 	-- navTarget = Color(0, 255, 0),
 	-- navTargetDark = Color(0, 150, 0),
-	frame = Color(200, 200, 200),
 	navigationalElements = Color(200, 200, 200),
 	deltaVCurrent = Color(150, 150, 150),
 	deltaVManeuver = Color(168, 168, 255),

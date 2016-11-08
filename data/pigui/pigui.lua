@@ -242,6 +242,12 @@ ui.addIcon = function(position, icon, color, size, anchor_horizontal, anchor_ver
    else
 	  pigui.AddImage(ui.icons_texture, pos, pos + Vector(size, size), uv0, uv1, color)
    end
+	 if tooltip and not pigui.IsMouseHoveringAnyWindow() and tooltip ~= "" then
+	  if pigui.IsMouseHoveringRect(pos, pos + size, true) then
+			pigui.SetTooltip(tooltip)
+	  end
+	end
+
    return Vector(size, size)
 end
 
@@ -334,9 +340,11 @@ ui.twoPi = two_pi
 ui.pi_2 = pi_2
 ui.pi_4 = pi_4
 ui.pi = pi
+ui.isMouseClicked = pigui.IsMouseClicked
+ui.getMousePos = pigui.GetMousePos
+ui.setTooltip = pigui.SetTooltip
 
 local defaultTheme = import("themes/default")
-
 ui.theme = defaultTheme
 
 return ui
