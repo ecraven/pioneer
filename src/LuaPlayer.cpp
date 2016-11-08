@@ -250,7 +250,7 @@ static int l_get_heading_pitch_roll(lua_State *l)
   auto projected = (up - normal * up.Dot(normal)).Normalized();
   // calculate angle
   // auto dot = position.Dot(projected);
-  auto dot = right.Dot(position);
+  auto dot = right.Dot(position.Cross(forward));
   auto roll = acos(dot);
 
   LuaPush(l, res.first);
