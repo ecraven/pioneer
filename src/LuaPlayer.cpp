@@ -225,7 +225,7 @@ static int l_get_distance_to_zero_v(lua_State *l)
 
 static int l_get_heading_pitch_roll(lua_State *l)
 {
-  Player *player = LuaObject<Player>::CheckFromLua(1);
+  //  Player *player = LuaObject<Player>::CheckFromLua(1);
   std::string type = LuaPull<std::string>(l, 2);
   PlaneType pt = PlaneType::PARENT;
   if(!type.compare("system-wide")) {
@@ -234,22 +234,23 @@ static int l_get_heading_pitch_roll(lua_State *l)
 	pt = PlaneType::ROTATIONAL;
   } // TODO: else error
 	
-  std::pair<double,double> res = Pi::game->GetWorldView()->CalculateHeadingPitch(pt);
-  // player position
-  auto position = player->GetPosition();
+  std::tuple<double,double,double> res = Pi::game->GetWorldView()->CalculateHeadingPitchRoll(pt);
+  // // player position
+  // auto position = player->GetPosition();
 
-  // ship up vector
-  auto orient = player->GetOrient();
-  // auto up = orient.VectorY();
-  auto right = orient.VectorX();
-  auto forward = -orient.VectorZ();
-  auto dot = right.Dot(position.Cross(forward).Normalized());
-  auto roll = acos(dot);
+  // // ship up vector
+  // auto orient = player->GetOrient();
+  // // auto up = orient.VectorY();
+  // auto right = orient.VectorX();
+  // auto forward = -orient.VectorZ();
 
-  LuaPush(l, res.first);
-  LuaPush(l, res.second);
-  LuaPush(l, roll);
-  Output("roll: %.0f\n", roll / (2 * M_PI) * 360);
+  // auto dot = right.Dot(position.Cross(forward).Normalized());
+  // auto roll = acos(dot) - M_PI;
+  // if(right.Dot(position) >= 0)
+  // 	roll = -roll;
+  LuaPush(l, std::get<0>(res));
+  LuaPush(l, std::get<1>(res));
+  LuaPush(l, std::get<2>(res));
   return 3;
 }
 
