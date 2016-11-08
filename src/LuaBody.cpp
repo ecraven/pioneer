@@ -127,7 +127,7 @@ static int l_body_get_position_rel_to(lua_State *l)
 
 static int l_body_get_altitude_rel_to(lua_State *l)
 {
-	Body *b = LuaObject<Body>::CheckFromLua(1);
+	//	Body *b = LuaObject<Body>::CheckFromLua(1);
 	const Body *other = LuaObject<Body>::CheckFromLua(2);
 	if(other && other->IsType(Object::TERRAINBODY)) {
 		vector3d pos = Pi::player->GetPositionRelTo(other);
