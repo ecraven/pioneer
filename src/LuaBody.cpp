@@ -129,9 +129,11 @@ static int l_body_get_altitude_rel_to(lua_State *l)
 {
 	//	Body *b = LuaObject<Body>::CheckFromLua(1);
 	const Body *other = LuaObject<Body>::CheckFromLua(2);
+	vector3d pos = Pi::player->GetPositionRelTo(other);
+	double center_dist = pos.Length();
 	if(other && other->IsType(Object::TERRAINBODY)) {
-		vector3d pos = Pi::player->GetPositionRelTo(other);
-		double center_dist = pos.Length();
+
+
 		const TerrainBody* terrain = static_cast<const TerrainBody*>(other);
 		vector3d surface_pos = pos.Normalized();
 		double radius = 0.0;
@@ -143,8 +145,11 @@ static int l_body_get_altitude_rel_to(lua_State *l)
 			altitude = 0;
 		LuaPush(l, altitude);
 		return 1;
+	} else {
+		LuaPush(l, center_dist);
+		return 1;
 	}
-	return 0;
+
 }
 
 /*

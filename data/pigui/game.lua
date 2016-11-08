@@ -164,7 +164,7 @@ local function displayReticule(center)
 
 		local uiPos = ui.pointOnClock(center, radius, 2)
 		-- label of target
-		ui.addStyledText(uiPos, navTarget.label, ui.theme.colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.baseline, "The current navigational target")
+		ui.addStyledText(uiPos, navTarget.label, ui.theme.colors.navTargetDark, ui.fonts.pionillium.small, ui.anchor.left, ui.anchor.baseline, "The current navigational target")
 
 		-- current distance, relative speed
 		uiPos = ui.pointOnClock(center, radius, 2.5)
@@ -191,18 +191,11 @@ local function displayReticule(center)
 		-- current altitude, current speed of approach
 		uiPos = ui.pointOnClock(center, radius, 3.5)
 		local alt = player:GetAltitudeRelTo(navTarget)
-		local altitude, altitude_unit
-		if alt then
-			altitude, altitude_unit = ui.Format.Distance(alt)
-		else
-			altitude = ""
-			altitude_unit = ""
-		end
+		local altitude, altitude_unit = ui.Format.Distance(alt)
 		local proj = position:dot(velocity) / position:magnitude()
 		local speed, speed_unit = ui.Format.Speed(proj)
-		local dist = alt and " " or ""
 		ui.addFancyText(uiPos,
-										{ altitude, altitude_unit, dist .. speed, speed_unit },
+										{ altitude, altitude_unit, " " .. speed, speed_unit },
 										{ ui.theme.colors.navTarget, ui.theme.colors.navTargetDark, ui.theme.colors.navTarget, ui.theme.colors.navTargetDark },
 										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
 										ui.anchor.left, ui.anchor.baseline,
