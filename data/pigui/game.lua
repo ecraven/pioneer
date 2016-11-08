@@ -21,6 +21,10 @@ local colors = {
 	navTarget = Color(0, 255, 0),
 	frame = Color(200, 200, 200),
 	navigationalElements = Color(200, 200, 200),
+	deltaVCurrent = Color(150, 150, 150),
+	deltaVManeuver = Color(168, 168, 255),
+	deltaVRemaining = Color(250, 250, 250),
+	deltaVTotal = Color(100, 100, 100, 200),
 }
 
 local function displayReticulePitch(center, pitch_degrees)
@@ -86,8 +90,6 @@ local function displayReticuleCompass(center, heading)
 	local right = left + 90
 	local d = left
 
-	-- ui.pathArcTo(center, reticuleCircleRadius + 5, - pi_2 - pi_4 + 0.05, - pi_2 + pi_4 - 0.05, 64)
-	-- ui.pathStroke(colors.reticuleCircle, false, 3)
 	local function stroke(d, p, n, height, thickness)
 		if d % n == 0 then
 			local a = ui.pointOnClock(center, reticuleCircleRadius, 2.8 * p - 1.4)
@@ -118,7 +120,48 @@ local function displayReticuleCompass(center, heading)
 	end
 end
 
-local function drawReticule(center)
+local function displayReticuleDeltaV(center)
+	-- ratio is 1.0 for full, 0.0 for empty
+	local function deltav_gauge(ratio, center, radius, color, thickness)
+		if ratio < 0 then
+			ratio = 0
+		end
+		if ratio > 0 and ratio < 0.001 then
+			ratio = 0.001
+		end
+		if ratio > 1 then
+			ratio = 1
+		end
+		ui.pathArcTo(center, radius + thickness / 2, ui.pi_2 + ui.pi_4, ui.pi_2 + ui.pi_4 + ui.pi_2 * ratio, 64)
+		ui.pathStroke(color, false, thickness)
+	end
+
+	local player = Game.player
+	local offset = 3
+	local thickness = 5
+	
+	local deltav_max = player:GetMaxDeltaV()
+	local deltav_remaining = player:GetRemainingDeltaV()
+	local dvr = deltav_remaining / deltav_max
+	local deltav_maneuver = player:GetManeuverSpeed() or 0
+	local dvm = deltav_maneuver / deltav_max
+	local deltav_current = player:GetCurrentDeltaV()
+	local dvc = deltav_current / deltav_max
+
+	deltav_gauge(1.0, center, reticuleCircleRadius + offset, colors.deltaVTotal, thickness)
+	if dvr > 0 then
+	  deltav_gauge(dvr, center, reticuleCircleRadius + offset, colors.deltaVRemaining, thickness)
+	end
+	if dvm > 0 then
+	  deltav_gauge(dvm, center, reticuleCircleRadius + offset + thickness / 4, colors.deltaVManeuver, thickness / 2)
+	end
+	if dvc > 0 then
+	  deltav_gauge(dvc, center, reticuleCircleRadius + offset + thickness, colors.deltaVCurrent, thickness)
+	end
+
+end
+
+local function displayReticule(center)
 	local player = Game.player
 	-- reticule circle
 	ui.addCircle(center, reticuleCircleRadius, colors.reticuleCircle, ui.circleSegments(reticuleCircleRadius), reticuleCircleThickness)
@@ -183,8 +226,14 @@ local function drawReticule(center)
 		displayReticulePitch(center, pitch_degrees)
 		displayReticuleHorizon(center, roll_degrees)
 		displayReticuleCompass(center, heading_degrees)
+		displayReticuleDeltaV(center)
 	end
 end
+
+local function displayHyperspace()
+	-- TODO implement :)
+end
+
 ui.registerHandler(
 	'game',
 	function(delta_t)
@@ -193,7 +242,13 @@ ui.registerHandler(
 		ui.withStyleColors({ ["WindowBg"] = colors.transparent }, function()
 				ui.window("HUD", {"NoTitleBar", "NoResize", "NoMove", "NoInputs", "NoSavedSettings", "NoFocusOnAppearing", "NoBringToFrontOnFocus"}, function()
 										local center = Vector(ui.screenWidth / 2, ui.screenHeight / 2)
-										drawReticule(center)
+										if Game.CurrentView() == "world" then
+											if Game.InHyperspace() then
+												displayHyperspace()
+											else
+												displayReticule(center)
+											end
+										end
 				end)
 		end)
 end)

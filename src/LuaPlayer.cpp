@@ -10,6 +10,7 @@
 #include "SectorView.h"
 #include "EnumStrings.h"
 #include "galaxy/Galaxy.h"
+#include "SystemView.h" // for the transfer planner
 
 /*
  * Class: Player
@@ -208,8 +209,56 @@ static int l_set_hyperspace_target(lua_State *l)
 		return luaL_error(l, "Player:SetHyperspaceTarget() cannot be used while in hyperspace");
 }
 
+static int l_get_max_delta_v(lua_State *l)
+{
+	Player *player = LuaObject<Player>::CheckFromLua(1);
+	const ShipType *st = player->GetShipType();
+	LuaPush(l, st->effectiveExhaustVelocity * log((double(player->GetStats().static_mass + st->fuelTankMass)) / (player->GetStats().static_mass)));
+	return 1;
+}
+
+static int l_get_current_delta_v(lua_State *l)
+{
+	Player *player = LuaObject<Player>::CheckFromLua(1);
+	LuaPush(l, player->GetVelocityRelTo(player->GetFrame()).Length());
+	return 1;
+}
+
+static int l_get_remaining_delta_v(lua_State *l)
+{
+	Player *player = LuaObject<Player>::CheckFromLua(1);
+	const double fuelmass = 1000*player->GetShipType()->fuelTankMass * player->GetFuel();
+	double remaining = player->GetShipType()->effectiveExhaustVelocity * log(player->GetMass()/(player->GetMass()-fuelmass));
+
+	LuaPush(l, remaining);
+	return 1;
+}
+
+static int l_get_maneuver_speed(lua_State *l)
+{
+	Player *player = LuaObject<Player>::CheckFromLua(1);
+
+	// see WorldView.cpp:1688
+	if(Pi::planner->GetOffsetVel().ExactlyEqual(vector3d(0,0,0))) {
+		return 0;
+	} else {
+		Orbit playerOrbit = player->ComputeOrbit();
+		const SystemBody* systemBody = player->GetFrame()->GetSystemBody();
+		if(!is_zero_exact(playerOrbit.GetSemiMajorAxis())) {
+			double mass = systemBody->GetMass();
+			// XXX The best solution would be to store the mass(es) on Orbit
+			const vector3d camSpacePlanSpeed = (Pi::planner->GetVel() - playerOrbit.OrbitalVelocityAtTime(mass, playerOrbit.OrbitalTimeAtPos(Pi::planner->GetPosition(), mass))); // * cam_rot
+			double relativeSpeed = camSpacePlanSpeed.Length();
+			lua_pushnumber(l, relativeSpeed);
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+}
+
 static std::map<std::string, ShipType::Thruster> thrusters_map = { { "forward", ShipType::THRUSTER_FORWARD },
-																										{ "reverse", ShipType::THRUSTER_REVERSE } ,
+																   { "reverse", ShipType::THRUSTER_REVERSE } ,
 };
 
 static int l_get_distance_to_zero_v(lua_State *l)
@@ -270,7 +319,11 @@ template <> void LuaObject<Player>::RegisterClass()
 		{ "GetHyperspaceTarget", l_get_hyperspace_target },
 		{ "SetHyperspaceTarget", l_set_hyperspace_target },
 		{ "GetDistanceToZeroV",  l_get_distance_to_zero_v },
-		{ "GetHeadingPitchRoll",     l_get_heading_pitch_roll },
+		{ "GetHeadingPitchRoll", l_get_heading_pitch_roll },
+		{ "GetMaxDeltaV",        l_get_max_delta_v },
+		{ "GetCurrentDeltaV",    l_get_current_delta_v },
+		{ "GetRemainingDeltaV",  l_get_remaining_delta_v },
+		{ "GetManeuverSpeed",    l_get_maneuver_speed },
 		{ 0, 0 }
 	};
 
