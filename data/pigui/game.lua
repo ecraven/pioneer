@@ -21,6 +21,26 @@ local colors = {
 	frame = Color(200, 200, 200),
 }
 
+local function displayReticuleHorizon(center, roll_degrees)
+	local offset = 30
+	local width = 10
+	local height_hrs = 0.1
+	local hrs = roll_degrees / 360 * 12 + 3
+	ui.addLine(ui.pointOnClock(center, reticuleCircleRadius - offset, hrs),
+						 ui.pointOnClock(center, reticuleCircleRadius - offset - width, hrs),
+						 colors.reticuleCircle, 1)
+	ui.addLine(ui.pointOnClock(center, reticuleCircleRadius - offset, hrs),
+						 ui.pointOnClock(center, reticuleCircleRadius - offset, hrs + height_hrs),
+						 colors.reticuleCircle, 1)
+	ui.addLine(ui.pointOnClock(center, reticuleCircleRadius - offset, hrs + 6),
+						 ui.pointOnClock(center, reticuleCircleRadius - offset - width, hrs + 6),
+						 colors.reticuleCircle, 1)
+	ui.addLine(ui.pointOnClock(center, reticuleCircleRadius - offset, hrs + 6),
+						 ui.pointOnClock(center, reticuleCircleRadius - offset, hrs + 6 - height_hrs),
+						 colors.reticuleCircle, 1)
+
+end
+
 local function displayReticuleCompass(center, heading)
 	local relevant = {}
 	local directions = { [0] = "N", [45] = "NE", [90] = "E", [135] = "SE", [180] = "S", [225] = "SW", [270] = "W", [315] = "NW" }
@@ -131,9 +151,10 @@ ui.registerHandler(
 											pitchline(3.75, size, colors.reticuleCircle, 1)
 											pitchline(1.5, size * 2, colors.reticuleCircle, 1)
 											pitchline(4.5, size * 2, colors.reticuleCircle, 1)
-											local heading, pitch = player:GetHeadingPitch("planet")
+											local heading, pitch, roll = player:GetHeadingPitchRoll("planet")
 											local pitch_degrees = (pitch / ui.twoPi * 360)
 											local heading_degrees = (heading / ui.twoPi * 360)
+											local roll_degrees = (roll / ui.twoPi * 360) - 90
 											local xpitch = (pitch_degrees + 90) / 180
 											local xpitch_h = 4.5 - xpitch * 3
 											pitchline(xpitch_h, size * 2, colors.reticuleCircle, 2)
@@ -144,6 +165,9 @@ ui.registerHandler(
 											local uiPos = ui.pointOnClock(center, reticuleCircleRadius - size * 2, 0)
 											ui.addStyledText(uiPos, math.floor(heading_degrees + 0.5) .. "°", colors.reticuleCircle, ui.fonts.pionillium.small, ui.anchor.center, ui.anchor.top, "Current heading")
 
+											local uiPos = ui.pointOnClock(center, reticuleCircleRadius, 6)
+											ui.addStyledText(uiPos, math.floor(roll_degrees + 0.5) .. "°", colors.reticuleCircle, ui.fonts.pionillium.small, ui.anchor.center, ui.anchor.top, "Current roll")
+											displayReticuleHorizon(center, roll_degrees)
 											displayReticuleCompass(center, heading_degrees)
 										end
 				end)
