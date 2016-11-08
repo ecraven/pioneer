@@ -236,21 +236,14 @@ static int l_get_heading_pitch_roll(lua_State *l)
 	
   std::pair<double,double> res = Pi::game->GetWorldView()->CalculateHeadingPitch(pt);
   // player position
-  auto position = player->GetPosition().Normalized();
+  auto position = player->GetPosition();
 
   // ship up vector
-  auto up = (player->GetOrient() * vector3d(0,1,0)).Normalized();
-  auto right = (player->GetOrient() * vector3d(1,0,0)).Normalized();
-  auto forward = (player->GetOrient() * vector3d(0,0,-1)).Normalized();
-  // normal to position / up
-  auto xnormal = position.Cross(up).Normalized();
-  // normal to position through up
-  auto normal = up.Cross(xnormal).Normalized();
-  // project up onto the position plane
-  auto projected = (up - normal * up.Dot(normal)).Normalized();
-  // calculate angle
-  // auto dot = position.Dot(projected);
-  auto dot = right.Dot(position.Cross(forward));
+  auto orient = player->GetOrient();
+  // auto up = orient.VectorY();
+  auto right = orient.VectorX();
+  auto forward = -orient.VectorZ();
+  auto dot = right.Dot(position.Cross(forward).Normalized());
   auto roll = acos(dot);
 
   LuaPush(l, res.first);

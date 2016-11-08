@@ -168,6 +168,7 @@ ui.registerHandler(
 											local uiPos = ui.pointOnClock(center, reticuleCircleRadius, 6)
 											ui.addStyledText(uiPos, math.floor(roll_degrees + 0.5) .. "°", colors.reticuleCircle, ui.fonts.pionillium.small, ui.anchor.center, ui.anchor.top, "Current roll")
 											displayReticuleHorizon(center, roll_degrees)
+											displayReticuleHorizon(center, -roll_degrees)
 											displayReticuleCompass(center, heading_degrees)
 										end
 				end)
