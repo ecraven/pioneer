@@ -119,6 +119,7 @@ local function displayReticuleCompass(center, heading)
 end
 
 local function drawReticule(center)
+	local player = Game.player
 	-- reticule circle
 	ui.addCircle(center, reticuleCircleRadius, colors.reticuleCircle, ui.circleSegments(reticuleCircleRadius), reticuleCircleThickness)
 	-- nav target
@@ -187,7 +188,6 @@ end
 ui.registerHandler(
 	'game',
 	function(delta_t)
-		local player = Game.player
 		ui.setNextWindowPos(Vector(0, 0), "Always")
 		ui.setNextWindowSize(Vector(ui.screenWidth, ui.screenHeight), "Always")
 		ui.withStyleColors({ ["WindowBg"] = colors.transparent }, function()
