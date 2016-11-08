@@ -71,6 +71,27 @@ ui.registerHandler(
 												ui.addStyledText(uiPos, distance .. "" .. unit, colors.navTarget, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.top, "The current altitude above the navigational target")
 											end
 										end
+										-- pitch
+										do
+											local function pitchline(hrs, length, color, thickness)
+												local a = ui.pointOnClock(center, reticuleCircleRadius - 1 - length, hrs)
+												local b = ui.pointOnClock(center, reticuleCircleRadius - 1, hrs)
+												ui.addLine(a, b, color, thickness)
+											end
+											local size = 3
+											pitchline(3, size * 2, colors.reticuleCircle, 1)
+											pitchline(2.25, size, colors.reticuleCircle, 1)
+											pitchline(3.75, size, colors.reticuleCircle, 1)
+											pitchline(1.5, size * 2, colors.reticuleCircle, 1)
+											pitchline(4.5, size * 2, colors.reticuleCircle, 1)
+											local heading, pitch = player:GetHeadingPitch("planet")
+											local xpitch = ((pitch / ui.twoPi * 360) + 90) / 180
+											local xpitch_h = 4.5 - xpitch * 3
+											pitchline(xpitch_h, size * 2, colors.reticuleCircle, 2)
+
+											local uiPos = ui.pointOnClock(center, reticuleCircleRadius - size * 2, 3)
+											ui.addStyledText(uiPos, pitch .. "°", colors.reticuleCircle, ui.fonts.pionillium.small, ui.anchor.right, ui.anchor.center, "Current pitch")
+										end
 				end)
 		end)
 end)

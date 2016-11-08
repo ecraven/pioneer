@@ -257,5 +257,6 @@ ui.text = pigui.Text
 ui.progressBar = pigui.ProgressBar
 ui.calcTextSize = pigui.CalcTextSize
 ui.addCircle = pigui.AddCircle
-
+ui.addLine = pigui.AddLine
+ui.twoPi = two_pi
 return ui
