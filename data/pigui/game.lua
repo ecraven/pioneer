@@ -154,7 +154,7 @@ ui.registerHandler(
 											local heading, pitch, roll = player:GetHeadingPitchRoll("planet")
 											local pitch_degrees = (pitch / ui.twoPi * 360)
 											local heading_degrees = (heading / ui.twoPi * 360)
-											local roll_degrees = (roll / ui.twoPi * 360)
+											local roll_degrees = (roll / ui.twoPi * 360) - 180
 											local xpitch = (pitch_degrees + 90) / 180
 											local xpitch_h = 4.5 - xpitch * 3
 											pitchline(xpitch_h, size * 2, colors.reticuleCircle, 2)
