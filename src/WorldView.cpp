@@ -624,10 +624,10 @@ void WorldView::RefreshHeadingPitch(void) {
 		m_curPlane = ROTATIONAL;
 	}
 	// heading and pitch
-	auto headingPitch = CalculateHeadingPitch(m_curPlane);
+	auto headingPitch = CalculateHeadingPitchRoll(m_curPlane);
 	char buf[6];
-	const double heading_deg = RAD2DEG(headingPitch.first);
-	const double pitch_deg = RAD2DEG(headingPitch.second);
+	const double heading_deg = RAD2DEG(std::get<0>(headingPitch));
+	const double pitch_deg = RAD2DEG(std::get<1>(headingPitch));
 	// \xC2\xB0 is the UTF-8 degree symbol
 	// normal rounding (as performed by printf) is incorrect for the heading
 	// because it rounds x >= 359.5 *up* to 360 without wrapping back to zero.
@@ -2300,7 +2300,7 @@ static double wrapAngleToPositive(const double theta) {
   pitch  0 - level with surface
   pitch 90 - up
 */
-std::pair<double, double> WorldView::CalculateHeadingPitch(PlaneType pt) {
+std::tuple<double, double, double> WorldView::CalculateHeadingPitchRoll(PlaneType pt) {
 	auto frame  = Pi::player->GetFrame();
 
 	if(pt == ROTATIONAL)
@@ -2317,6 +2317,7 @@ std::pair<double, double> WorldView::CalculateHeadingPitch(PlaneType pt) {
 	// find the direction that the ship is facing
 	const auto shpRot = Pi::player->GetOrientRelTo(frame);
 	const vector3d hed = -shpRot.VectorZ();
+	const vector3d right = shpRot.VectorX();
 	const vector3d groundHed = projectVecOntoPlane(hed, up).NormalizedSafe();
 
 	const double pitch = asin(up.Dot(hed));
@@ -2324,8 +2325,10 @@ std::pair<double, double> WorldView::CalculateHeadingPitch(PlaneType pt) {
 	const double hedNorth = groundHed.Dot(north);
 	const double hedEast = groundHed.Dot(east);
 	const double heading = wrapAngleToPositive(atan2(hedEast, hedNorth));
+	const double roll = (acos(right.Dot(up.Cross(hed).Normalized())) - M_PI) * (right.Dot(up) >= 0 ? -1 : 1);
 
-	return std::make_pair(
+	return std::make_tuple(
 		std::isnan(heading) ? 0.0 : heading,
-		std::isnan(pitch) ? 0.0 : pitch);
+		std::isnan(pitch) ? 0.0 : pitch,
+		std::isnan(roll) ? 0.0 : roll);
 }

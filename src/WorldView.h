@@ -71,7 +71,7 @@ public:
 
 	sigc::signal<void> onChangeCamType;
 
-	std::pair<double, double> CalculateHeadingPitch(enum PlaneType);
+	std::tuple<double, double, double> CalculateHeadingPitchRoll(enum PlaneType);
 
 protected:
 	virtual void BuildUI(UI::Single *container);
