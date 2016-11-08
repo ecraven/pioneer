@@ -129,7 +129,7 @@ local function displayReticuleDeltaV(center)
 	local player = Game.player
 	local offset = 3
 	local thickness = 5
-	
+
 	local deltav_max = player:GetMaxDeltaV()
 	local deltav_remaining = player:GetRemainingDeltaV()
 	local dvr = deltav_remaining / deltav_max
@@ -151,29 +151,46 @@ local function displayReticuleDeltaV(center)
 
 end
 
+local reticuleTargetsFrame = true
+
 local function displayReticule(center)
 	local player = Game.player
 	-- reticule circle
 	ui.addCircle(center, reticuleCircleRadius, ui.theme.colors.reticuleCircle, ui.circleSegments(reticuleCircleRadius), reticuleCircleThickness)
 	-- nav target
-	local navTarget = player:GetNavTarget()
-	if navTarget then
-		local radius = reticuleCircleRadius + 10
-		local velocity = player:GetVelocityRelTo(navTarget)
-		local position = player:GetPositionRelTo(navTarget)
+	local target, colorLight, colorDark, frameColor, navTargetColor
+	if reticuleTargetsFrame then
+		target = player.frameBody
+		colorLight = ui.theme.colors.frame
+		colorDark = ui.theme.colors.frameDark
+		frameColor = ui.theme.colors.reticuleCircle
+		navTargetColor = ui.theme.colors.reticuleCircleDark
+	else
+		target = player:GetNavTarget()
+		colorLight = ui.theme.colors.navTarget
+		colorDark = ui.theme.colors.navTargetDark
+		frameColor = ui.theme.colors.reticuleCircleDark
+		navTargetColor = ui.theme.colors.reticuleCircle
+	end
+
+	local radius = reticuleCircleRadius + 10
+
+	if target then
+		local velocity = player:GetVelocityRelTo(target)
+		local position = player:GetPositionRelTo(target)
 
 		local uiPos = ui.pointOnClock(center, radius, 2)
 		-- label of target
-		ui.addStyledText(uiPos, navTarget.label, ui.theme.colors.navTargetDark, ui.fonts.pionillium.small, ui.anchor.left, ui.anchor.baseline, "The current navigational target")
+		ui.addStyledText(uiPos, target.label, colorDark, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.baseline, "The current navigational target")
 
 		-- current distance, relative speed
 		uiPos = ui.pointOnClock(center, radius, 2.5)
-		local distance, distance_unit = ui.Format.Distance(player:DistanceTo(navTarget))
+		local distance, distance_unit = ui.Format.Distance(player:DistanceTo(target))
 		local speed, speed_unit = ui.Format.Speed(velocity:magnitude())
-				
+
 		ui.addFancyText(uiPos,
 										{ distance, distance_unit, " " .. speed, speed_unit },
-										{ ui.theme.colors.navTarget, ui.theme.colors.navTargetDark, ui.theme.colors.navTarget, ui.theme.colors.navTargetDark },
+										{ colorLight, colorDark, colorLight, colorDark },
 										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
 										ui.anchor.left, ui.anchor.baseline,
 										{ "The distance to the navigational target", "The distance to the navigational target", "The speed relative to the navigational target", "The speed relative to the navigational target" })
@@ -183,25 +200,38 @@ local function displayReticule(center)
 		local distance,unit = ui.Format.Distance(player:GetDistanceToZeroV(velocity:magnitude(),"forward"))
 		ui.addFancyText(uiPos,
 										{ "~" .. distance, unit },
-										{ ui.theme.colors.navTargetDark, ui.theme.colors.navTargetDark },
+										{ colorDark, colorDark },
 										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
 										ui.anchor.left, ui.anchor.baseline,
 										{ "The braking distance using the main thrusters.", "The braking distance using the main thrusters." })
 
 		-- current altitude, current speed of approach
 		uiPos = ui.pointOnClock(center, radius, 3.5)
-		local alt = player:GetAltitudeRelTo(navTarget)
+		local alt = player:GetAltitudeRelTo(target)
 		local altitude, altitude_unit = ui.Format.Distance(alt)
 		local proj = position:dot(velocity) / position:magnitude()
 		local speed, speed_unit = ui.Format.Speed(proj)
 		ui.addFancyText(uiPos,
 										{ altitude, altitude_unit, " " .. speed, speed_unit },
-										{ ui.theme.colors.navTarget, ui.theme.colors.navTargetDark, ui.theme.colors.navTarget, ui.theme.colors.navTargetDark },
+										{ colorLight, colorDark, colorLight, colorDark },
 										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
 										ui.anchor.left, ui.anchor.baseline,
 										{ "The altitude above the navigational target", "The altitude above the navigational target", "The speed of approach of the navigational target", "The speed of approach of the navigational target" })
-
+		-- frame / target switch buttons
 	end
+	local uiPos = ui.pointOnClock(center, radius, 4.2)
+	local mouse_position = ui.getMousePos()
+	local size = 24
+	ui.addIcon(uiPos, ui.theme.icons.moon, frameColor, size, ui.anchor.left, ui.anchor.bottom, "Show frame")
+	if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
+		reticuleTargetsFrame = true
+	end
+	uiPos = uiPos + Vector(size,0)
+	ui.addIcon(uiPos, ui.theme.icons.forward, navTargetColor, size, ui.anchor.left, ui.anchor.bottom, "Show nav target")
+	if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
+		reticuleTargetsFrame = false
+	end
+
 	-- heading, pitch and roll
 	do
 		if showNavigationalNumbers then
