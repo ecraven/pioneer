@@ -258,5 +258,10 @@ ui.progressBar = pigui.ProgressBar
 ui.calcTextSize = pigui.CalcTextSize
 ui.addCircle = pigui.AddCircle
 ui.addLine = pigui.AddLine
+ui.pathArcTo = pigui.PathArcTo
+ui.pathStroke = pigui.PathStroke
 ui.twoPi = two_pi
+ui.pi_2 = pi_2
+ui.pi_4 = pi_4
+ui.pi = pi
 return ui
