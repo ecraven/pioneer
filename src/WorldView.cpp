@@ -617,8 +617,6 @@ void WorldView::RefreshHyperspaceButton() {
 		m_hyperspaceButton->Hide();
 }
 
-static std::pair<double, double> calculateHeadingPitch(enum PlaneType);
-
 void WorldView::RefreshHeadingPitch(void) {
 	if(m_curPlane == NONE) {
 		m_hudDockTop->SetInnerWidget(m_headingInfo.Get());
@@ -626,7 +624,7 @@ void WorldView::RefreshHeadingPitch(void) {
 		m_curPlane = ROTATIONAL;
 	}
 	// heading and pitch
-	auto headingPitch = calculateHeadingPitch(m_curPlane);
+	auto headingPitch = CalculateHeadingPitch(m_curPlane);
 	char buf[6];
 	const double heading_deg = RAD2DEG(headingPitch.first);
 	const double pitch_deg = RAD2DEG(headingPitch.second);
@@ -2302,7 +2300,7 @@ static double wrapAngleToPositive(const double theta) {
   pitch  0 - level with surface
   pitch 90 - up
 */
-static std::pair<double, double> calculateHeadingPitch(PlaneType pt) {
+std::pair<double, double> WorldView::CalculateHeadingPitch(PlaneType pt) {
 	auto frame  = Pi::player->GetFrame();
 
 	if(pt == ROTATIONAL)
