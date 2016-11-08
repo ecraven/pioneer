@@ -223,6 +223,24 @@ static int l_get_distance_to_zero_v(lua_State *l)
 	return 1;
 }
 
+static int l_get_heading_pitch(lua_State *l)
+{
+  // 	Player *player = LuaObject<Player>::CheckFromLua(1);
+  // player is unused
+  std::string type = LuaPull<std::string>(l, 2);
+  PlaneType pt = PlaneType::PARENT;
+  if(!type.compare("system-wide")) {
+	pt = PlaneType::PARENT;
+  } else if(!type.compare("planet")) {
+	pt = PlaneType::ROTATIONAL;
+  } // TODO: else error
+	
+  std::pair<double,double> res = Pi::game->GetWorldView()->CalculateHeadingPitch(pt);
+  lua_pushnumber(l, res.first);
+  lua_pushnumber(l, res.second);
+  return 2;
+}
+
 template <> const char *LuaObject<Player>::s_type = "Player";
 
 template <> void LuaObject<Player>::RegisterClass()
@@ -239,6 +257,7 @@ template <> void LuaObject<Player>::RegisterClass()
 		{ "GetHyperspaceTarget", l_get_hyperspace_target },
 		{ "SetHyperspaceTarget", l_set_hyperspace_target },
 		{ "GetDistanceToZeroV",  l_get_distance_to_zero_v },
+		{ "GetHeadingPitch",     l_get_heading_pitch },
 		{ 0, 0 }
 	};
 
