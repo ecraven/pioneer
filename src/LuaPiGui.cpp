@@ -903,6 +903,11 @@ static int l_pigui_radial_menu(lua_State *l) {
 	return 1;
 }
 
+static int l_pigui_should_draw_ui(lua_State *l) {
+	LuaPush(l, Pi::DrawGUI);
+	return 1;
+}
+
 static int l_pigui_is_mouse_hovering_rect(lua_State *l) {
 	ImVec2 r_min = LuaPull<ImVec2>(l, 1);
 	ImVec2 r_max = LuaPull<ImVec2>(l, 2);
@@ -1090,6 +1095,7 @@ template <> void LuaObject<PiGui>::RegisterClass()
 		{ "ProgressBar",            l_pigui_progress_bar },
 		{ "LoadTextureFromSVG",     l_pigui_load_texture_from_svg },
 		{ "DataDirPath",            l_pigui_data_dir_path },
+		{ "ShouldDrawUI",           l_pigui_should_draw_ui },
 		// { "DisableMouseFacing",     l_pigui_disable_mouse_facing },
 		// { "SetMouseButtonState",    l_pigui_set_mouse_button_state },
 		{ 0, 0 }

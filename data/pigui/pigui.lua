@@ -343,6 +343,7 @@ ui.pi = pi
 ui.isMouseClicked = pigui.IsMouseClicked
 ui.getMousePos = pigui.GetMousePos
 ui.setTooltip = pigui.SetTooltip
+ui.shouldDrawUI = pigui.ShouldDrawUI
 
 local defaultTheme = import("themes/default")
 ui.theme = defaultTheme
