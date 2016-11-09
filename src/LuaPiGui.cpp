@@ -554,21 +554,21 @@ static int l_pigui_add_image(lua_State *l) {
 	return 0;
 }
 
-// static int l_pigui_add_image_quad(lua_State *l) {
-// 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
-// 	ImTextureID id = (ImTextureID)LuaPull<int>(l, 1);
-// 	ImVec2 a = LuaPull<ImVec2>(l, 2);
-// 	ImVec2 b = LuaPull<ImVec2>(l, 3);
-// 	ImVec2 c = LuaPull<ImVec2>(l, 4);
-// 	ImVec2 d = LuaPull<ImVec2>(l, 5);
-// 	ImVec2 uva = LuaPull<ImVec2>(l, 6);
-// 	ImVec2 uvb = LuaPull<ImVec2>(l, 7);
-// 	ImVec2 uvc = LuaPull<ImVec2>(l, 8);
-// 	ImVec2 uvd = LuaPull<ImVec2>(l, 9);
-// 	ImColor col = LuaPull<ImColor>(l, 10);
-// 	draw_list->AddImageQuad(id, a, b, c, d, uva, uvb, uvc, uvd, col);
-// 	return 0;
-// }
+static int l_pigui_add_image_quad(lua_State *l) {
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	ImTextureID id = pi_lua_checklightuserdata(l, 1);
+	ImVec2 a = LuaPull<ImVec2>(l, 2);
+	ImVec2 b = LuaPull<ImVec2>(l, 3);
+	ImVec2 c = LuaPull<ImVec2>(l, 4);
+	ImVec2 d = LuaPull<ImVec2>(l, 5);
+	ImVec2 uva = LuaPull<ImVec2>(l, 6);
+	ImVec2 uvb = LuaPull<ImVec2>(l, 7);
+	ImVec2 uvc = LuaPull<ImVec2>(l, 8);
+	ImVec2 uvd = LuaPull<ImVec2>(l, 9);
+	ImColor col = LuaPull<ImColor>(l, 10);
+	draw_list->AddImageQuad(id, a, b, c, d, uva, uvb, uvc, uvd, col);
+	return 0;
+}
 
 static int l_pigui_add_rect_filled(lua_State *l) {
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -1034,7 +1034,7 @@ template <> void LuaObject<PiGui>::RegisterClass()
 		{ "AddRect",                l_pigui_add_rect },
 		{ "AddRectFilled",          l_pigui_add_rect_filled },
 		{ "AddImage",               l_pigui_add_image },
-		//		{ "AddImageQuad",           l_pigui_add_image_quad },
+		{ "AddImageQuad",           l_pigui_add_image_quad },
 		{ "AddBezierCurve",         l_pigui_add_bezier_curve },
 		{ "SetNextWindowPos",       l_pigui_set_next_window_pos },
 		{ "SetNextWindowSize",      l_pigui_set_next_window_size },

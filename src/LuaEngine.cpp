@@ -20,7 +20,9 @@
 #include "KeyBindings.h"
 #include "Lang.h"
 #include "Player.h"
+#include "Game.h"
 #include "scenegraph/Model.h"
+#include "LuaPiGui.h"
 
 /*
  * Interface: Engine
@@ -778,6 +780,14 @@ static int l_engine_set_mouse_y_inverted(lua_State *l)
 	return 0;
 }
 
+static int l_engine_ship_space_to_screen_space(lua_State *l)
+{
+	vector3d pos = LuaPull<vector3d>(l, 1);
+	vector3d cam = Pi::game->GetWorldView()->ShipSpaceToScreenSpace(pos);
+	LuaPush(l, cam);
+	return 1;
+}
+	
 static int l_engine_get_compact_radar(lua_State *l)
 {
 	lua_pushboolean(l, Pi::config->Int("CompactRadar") != 0);
@@ -933,6 +943,7 @@ void LuaEngine::Register()
 
 		{ "GetModel", l_engine_get_model },
 
+		{ "ShipSpaceToScreenSpace", l_engine_ship_space_to_screen_space },
 		{ 0, 0 }
 	};
 

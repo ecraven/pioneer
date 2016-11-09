@@ -1457,8 +1457,14 @@ void Pi::MainLoop()
 		Pi::DrawRenderTarget();
 
 		if(Pi::game && !Pi::player->IsDead()) {
+			if(Pi::GetView() == Pi::game->GetWorldView()) {
+				Pi::game->GetWorldView()->BeginCameraFrame();
+			}
 			PiGui::NewFrame(Pi::renderer->GetWindow()->GetSDLWindow());
 			DrawPiGui(Pi::frameTime);
+			if(Pi::GetView() == Pi::game->GetWorldView()) {
+				Pi::game->GetWorldView()->EndCameraFrame();
+			}
 		}
 
 		Pi::renderer->SwapBuffers();

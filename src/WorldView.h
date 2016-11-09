@@ -73,6 +73,11 @@ public:
 
 	std::tuple<double, double, double> CalculateHeadingPitchRoll(enum PlaneType);
 
+	vector2d ProjectToScreenSpace(Body *body) const;
+	vector3d ShipSpaceToScreenSpace(vector3d pos) const;
+
+	void BeginCameraFrame() { m_cameraContext->BeginFrame(); };
+	void EndCameraFrame() { m_cameraContext->EndFrame(); };
 protected:
 	virtual void BuildUI(UI::Single *container);
 	virtual void OnSwitchTo();
@@ -212,8 +217,6 @@ private:
 	Indicator m_mouseDirIndicator;
 
 	std::unique_ptr<Gui::TexturedQuad> m_indicatorMousedir;
-	std::unique_ptr<Gui::TexturedQuad> m_frontCrosshair;
-	std::unique_ptr<Gui::TexturedQuad> m_rearCrosshair;
 	std::unique_ptr<Gui::TexturedQuad> m_progradeIcon;
 	std::unique_ptr<Gui::TexturedQuad> m_retrogradeIcon;
 	std::unique_ptr<Gui::TexturedQuad> m_burnIcon;
