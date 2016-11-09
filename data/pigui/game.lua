@@ -19,8 +19,8 @@ local showNavigationalNumbers = false
 
 local function displayReticulePitch(center, pitch_degrees)
 	local function pitchline(hrs, length, color, thickness)
-		local a = ui.pointOnClock(center, reticuleCircleRadius - 1 - length, hrs)
-		local b = ui.pointOnClock(center, reticuleCircleRadius - 1, hrs)
+		local a = ui.pointOnClock(center, reticuleCircleRadius + length + 1, hrs)
+		local b = ui.pointOnClock(center, reticuleCircleRadius, hrs)
 		ui.addLine(a, b, color, thickness)
 	end
 	local size = 2
@@ -173,7 +173,7 @@ local function displayReticule(center)
 		navTargetColor = ui.theme.colors.reticuleCircle
 	end
 
-	local radius = reticuleCircleRadius + 10
+	local radius = reticuleCircleRadius * 1.2
 
 	if target then
 		local velocity = player:GetVelocityRelTo(target)
