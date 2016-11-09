@@ -312,7 +312,7 @@ ui.registerHandler(
 		ui.withStyleColors({ ["WindowBg"] = ui.theme.colors.transparent }, function()
 				ui.window("HUD", {"NoTitleBar", "NoResize", "NoMove", "NoInputs", "NoSavedSettings", "NoFocusOnAppearing", "NoBringToFrontOnFocus"}, function()
 										local center = Vector(ui.screenWidth / 2, ui.screenHeight / 2)
-										if Game.CurrentView() == "world" then
+										if Game.CurrentView() == "world" and ui.shouldDrawUI() then
 											if Game.InHyperspace() then
 												displayHyperspace()
 											else
