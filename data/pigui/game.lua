@@ -184,30 +184,68 @@ local function displayReticuleBrakeGauge(center, ratio)
 		gauge(2 - math.min(ratio, 2), center, reticuleCircleRadius + offset, ui.theme.colors.brakeLight, thickness)
 	end
 end
-local reticuleTargetsFrame = true
+local reticuleTarget = "frame"
 
 local function displayReticule(center)
 	local player = Game.player
 	-- reticule circle
 	ui.addCircle(center, reticuleCircleRadius, ui.theme.colors.reticuleCircle, ui.circleSegments(reticuleCircleRadius), reticuleCircleThickness)
 	-- nav target
-	local target, colorLight, colorDark, frameColor, navTargetColor
-	if reticuleTargetsFrame then
-		target = player.frameBody
+	local target, colorLight, colorDark, frameColor, navTargetColor, combatTargetColor
+	local frame = player.frameBody
+	if reticuleTarget == "frame" then
+		target = frame
 		colorLight = ui.theme.colors.frame
 		colorDark = ui.theme.colors.frameDark
 		frameColor = ui.theme.colors.reticuleCircle
 		navTargetColor = ui.theme.colors.reticuleCircleDark
-	else
+		combatTargetColor = ui.theme.colors.reticuleCircleDark
+	elseif reticuleTarget == "navTarget" then
 		target = player:GetNavTarget()
 		colorLight = ui.theme.colors.navTarget
 		colorDark = ui.theme.colors.navTargetDark
 		frameColor = ui.theme.colors.reticuleCircleDark
 		navTargetColor = ui.theme.colors.reticuleCircle
+		combatTargetColor = ui.theme.colors.reticuleCircleDark
+	elseif reticuleTarget == "combatTarget" then
+		target = player:GetCombatTarget()
+		colorLight = ui.theme.colors.combatTarget
+		colorDark = ui.theme.colors.combatTargetDark
+		frameColor = ui.theme.colors.reticuleCircleDark
+		navTargetColor = ui.theme.colors.reticuleCircleDark
+		combatTargetColor = ui.theme.colors.reticuleCircle
 	end
 
 	local radius = reticuleCircleRadius * 1.2
+	if reticuleTarget ~= "frame" and frame then
+		local velocity = player:GetVelocityRelTo(frame)
+		local position = player:GetPositionRelTo(frame)
+		local altitude = player:GetAltitudeRelTo(frame)
+		local altitude, altitude_unit = ui.Format.Distance(altitude)
+		local approach_speed = position:dot(velocity) / position:magnitude()
+		local speed, speed_unit = ui.Format.Speed(approach_speed)
 
+		
+		local uiPos = ui.pointOnClock(center, radius, -2)
+		-- label of frame
+		ui.addStyledText(uiPos, frame.label, ui.theme.colors.frame, ui.fonts.pionillium.medium, ui.anchor.right, ui.anchor.baseline, "The current frame")
+
+		uiPos = ui.pointOnClock(center, radius, -2.5)
+		ui.addFancyText(uiPos,
+										{ altitude, altitude_unit },
+										{ ui.theme.colors.frame, ui.theme.colors.frameDark },
+										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
+										ui.anchor.right, ui.anchor.baseline,
+										{ "The altitude above the frame", "The altitude above the frame" })
+
+		uiPos = ui.pointOnClock(center, radius, -3)
+		ui.addFancyText(uiPos,
+										{ speed, speed_unit },
+										{ ui.theme.colors.frame, ui.theme.colors.frameDark },
+										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
+										ui.anchor.right, ui.anchor.baseline,
+										{ "The speed of approach towards the frame", "The speed of approach towards the frame" })
+	end
 	if target then
 		local velocity = player:GetVelocityRelTo(target)
 		local position = player:GetPositionRelTo(target)
@@ -267,12 +305,17 @@ local function displayReticule(center)
 	local size = 24
 	ui.addIcon(uiPos, ui.theme.icons.moon, frameColor, size, ui.anchor.left, ui.anchor.bottom, "Show frame")
 	if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
-		reticuleTargetsFrame = not reticuleTargetsFrame
+		reticuleTarget = "frame"
 	end
 	uiPos = uiPos + Vector(size,0)
 	ui.addIcon(uiPos, ui.theme.icons.forward, navTargetColor, size, ui.anchor.left, ui.anchor.bottom, "Show nav target")
 	if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
-		reticuleTargetsFrame = not reticuleTargetsFrame
+		reticuleTarget = "navTarget"
+	end
+	uiPos = uiPos + Vector(size,0)
+	ui.addIcon(uiPos, ui.theme.icons.ship, combatTargetColor, size, ui.anchor.left, ui.anchor.bottom, "Show combat target")
+	if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
+		reticuleTarget = "combatTarget"
 	end
 
 	-- heading, pitch and roll
