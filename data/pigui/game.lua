@@ -184,6 +184,37 @@ local function displayReticuleBrakeGauge(center, ratio)
 		gauge(2 - math.min(ratio, 2), center, reticuleCircleRadius + offset, ui.theme.colors.brakeLight, thickness)
 	end
 end
+
+
+local function displayDirectionalMarkers(center)
+	local function displayDirectionalMarker(ship_space, icon, showDirection, angle)
+		local screen = Engine.ShipSpaceToScreenSpace(ship_space)
+		if screen.z <= 1 then
+			ui.addIcon(screen, icon, ui.theme.colors.reticuleCircle, 32, ui.anchor.center, ui.anchor.center, nil, angle)
+		end
+		return showDirection and (screen - center):magnitude() > reticuleCircleRadius
+	end
+	local function angle(forward, adjust)
+		if forward.z >= 1 then
+			return forward:angle() + adjust - ui.pi
+		else
+			return forward:angle() + adjust
+		end
+  end
+	local forward = Engine.ShipSpaceToScreenSpace(Vector(0,0,-1)) - center
+	local showDirection = displayDirectionalMarker(Vector(0,0,-1), ui.theme.icons.forward, true)
+	showDirection = displayDirectionalMarker(Vector(0,0,1), ui.theme.icons.backward, showDirection)
+	showDirection = displayDirectionalMarker(Vector(0,1,0), ui.theme.icons.up, showDirection, angle(forward, ui.pi))
+	showDirection = displayDirectionalMarker(Vector(0,-1,0), ui.theme.icons.down, showDirection, angle(forward, 0))
+	showDirection = displayDirectionalMarker(Vector(1,0,0), ui.theme.icons.right, showDirection)
+	showDirection = displayDirectionalMarker(Vector(-1,0,0), ui.theme.icons.left, showDirection)
+
+	if showDirection then
+		ui.addIcon(center, ui.theme.icons.direction_forward, ui.theme.colors.reticuleCircle, 32, ui.anchor.center, ui.anchor.center, nil, angle(forward, 0))
+	end
+	
+end
+
 local reticuleTarget = "frame"
 
 local function displayReticule(center)
@@ -344,6 +375,8 @@ local function displayReticule(center)
 		displayReticuleHorizon(center, roll_degrees)
 		displayReticuleCompass(center, heading_degrees)
 		displayReticuleDeltaV(center)
+
+		displayDirectionalMarkers(center)
 	end
 end
 
