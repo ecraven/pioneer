@@ -19,8 +19,8 @@ local showNavigationalNumbers = false
 
 local function displayReticulePitch(center, pitch_degrees)
 	local function pitchline(hrs, length, color, thickness)
-		local a = ui.pointOnClock(center, reticuleCircleRadius + length + 1, hrs)
-		local b = ui.pointOnClock(center, reticuleCircleRadius, hrs)
+		local a = ui.pointOnClock(center, reticuleCircleRadius - 1 - length, hrs)
+		local b = ui.pointOnClock(center, reticuleCircleRadius - 1, hrs)
 		ui.addLine(a, b, color, thickness)
 	end
 	local size = 2
@@ -112,7 +112,7 @@ end
 
 local function displayReticuleDeltaV(center)
 	-- ratio is 1.0 for full, 0.0 for empty
-	local function deltav_gauge(ratio, center, radius, color, thickness)
+	local function gauge(ratio, center, radius, color, thickness)
 		if ratio < 0 then
 			ratio = 0
 		end
@@ -138,19 +138,52 @@ local function displayReticuleDeltaV(center)
 	local deltav_current = player:GetCurrentDeltaV()
 	local dvc = deltav_current / deltav_max
 
-	deltav_gauge(1.0, center, reticuleCircleRadius + offset, ui.theme.colors.deltaVTotal, thickness)
+	gauge(1.0, center, reticuleCircleRadius + offset, ui.theme.colors.deltaVTotal, thickness)
 	if dvr > 0 then
-	  deltav_gauge(dvr, center, reticuleCircleRadius + offset, ui.theme.colors.deltaVRemaining, thickness)
+	  gauge(dvr, center, reticuleCircleRadius + offset, ui.theme.colors.deltaVRemaining, thickness)
 	end
 	if dvm > 0 then
-	  deltav_gauge(dvm, center, reticuleCircleRadius + offset + thickness / 4, ui.theme.colors.deltaVManeuver, thickness / 2)
+	  gauge(dvm, center, reticuleCircleRadius + offset + thickness / 4, ui.theme.colors.deltaVManeuver, thickness / 2)
 	end
 	if dvc > 0 then
-	  deltav_gauge(dvc, center, reticuleCircleRadius + offset + thickness, ui.theme.colors.deltaVCurrent, thickness)
+	  gauge(dvc, center, reticuleCircleRadius + offset + thickness, ui.theme.colors.deltaVCurrent, thickness)
 	end
 
 end
 
+local brakeNowRatio = 0.90
+
+local function displayReticuleBrakeGauge(center, ratio)
+	local function gauge(ratio, center, radius, color, thickness)
+		if ratio < 0 then
+			ratio = 0
+		end
+		if ratio > 0 and ratio < 0.001 then
+			ratio = 0.001
+		end
+		if ratio > 1 then
+			ratio = 1
+		end
+		ui.pathArcTo(center, radius + thickness / 2, ui.pi_4, - ui.pi_4 + ui.pi_2 * (1 - ratio), 64)
+		ui.pathStroke(color, false, thickness)
+	end
+	local thickness = 5
+	local offset = 3
+
+	if ratio <= 1 then
+		gauge(1, center, reticuleCircleRadius + offset, ui.theme.colors.brakeBackground, thickness)
+		local color
+		if ratio > brakeNowRatio then
+			color = ui.theme.colors.brakeNow
+		else
+			color = ui.theme.colors.brakeLight
+		end
+		gauge(ratio, center, reticuleCircleRadius + offset, color, thickness)
+	else
+		gauge(1, center, reticuleCircleRadius + offset, ui.theme.colors.brakeOvershoot, thickness)
+		gauge(2 - math.min(ratio, 2), center, reticuleCircleRadius + offset, ui.theme.colors.brakeLight, thickness)
+	end
+end
 local reticuleTargetsFrame = true
 
 local function displayReticule(center)
@@ -196,21 +229,31 @@ local function displayReticule(center)
 										{ "The distance to the navigational target", "The distance to the navigational target", "The speed relative to the navigational target", "The speed relative to the navigational target" })
 
 		-- current brake distance
-		uiPos = ui.pointOnClock(center, radius, 3)
-		local distance,unit = ui.Format.Distance(player:GetDistanceToZeroV(velocity:magnitude(),"forward"))
-		ui.addFancyText(uiPos,
-										{ "~" .. distance, unit },
-										{ colorDark, colorDark },
-										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
-										ui.anchor.left, ui.anchor.baseline,
-										{ "The braking distance using the main thrusters.", "The braking distance using the main thrusters." })
+		local brake_distance = player:GetDistanceToZeroV(velocity:magnitude(),"forward")
+		local altitude = player:GetAltitudeRelTo(target)
+		local ratio = brake_distance / altitude
+		local approach_speed = position:dot(velocity) / position:magnitude()
+		local speed, speed_unit = ui.Format.Speed(approach_speed)
 
+		local ratio_text = math.floor(ratio * 100) .. "%"
+		if ratio > 2 then
+			ratio_text = ">200%"
+		end
+		uiPos = ui.pointOnClock(center, radius, 3)
+		local distance,unit = ui.Format.Distance(brake_distance)
+		ui.addFancyText(uiPos,
+										{ "~" .. distance, unit, approach_speed < 0 and "  " .. ratio_text or "" },
+										{ colorDark, colorDark, colorDark },
+										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium },
+										ui.anchor.left, ui.anchor.baseline,
+										{ "The braking distance using the main thrusters.", "The braking distance using the main thrusters.", "The percentage of brake distance vs. altitude." })
+
+		if approach_speed < 0 then
+			displayReticuleBrakeGauge(center, ratio)
+		end
 		-- current altitude, current speed of approach
 		uiPos = ui.pointOnClock(center, radius, 3.5)
-		local alt = player:GetAltitudeRelTo(target)
-		local altitude, altitude_unit = ui.Format.Distance(alt)
-		local proj = position:dot(velocity) / position:magnitude()
-		local speed, speed_unit = ui.Format.Speed(proj)
+		local altitude, altitude_unit = ui.Format.Distance(altitude)
 		ui.addFancyText(uiPos,
 										{ altitude, altitude_unit, " " .. speed, speed_unit },
 										{ colorLight, colorDark, colorLight, colorDark },
