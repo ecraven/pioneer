@@ -17,6 +17,10 @@ theme.colors = {
 	deltaVManeuver = Color(168, 168, 255),
 	deltaVRemaining = Color(250, 250, 250),
 	deltaVTotal = Color(100, 100, 100, 200),
+	brakeBackground = Color(100, 100, 100, 200),
+	brakeLight = Color(200, 200, 200),
+	brakeNow = Color(150, 200, 150),
+	brakeOvershoot = Color(200, 150, 150),
 }
 
 theme.icons = {
