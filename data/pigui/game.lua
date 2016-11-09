@@ -230,7 +230,8 @@ local function displayReticule(center)
 		-- label of frame
 		ui.addStyledText(uiPos, frame.label, ui.theme.colors.frame, ui.fonts.pionillium.medium, ui.anchor.right, ui.anchor.baseline, "The current frame")
 
-		uiPos = ui.pointOnClock(center, radius, -2.5)
+		-- altitude above frame
+		uiPos = ui.pointOnClock(center, radius, -3)
 		ui.addFancyText(uiPos,
 										{ altitude, altitude_unit },
 										{ ui.theme.colors.frame, ui.theme.colors.frameDark },
@@ -238,7 +239,8 @@ local function displayReticule(center)
 										ui.anchor.right, ui.anchor.baseline,
 										{ "The altitude above the frame", "The altitude above the frame" })
 
-		uiPos = ui.pointOnClock(center, radius, -3)
+		-- speed of approach of frame
+		uiPos = ui.pointOnClock(center, radius, -2.5)
 		ui.addFancyText(uiPos,
 										{ speed, speed_unit },
 										{ ui.theme.colors.frame, ui.theme.colors.frameDark },
@@ -257,27 +259,28 @@ local function displayReticule(center)
 		-- current distance, relative speed
 		uiPos = ui.pointOnClock(center, radius, 2.5)
 		local distance, distance_unit = ui.Format.Distance(player:DistanceTo(target))
-		local speed, speed_unit = ui.Format.Speed(velocity:magnitude())
+		local approach_speed = position:dot(velocity) / position:magnitude()
+		local speed, speed_unit = ui.Format.Speed(approach_speed)
 
 		ui.addFancyText(uiPos,
-										{ distance, distance_unit, " " .. speed, speed_unit },
-										{ colorLight, colorDark, colorLight, colorDark },
-										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
+										{ speed, speed_unit }, -- distance, distance_unit, " " .. 
+										{ colorLight, colorDark }, -- colorLight, colorDark, 
+										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small }, -- ui.fonts.pionillium.medium, ui.fonts.pionillium.small, 
 										ui.anchor.left, ui.anchor.baseline,
-										{ "The distance to the navigational target", "The distance to the navigational target", "The speed relative to the navigational target", "The speed relative to the navigational target" })
+										{ "The speed relative to the navigational target", "The speed relative to the navigational target" }) -- "The distance to the navigational target", "The distance to the navigational target", 
 
 		-- current brake distance
 		local brake_distance = player:GetDistanceToZeroV(velocity:magnitude(),"forward")
 		local altitude = player:GetAltitudeRelTo(target)
 		local ratio = brake_distance / altitude
-		local approach_speed = position:dot(velocity) / position:magnitude()
-		local speed, speed_unit = ui.Format.Speed(approach_speed)
+		local speed, speed_unit = ui.Format.Speed(velocity:magnitude())
 
 		local ratio_text = math.floor(ratio * 100) .. "%"
 		if ratio > 2 then
 			ratio_text = ">200%"
 		end
-		uiPos = ui.pointOnClock(center, radius, 3)
+		-- speed
+		uiPos = ui.pointOnClock(center, radius, 3.5)
 		local distance,unit = ui.Format.Distance(brake_distance)
 		ui.addFancyText(uiPos,
 										{ "~" .. distance, unit, approach_speed < 0 and "  " .. ratio_text or "" },
@@ -285,12 +288,8 @@ local function displayReticule(center)
 										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium },
 										ui.anchor.left, ui.anchor.baseline,
 										{ "The braking distance using the main thrusters.", "The braking distance using the main thrusters.", "The percentage of brake distance vs. altitude." })
-
-		if approach_speed < 0 then
-			displayReticuleBrakeGauge(center, ratio)
-		end
-		-- current altitude, current speed of approach
-		uiPos = ui.pointOnClock(center, radius, 3.5)
+		-- current altitude
+		uiPos = ui.pointOnClock(center, radius, 3)
 		local altitude, altitude_unit = ui.Format.Distance(altitude)
 		ui.addFancyText(uiPos,
 										{ altitude, altitude_unit, " " .. speed, speed_unit },
@@ -298,8 +297,13 @@ local function displayReticule(center)
 										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
 										ui.anchor.left, ui.anchor.baseline,
 										{ "The altitude above the navigational target", "The altitude above the navigational target", "The speed of approach of the navigational target", "The speed of approach of the navigational target" })
-		-- frame / target switch buttons
+		-- current speed of approach
+		if approach_speed < 0 then
+			displayReticuleBrakeGauge(center, ratio)
+		end
+
 	end
+	-- frame / target switch buttons
 	local uiPos = ui.pointOnClock(center, radius, 4.2)
 	local mouse_position = ui.getMousePos()
 	local size = 24
