@@ -33,6 +33,7 @@ public:
 	void Init(SDL_Window *window);
 
 	void Uninit() {
+		Cleanup();
 		m_handlers.Unref();
 		m_keys.Unref();
 	}
@@ -63,4 +64,5 @@ public:
 private:
 	LuaRef m_handlers;
 	LuaRef m_keys;
+	static std::vector<Graphics::Texture*> m_svg_textures;
 };
