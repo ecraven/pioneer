@@ -1,6 +1,8 @@
 // Copyright © 2008-2016 Pioneer Developers. See AUTHORS.txt for details
 // Licensed under the terms of the GPL v3. See licenses/GPL-3.txt
 
+#include "Pi.h"
+#include "graphics/opengl/TextureGL.h" // nasty, usage of GL is implementation specific
 #include "PiGui.h"
 #include "imgui/imgui_internal.h"
 
@@ -20,6 +22,7 @@ ImFont *PiGui::pionillium30 = nullptr;
 ImFont *PiGui::pionillium36 = nullptr;
 ImFont *PiGui::orbiteer18 = nullptr;
 ImFont *PiGui::orbiteer30 = nullptr;
+std::vector<Graphics::Texture*> PiGui::m_svg_textures;
 
 static int to_keycode(int key) {
 	if(key & SDLK_SCANCODE_MASK) {
@@ -30,22 +33,22 @@ static int to_keycode(int key) {
 
 static std::vector<std::pair<std::string,int>> keycodes
 = { {"left", to_keycode(SDLK_LEFT) },
-	{"right", to_keycode(SDLK_RIGHT)},
-	{"up", to_keycode(SDLK_UP)},
-	{"down", to_keycode(SDLK_DOWN)},
-	{"escape", to_keycode(SDLK_ESCAPE)},
-	{"f1", to_keycode(SDLK_F1)},
-	{"f2", to_keycode(SDLK_F2)},
-	{"f3", to_keycode(SDLK_F3)},
-	{"f4", to_keycode(SDLK_F4)},
-	{"f5", to_keycode(SDLK_F5)},
-	{"f6", to_keycode(SDLK_F6)},
-	{"f7", to_keycode(SDLK_F7)},
-	{"f8", to_keycode(SDLK_F8)},
-	{"f9", to_keycode(SDLK_F9)},
-	{"f10", to_keycode(SDLK_F10)},
-	{"f11", to_keycode(SDLK_F11)},
-	{"f12", to_keycode(SDLK_F12)}
+		{"right", to_keycode(SDLK_RIGHT)},
+		{"up", to_keycode(SDLK_UP)},
+		{"down", to_keycode(SDLK_DOWN)},
+		{"escape", to_keycode(SDLK_ESCAPE)},
+		{"f1", to_keycode(SDLK_F1)},
+		{"f2", to_keycode(SDLK_F2)},
+		{"f3", to_keycode(SDLK_F3)},
+		{"f4", to_keycode(SDLK_F4)},
+		{"f5", to_keycode(SDLK_F5)},
+		{"f6", to_keycode(SDLK_F6)},
+		{"f7", to_keycode(SDLK_F7)},
+		{"f8", to_keycode(SDLK_F8)},
+		{"f9", to_keycode(SDLK_F9)},
+		{"f10", to_keycode(SDLK_F10)},
+		{"f11", to_keycode(SDLK_F11)},
+		{"f12", to_keycode(SDLK_F12)}
 };
 
 ImTextureID PiGui::RenderSVG(std::string svgFilename, int width, int height) {
@@ -187,8 +190,8 @@ int PiGui::RadialPopupSelectMenu(const ImVec2& center, std::string popup_id, std
 			}
 			ImVec2 text_size = ImVec2(size, size);
 			ImVec2 text_pos = ImVec2(
-									 center.x + cosf((item_inner_ang_min + item_inner_ang_max) * 0.5f) * (RADIUS_MIN + RADIUS_MAX) * 0.5f - text_size.x * 0.5f,
-									 center.y + sinf((item_inner_ang_min + item_inner_ang_max) * 0.5f) * (RADIUS_MIN + RADIUS_MAX) * 0.5f - text_size.y * 0.5f);
+															 center.x + cosf((item_inner_ang_min + item_inner_ang_max) * 0.5f) * (RADIUS_MIN + RADIUS_MAX) * 0.5f - text_size.x * 0.5f,
+															 center.y + sinf((item_inner_ang_min + item_inner_ang_max) * 0.5f) * (RADIUS_MIN + RADIUS_MAX) * 0.5f - text_size.y * 0.5f);
 			draw_list->AddImage(tex_id, text_pos, ImVec2(text_pos.x+size,text_pos.y+size), uvs[item_n].first, uvs[item_n].second); ImGui::SameLine();
 			if (hovered) {
 				item_hovered = item_n;
@@ -222,19 +225,27 @@ bool PiGui::CircularSlider(const ImVec2 &center, float *v, float v_min, float v_
 	return ImGui::SliderBehavior(ImRect(center.x - 17, center.y - 17, center.x + 17, center.y + 17), id, v, v_min, v_max, 1.0, 4);
 }
 
-void *PiGui::makeTexture(unsigned char *pixels, int width, int height) {
-	GLint last_texture;
-	GLuint result;
-	glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
-	glGenTextures(1, &result);
-	glBindTexture(GL_TEXTURE_2D, result);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-	glBindTexture(GL_TEXTURE_2D, last_texture);
-	Output("texture id: %i\n", result);
-	return reinterpret_cast<void*>(result);
+void *PiGui::makeTexture(unsigned char *pixels, int width, int height)
+{
+	// this is not very pretty code and uses the Graphics::TextureGL class directly
+	// Texture descriptor defines the size, type.
+	// Gone for LINEAR_CLAMP here and RGBA like the original code
+	const vector2f texSize(1.0f, 1.0f);
+	const vector2f dataSize(width, height);
+	const Graphics::TextureDescriptor texDesc(Graphics::TEXTURE_RGBA_8888,
+																						dataSize, texSize, Graphics::LINEAR_CLAMP,
+																						false, false, false, 0, Graphics::TEXTURE_2D);
+	// Create the texture, calling it via renderer directly avoids the caching call of TextureBuilder
+	// However interestingly this gets called twice which would have been a WIN for the TextureBuilder :/
+	Graphics::Texture *pTex = Pi::renderer->CreateTexture(texDesc);
+	// Update it with the actual pixels, this is a two step process due to legacy code
+	pTex->Update(pixels, dataSize, Graphics::TEXTURE_RGBA_8888);
+	// nasty bit as I invoke the TextureGL
+	Graphics::TextureGL *pGLTex = reinterpret_cast<Graphics::TextureGL*>(pTex);
+	Uint32 result = pGLTex->GetTexture();
+ 	Output("texture id: %i\n", result);
+	m_svg_textures.push_back( pTex );	// store for cleanup later
+ 	return reinterpret_cast<void*>(result);
 }
 
 void PiGui::NewFrame(SDL_Window *window) {
@@ -247,5 +258,11 @@ void PiGui::Render(double delta, std::string handler) {
 	ScopedTable t(m_handlers);
 	if(t.Get<bool>(handler)) {
 		t.Call<bool>(handler, delta);
+	}
+}
+
+void PiGui::Cleanup() {
+	for(auto tex : m_svg_textures) {
+		delete tex;
 	}
 }
