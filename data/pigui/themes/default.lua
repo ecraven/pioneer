@@ -4,7 +4,7 @@ local theme = {}
 
 theme.colors = {
 	reticuleCircle = Color(200, 200, 200),
-	reticuleCircleDark = Color(120, 120, 120),
+	reticuleCircleDark = Color(150, 150, 150),
 	frame = Color(200, 200, 200),
 	frameDark = Color(120, 120, 120),
 	transparent = Color(0, 0, 0, 0),

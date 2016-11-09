@@ -227,10 +227,8 @@ void WorldView::InitObject()
 	m_hudWeaponTemp = new Gui::MeterBar(100.0f, Lang::WEAPON_TEMP, Color(255,128,0,204));
 	m_hudHullIntegrity = new Gui::MeterBar(100.0f, Lang::HULL_INTEGRITY, Color(255,255,0,204));
 	m_hudShieldIntegrity = new Gui::MeterBar(100.0f, Lang::SHIELD_INTEGRITY, Color(255,255,0,204));
-	m_hudFuelGauge = new Gui::MeterBar(100.f, Lang::FUEL, Color(255, 255, 0, 204));
 	m_hudSensorGaugeStack = new Gui::VBox();
 	m_hudSensorGaugeStack->SetSpacing(2.0f);
-	Add(m_hudFuelGauge, 5.0f, Gui::Screen::GetHeight() - 104.0f);
 	Add(m_hudHullTemp, 5.0f, Gui::Screen::GetHeight() - 144.0f);
 	Add(m_hudWeaponTemp, 5.0f, Gui::Screen::GetHeight() - 184.0f);
 	Add(m_hudSensorGaugeStack, 5.0f, 5.0f);
@@ -652,10 +650,7 @@ void WorldView::RefreshButtonStateAndVisibility()
 		m_pauseText->Hide();
 
 	if (Pi::player->GetFlightState() != Ship::HYPERSPACE) {
-		m_game->GetCpan()->SetOverlayToolTip(ShipCpanel::OVERLAY_TOP_LEFT,     Lang::SHIP_VELOCITY_BY_REFERENCE_OBJECT);
-		m_game->GetCpan()->SetOverlayToolTip(ShipCpanel::OVERLAY_TOP_RIGHT,    Lang::DISTANCE_FROM_SHIP_TO_NAV_TARGET);
 		m_game->GetCpan()->SetOverlayToolTip(ShipCpanel::OVERLAY_BOTTOM_LEFT,  Lang::EXTERNAL_ATMOSPHERIC_PRESSURE);
-		m_game->GetCpan()->SetOverlayToolTip(ShipCpanel::OVERLAY_BOTTOM_RIGHT, Lang::SHIP_ALTITUDE_ABOVE_TERRAIN);
 	}
 
 	if (is_equal_exact(Pi::player->GetWheelState(), 0.0f) && Pi::player->ExtrapolateHullTemperature() > 0.7)
@@ -827,34 +822,6 @@ void WorldView::RefreshButtonStateAndVisibility()
 	}
 
 	else {
-		{
-			std::string str;
-			double _vel = 0;
-			const char *rel_to = 0;
-			const Body *set_speed_target = Pi::player->GetSetSpeedTarget();
-			if (set_speed_target) {
-				rel_to = set_speed_target->GetLabel().c_str();
-				_vel = Pi::player->GetVelocityRelTo(set_speed_target).Length();
-			} else {
-				rel_to = Pi::player->GetFrame()->GetLabel().c_str();
-				_vel = vel.Length();
-			}
-			if (_vel > 1000) {
-				str = stringf(Lang::KM_S_RELATIVE_TO, formatarg("speed", _vel*0.001), formatarg("frame", rel_to));
-			} else {
-				str = stringf(Lang::M_S_RELATIVE_TO, formatarg("speed", _vel), formatarg("frame", rel_to));
-			}
-			m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_TOP_LEFT, str);
-		}
-
-		if (Body *navtarget = Pi::player->GetNavTarget()) {
-			double dist = Pi::player->GetPositionRelTo(navtarget).Length();
-			m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_TOP_RIGHT, stringf(Lang::N_DISTANCE_TO_TARGET,
-				formatarg("distance", format_distance(dist))));
-		}
-		else
-			m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_TOP_RIGHT, "");
-
 		// altitude
 		const Frame* frame = Pi::player->GetFrame();
 		if (frame->GetBody() && frame->GetBody()->IsType(Object::SPACESTATION))
@@ -882,14 +849,6 @@ void WorldView::RefreshButtonStateAndVisibility()
 
 					RefreshHeadingPitch();
 
-					if (altitude < 0) altitude = 0;
-					if (altitude >= 100000.0)
-						m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_BOTTOM_RIGHT, stringf(Lang::ALT_IN_KM, formatarg("altitude", altitude / 1000.0),
-							formatarg("vspeed", vspeed / 1000.0)));
-					else
-						m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_BOTTOM_RIGHT, stringf(Lang::ALT_IN_METRES, formatarg("altitude", altitude),
-							formatarg("vspeed", vspeed)));
-
 					// show lat/long when altitude is shownr
 					const float lat = RAD2DEG(asin(surface_pos.y));
 					const float lon = RAD2DEG(atan2(surface_pos.x, surface_pos.z));
@@ -901,7 +860,6 @@ void WorldView::RefreshButtonStateAndVisibility()
 					m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_4, lon_str);
 				} else {
 					// XXX does this need to be repeated 3 times?
-					m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_BOTTOM_RIGHT, "");
 					m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_1, "");
 					m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_2, "");
 					m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_3, "");
@@ -913,7 +871,6 @@ void WorldView::RefreshButtonStateAndVisibility()
 					}
 				}
 			} else {
-				m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_BOTTOM_RIGHT, "");
 				m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_1, "");
 				m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_2, "");
 				m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_3, "");
@@ -944,7 +901,6 @@ void WorldView::RefreshButtonStateAndVisibility()
 			}
 		} else {
 			m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_BOTTOM_LEFT, "");
-			m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_BOTTOM_RIGHT, "");
 			m_hudHullTemp->Hide();
 			if(m_curPlane != NONE) {
 				m_curPlane = NONE;
@@ -952,8 +908,6 @@ void WorldView::RefreshButtonStateAndVisibility()
 				m_hudDockRight->RemoveInnerWidget();
 			}
 		}
-
-		m_hudFuelGauge->SetValue(Pi::player->GetFuel());
 
 		int hasSensors = 0;
 		Pi::player->Properties().Get("sensor_cap", hasSensors);
@@ -1728,7 +1682,7 @@ void WorldView::UpdateProjectedObjects()
 		// navtarget distance/target square indicator (displayed with navtarget label)
 		double dist = (navtarget->GetTargetIndicatorPosition(cam_frame)
 			- Pi::player->GetPositionRelTo(cam_frame)).Length();
-		m_navTargetIndicator.label->SetText(format_distance(dist).c_str());
+		// ECRAVEN m_navTargetIndicator.label->SetText(format_distance(dist).c_str());
 		UpdateIndicator(m_navTargetIndicator, navtarget->GetTargetIndicatorPosition(cam_frame));
 
 		// velocity relative to navigation target
@@ -1742,7 +1696,7 @@ void WorldView::UpdateProjectedObjects()
 				snprintf(buf, sizeof(buf), "%.2f km/s", navspeed*0.001);
 			else
 				snprintf(buf, sizeof(buf), "%.0f m/s", navspeed);
-			m_navVelIndicator.label->SetText(buf);
+			// ECRAVEN m_navVelIndicator.label->SetText(buf);
 			UpdateIndicator(m_navVelIndicator, camSpaceNavVel);
 			UpdateIndicator(m_retroVelIndicator, -camSpaceNavVel);
 
