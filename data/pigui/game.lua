@@ -217,6 +217,9 @@ end
 
 local reticuleTarget = "frame"
 
+local lastNavTarget = nil
+local lastCombatTarget = nil
+
 local function displayReticule(center)
 	local player = Game.player
 	-- reticule circle
@@ -224,6 +227,17 @@ local function displayReticule(center)
 	-- nav target
 	local target, colorLight, colorDark, frameColor, navTargetColor, combatTargetColor
 	local frame = player.frameBody
+	local navTarget = player:GetNavTarget()
+	local combatTarget = player:GetCombatTarget()
+
+	if lastNavTarget ~= navTarget then
+		reticuleTarget = "navTarget"
+	end
+	lastNavTarget = navTarget
+	if lastCombatTarget ~= combatTarget then
+		reticuleTarget = "combatTarget"
+	end
+	lastCombatTarget = combatTarget
 	if reticuleTarget == "frame" then
 		target = frame
 		colorLight = ui.theme.colors.frame
@@ -232,7 +246,7 @@ local function displayReticule(center)
 		navTargetColor = ui.theme.colors.reticuleCircleDark
 		combatTargetColor = ui.theme.colors.reticuleCircleDark
 	elseif reticuleTarget == "navTarget" then
-		target = player:GetNavTarget()
+		target = navTarget
 		colorLight = ui.theme.colors.navTarget
 		colorDark = ui.theme.colors.navTargetDark
 		frameColor = ui.theme.colors.reticuleCircleDark
@@ -278,6 +292,12 @@ local function displayReticule(center)
 										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
 										ui.anchor.right, ui.anchor.baseline,
 										{ "The speed of approach towards the frame", "The speed of approach towards the frame" })
+	end
+	if navTarget then
+		local position = navTarget:GetProjectedScreenPosition()
+		local dir = (center - position):normalized() * reticuleCircleRadius * 0.95
+		ui.addIcon(position, ui.theme.icons.square, ui.theme.colors.navTarget, 48, ui.anchor.center, ui.anchor.center)
+		ui.addIcon(center + dir, ui.theme.icons.square, ui.theme.colors.navTarget, 16, ui.anchor.center, ui.anchor.center)
 	end
 	if target then
 		local velocity = player:GetVelocityRelTo(target)

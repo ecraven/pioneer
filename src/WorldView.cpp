@@ -2261,20 +2261,19 @@ std::tuple<double, double, double> WorldView::CalculateHeadingPitchRoll(PlaneTyp
 }
 
 // needs to be run inside m_cameraContext->Begin/EndFrame();
-vector2d WorldView::ProjectToScreenSpace(Body *body) const {
+vector3d WorldView::ProjectToScreenSpace(Body *body) const {
 	if (body->IsType(Object::PLAYER) && GetCamType() == CAM_INTERNAL)
-		return vector2d(0, 0);
+		return vector3d(0, 0, 0);
 	const Frame *cam_frame = m_cameraContext->GetCamFrame();
 	const Graphics::Frustum frustum = m_cameraContext->GetFrustum();
+	const float h = Graphics::GetScreenHeight();
+	const float w = Graphics::GetScreenWidth();
 	vector3d pos = body->GetInterpPositionRelTo(cam_frame);
-	if ((pos.z < -1.0)) {
-		if (!frustum.ProjectPoint(pos, pos))
-			return vector2d(0, 0);
-		pos.x *= Graphics::GetScreenWidth();
-		pos.y = Graphics::GetScreenHeight() - pos.y;
-		return vector2d(pos.x, pos.y);
-	}
-	return vector2d(0,0);
+	if (!frustum.ProjectPoint(pos, pos))
+		return vector3d(0, 0, 0);
+	pos.x *= w;
+	pos.y = h - pos.y * h;
+	return pos;
 }
 
 // needs to be run inside m_cameraContext->Begin/EndFrame();
