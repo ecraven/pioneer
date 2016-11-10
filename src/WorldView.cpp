@@ -2279,9 +2279,9 @@ vector2d WorldView::ProjectToScreenSpace(Body *body) const {
 
 // needs to be run inside m_cameraContext->Begin/EndFrame();
 vector3d WorldView::ShipSpaceToScreenSpace(vector3d pos) const {
-	matrix3x3d orient = Pi::player->GetOrient();
+	matrix3x3d orient = Pi::player->GetInterpOrient();
 	const Frame *cam_frame = m_cameraContext->GetCamFrame();
-	matrix3x3d cam_rot = cam_frame->GetOrient();
+	matrix3x3d cam_rot = cam_frame->GetInterpOrient();
 	vector3d camspace = orient * pos * cam_rot;
 	const Graphics::Frustum frustum = m_cameraContext->GetFrustum();
 	vector3d proj;
