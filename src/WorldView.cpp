@@ -2266,14 +2266,18 @@ vector3d WorldView::ProjectToScreenSpace(Body *body) const {
 		return vector3d(0, 0, 0);
 	const Frame *cam_frame = m_cameraContext->GetCamFrame();
 	const Graphics::Frustum frustum = m_cameraContext->GetFrustum();
+	vector3d pos = body->GetInterpPositionRelTo(cam_frame);
 	const float h = Graphics::GetScreenHeight();
 	const float w = Graphics::GetScreenWidth();
-	vector3d pos = body->GetInterpPositionRelTo(cam_frame);
-	if (!frustum.ProjectPoint(pos, pos))
-		return vector3d(0, 0, 0);
-	pos.x *= w;
-	pos.y = h - pos.y * h;
-	return pos;
+	vector3d proj;
+	if (!frustum.ProjectPoint(pos, proj)) {
+		return vector3d(w / 2, h / 2, 0);
+	}
+	proj.x *= w;
+	proj.y = h - proj.y * h;
+	// set z to -1 if in front of camera, 1 else
+	proj.z = pos.z < 0 ? -1 : 1;
+	return proj;
 }
 
 // needs to be run inside m_cameraContext->Begin/EndFrame();
@@ -2286,13 +2290,9 @@ vector3d WorldView::ShipSpaceToScreenSpace(vector3d pos) const {
 	vector3d proj;
 	const float w = Graphics::GetScreenWidth();
 	const float h = Graphics::GetScreenHeight();
-	if(!frustum.ProjectPoint(camspace, proj)) {
-		proj.x = w / 2;
-		proj.y = h / 2;
-		proj.z = 0;
-	} else {
-		proj.x *= w;
-		proj.y = h - proj.y * h;
-	}
+	if(!frustum.ProjectPoint(camspace, proj))
+		return vector3d(w / 2, h / 2, 0);
+	proj.x *= w;
+	proj.y = h - proj.y * h;
 	return proj;
 }
