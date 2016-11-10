@@ -132,8 +132,6 @@ static int l_body_get_altitude_rel_to(lua_State *l)
 	vector3d pos = Pi::player->GetPositionRelTo(other);
 	double center_dist = pos.Length();
 	if(other && other->IsType(Object::TERRAINBODY)) {
-
-
 		const TerrainBody* terrain = static_cast<const TerrainBody*>(other);
 		vector3d surface_pos = pos.Normalized();
 		double radius = 0.0;
@@ -448,14 +446,14 @@ static int l_body_get_projected_screen_position(lua_State *l)
 	const int width = Graphics::GetScreenWidth();
 	const int height = Graphics::GetScreenHeight();
 	vector3d direction = (p - vector3d(width / 2, height / 2, 0)).Normalized();
-	if(vector3d(0,0,0) == p || p.x < 0 || p.y < 0 || p.x > width || p.y > height) {
-		LuaPush(l, false);
-		LuaPush(l, vector3d(0, 0, 0));
-		LuaPush(l, direction);
+	if(vector3d(0,0,0) == p || p.x < 0 || p.y < 0 || p.x > width || p.y > height || p.z > 0) {
+		LuaPush<bool>(l, false);
+		LuaPush<vector3d>(l, vector3d(0, 0, 0));
+		LuaPush<vector3d>(l, direction * (p.z > 0 ? -1 : 1)); // reverse direction if behind camera
 	} else {
-		LuaPush(l, true);
-		LuaPush(l, vector3d(p.x, p.y, 0));
-		LuaPush(l, direction);
+		LuaPush<bool>(l, true);
+		LuaPush<vector3d>(l, vector3d(p.x, p.y, 0));
+		LuaPush<vector3d>(l, direction);
 	}
 	return 3;
 }

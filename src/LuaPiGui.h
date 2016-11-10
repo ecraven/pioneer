@@ -4,6 +4,7 @@
 #ifndef _LUAPIGUI_H
 #define _LUAPIGUI_H
 #include "LuaObject.h"
+#include "LuaPushPull.h"
 
 void pi_lua_generic_push(lua_State *l, const vector3d &v);
 void pi_lua_generic_pull(lua_State *l, int index, vector3d &vector);

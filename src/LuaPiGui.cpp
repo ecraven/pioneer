@@ -211,6 +211,7 @@ void pi_lua_generic_pull(lua_State *l, int index, ImGuiWindowFlags_ &theflags) {
 }
 
 static void pi_lua_pushVector(lua_State *l, double x, double y, double z) {
+	const int n = lua_gettop(l);
 	lua_getfield(l, LUA_REGISTRYINDEX, "Imports");
 	lua_getfield(l, -1, "libs/Vector.lua"); // is there a better way to get at the lua Vector than this?
 	LuaPush<double>(l, x);
@@ -219,6 +220,8 @@ static void pi_lua_pushVector(lua_State *l, double x, double y, double z) {
 	if(lua_pcall(l, 3, 1, 0) != 0) {
 		Error("error running Vector\n");
 	}
+	lua_remove(l, -2);
+	assert(lua_gettop(l) == n + 1);
 }
 
 static void pi_lua_generic_push(lua_State *l, const ImVec2 &v) {
