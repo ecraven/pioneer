@@ -296,15 +296,13 @@ local function displayReticule(center)
 	if navTarget then
 		local onscreen,position,direction = navTarget:GetProjectedScreenPosition()
 		local dir = direction * reticuleCircleRadius * 0.90
-		print("********************")
-		utils.print_r(onscreen)
-		utils.print_r(position)
---		utils.print_r(direction)
-		-- print("position: " .. position.x .. "/" .. position.y .. "/" .. position.z)
+		local indicator = center + dir
 		if onscreen then
 			ui.addIcon(position, ui.theme.icons.square, ui.theme.colors.navTarget, 48, ui.anchor.center, ui.anchor.center)
 		end
-		ui.addIcon(center + dir, ui.theme.icons.square, ui.theme.colors.navTarget, 12, ui.anchor.center, ui.anchor.center)
+		if (position - indicator):magnitude() > reticuleCircleRadius then
+			ui.addIcon(indicator, ui.theme.icons.square, ui.theme.colors.navTarget, 12, ui.anchor.center, ui.anchor.center)
+		end
 	end
 	if target then
 		local velocity = player:GetVelocityRelTo(target)
