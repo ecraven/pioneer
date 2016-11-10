@@ -444,11 +444,11 @@ static int l_body_get_projected_screen_position(lua_State *l)
 {
 	Body *b = LuaObject<Body>::CheckFromLua(1);
 	WorldView *wv = Pi::game->GetWorldView();
-	vector2d p = wv->ProjectToScreenSpace(b);
+	vector3d p = wv->ProjectToScreenSpace(b);
 	const int width = Graphics::GetScreenWidth();
 	const int height = Graphics::GetScreenHeight();
-	vector3d direction = (vector3d(p.x, p.y, 0) - vector3d(width / 2, height / 2, 0)).Normalized();
-	if(vector2d(0,0) == p || p.x < 0 || p.y < 0 || p.x > width || p.y > height) {
+	vector3d direction = (p - vector3d(width / 2, height / 2, 0)).Normalized();
+	if(vector3d(0,0,0) == p || p.x < 0 || p.y < 0 || p.x > width || p.y > height) {
 		LuaPush(l, false);
 		LuaPush(l, vector3d(0, 0, 0));
 		LuaPush(l, direction);
