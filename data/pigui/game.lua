@@ -300,7 +300,7 @@ local function displayReticule(center)
 		if onscreen then
 			ui.addIcon(position, ui.theme.icons.square, ui.theme.colors.navTarget, 48, ui.anchor.center, ui.anchor.center)
 		end
-		if (position - indicator):magnitude() > reticuleCircleRadius then
+		if (center - position):magnitude() > reticuleCircleRadius * 1.2 then
 			ui.addIcon(indicator, ui.theme.icons.square, ui.theme.colors.navTarget, 12, ui.anchor.center, ui.anchor.center)
 		end
 	end
