@@ -8,5 +8,6 @@
 
 void pi_lua_generic_push(lua_State *l, const vector3d &v);
 void pi_lua_generic_pull(lua_State *l, int index, vector3d &vector);
+int pushOnScreenPositionDirection(lua_State *l, vector3d position);
 #endif
 

@@ -101,6 +101,11 @@ end
 ui.Format = {
 	Duration = function(duration, elements)
 		-- shown elements items (2 -> wd or dh, 3 -> dhm or hms)
+		local negative = false
+		if duration < 0 then
+			duration = math.abs(duration)
+			negative = true
+		end
 		local seconds = math.floor(duration % 60)
 		local minutes = math.floor(duration / 60 % 60)
 		local hours = math.floor(duration / 60 / 60 % 24)
@@ -150,9 +155,15 @@ ui.Format = {
 				result = result .. seconds .. "s"
 				count = true
 			end
+			if result == "" then
+				result = "0s"
+			end
 			if count then
 				i = i - 1
 			end
+		end
+		if negative then
+			result = "-" .. result
 		end
 		return result
 	end,

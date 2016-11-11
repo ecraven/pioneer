@@ -10,8 +10,7 @@
 #include "SectorView.h"
 #include "EnumStrings.h"
 #include "galaxy/Galaxy.h"
-#include "SystemView.h" // for the transfer planner
-
+#include "LuaPiGui.h"
 /*
  * Class: Player
  *
@@ -234,32 +233,18 @@ static int l_get_remaining_delta_v(lua_State *l)
 	return 1;
 }
 
-static int l_get_maneuver_speed(lua_State *l)
-{
-	Player *player = LuaObject<Player>::CheckFromLua(1);
-
-	// see WorldView.cpp:1688
-	if(Pi::planner->GetOffsetVel().ExactlyEqual(vector3d(0,0,0))) {
-		return 0;
-	} else {
-		Orbit playerOrbit = player->ComputeOrbit();
-		const SystemBody* systemBody = player->GetFrame()->GetSystemBody();
-		if(!is_zero_exact(playerOrbit.GetSemiMajorAxis())) {
-			double mass = systemBody->GetMass();
-			// XXX The best solution would be to store the mass(es) on Orbit
-			const vector3d camSpacePlanSpeed = (Pi::planner->GetVel() - playerOrbit.OrbitalVelocityAtTime(mass, playerOrbit.OrbitalTimeAtPos(Pi::planner->GetPosition(), mass))); // * cam_rot
-			double relativeSpeed = camSpacePlanSpeed.Length();
-			lua_pushnumber(l, relativeSpeed);
-			return 1;
-		} else {
-			return 0;
-		}
-	}
-}
-
 static std::map<std::string, ShipType::Thruster> thrusters_map = { { "forward", ShipType::THRUSTER_FORWARD },
 																   { "reverse", ShipType::THRUSTER_REVERSE } ,
 };
+
+static int l_get_acceleration(lua_State *l)
+{
+	Player *player = LuaObject<Player>::CheckFromLua(1);
+	std::string thruster = LuaPull<std::string>(l, 2);
+	double acceleration = player->GetAccel(thrusters_map.at(thruster));
+	LuaPush(l, acceleration);
+	return 1;
+}
 
 static int l_get_distance_to_zero_v(lua_State *l)
 {
@@ -272,31 +257,33 @@ static int l_get_distance_to_zero_v(lua_State *l)
 	return 1;
 }
 
+static int l_get_maneuver_time(lua_State *l)
+{
+	Player *player = LuaObject<Player>::CheckFromLua(1);
+	LuaPush(l, player->GetManeuverTime());
+	return 1;
+}
+
+static int l_get_maneuver_velocity(lua_State *l)
+{
+	Player *player = LuaObject<Player>::CheckFromLua(1);
+	vector3d pos = player->GetManeuverVelocity();
+	LuaPush(l, pos);
+	return 1;
+}
+
 static int l_get_heading_pitch_roll(lua_State *l)
 {
   //  Player *player = LuaObject<Player>::CheckFromLua(1);
   std::string type = LuaPull<std::string>(l, 2);
   PlaneType pt = PlaneType::PARENT;
   if(!type.compare("system-wide")) {
-	pt = PlaneType::PARENT;
+		pt = PlaneType::PARENT;
   } else if(!type.compare("planet")) {
-	pt = PlaneType::ROTATIONAL;
+		pt = PlaneType::ROTATIONAL;
   } // TODO: else error
 	
   std::tuple<double,double,double> res = Pi::game->GetWorldView()->CalculateHeadingPitchRoll(pt);
-  // // player position
-  // auto position = player->GetPosition();
-
-  // // ship up vector
-  // auto orient = player->GetOrient();
-  // // auto up = orient.VectorY();
-  // auto right = orient.VectorX();
-  // auto forward = -orient.VectorZ();
-
-  // auto dot = right.Dot(position.Cross(forward).Normalized());
-  // auto roll = acos(dot) - M_PI;
-  // if(right.Dot(position) >= 0)
-  // 	roll = -roll;
   LuaPush(l, std::get<0>(res));
   LuaPush(l, std::get<1>(res));
   LuaPush(l, std::get<2>(res));
@@ -323,7 +310,9 @@ template <> void LuaObject<Player>::RegisterClass()
 		{ "GetMaxDeltaV",        l_get_max_delta_v },
 		{ "GetCurrentDeltaV",    l_get_current_delta_v },
 		{ "GetRemainingDeltaV",  l_get_remaining_delta_v },
-		{ "GetManeuverSpeed",    l_get_maneuver_speed },
+		{ "GetManeuverVelocity", l_get_maneuver_velocity },
+		{ "GetManeuverTime",     l_get_maneuver_time },
+		{ "GetAcceleration",     l_get_acceleration },
 		{ 0, 0 }
 	};
 

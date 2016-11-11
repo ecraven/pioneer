@@ -133,7 +133,7 @@ local function displayReticuleDeltaV(center)
 	local deltav_max = player:GetMaxDeltaV()
 	local deltav_remaining = player:GetRemainingDeltaV()
 	local dvr = deltav_remaining / deltav_max
-	local deltav_maneuver = player:GetManeuverSpeed() or 0
+	local deltav_maneuver = player:GetManeuverVelocity():magnitude()
 	local dvm = deltav_maneuver / deltav_max
 	local deltav_current = player:GetCurrentDeltaV()
 	local dvc = deltav_current / deltav_max
@@ -306,18 +306,40 @@ local function displayReticule(center)
 		end
 	end
 	if navTarget then
-		local onscreen,position,direction = navTarget:GetProjectedScreenPosition()
+		local onscreen,position,direction = navTarget:GetTargetIndicatorScreenPosition()
 		displayIndicator(onscreen, position, direction, ui.theme.icons.square, ui.theme.colors.navTarget, true)
 		local navVelocity = -navTarget:GetVelocityRelTo(player)
-		local onscreen,position,direction = Engine.ProjectToScreenSpace(navVelocity)
-		displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.navTarget, true)
-		local onscreen,position,direction = Engine.ProjectToScreenSpace(-navVelocity)
-		displayIndicator(onscreen, position, direction, ui.theme.icons.retrograde, ui.theme.colors.navTarget, false)
+		if navVelocity:magnitude() > 1 then
+			local onscreen,position,direction = Engine.ProjectToScreenSpace(navVelocity)
+			displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.navTarget, true)
+			local onscreen,position,direction = Engine.ProjectToScreenSpace(-navVelocity)
+			displayIndicator(onscreen, position, direction, ui.theme.icons.retrograde, ui.theme.colors.navTarget, false)
+		end
+	end
+	do
+		local maneuverVelocity = player:GetManeuverVelocity()
+		local maneuverSpeed = maneuverVelocity:magnitude()
+		if maneuverSpeed > 0 then
+			local onscreen,position,direction = Engine.ProjectToScreenSpace(maneuverVelocity)
+			displayIndicator(onscreen, position, direction, ui.theme.icons.bullseye, ui.theme.colors.maneuver, true)
+			uiPos = ui.pointOnClock(center, radius, 6)
+			local speed, speed_unit = ui.Format.Speed(maneuverSpeed)
+			local duration = ui.Format.Duration(player:GetManeuverTime() - Game.time)
+			local acceleration = player:GetAcceleration("forward")
+			local burn_duration = maneuverSpeed / acceleration
+			local burn_time = ui.Format.Duration(burn_duration)
+			ui.addFancyText(uiPos,
+											{ duration, "  " .. speed, speed_unit, "  ~" .. burn_time },
+											{ ui.theme.colors.maneuver, ui.theme.colors.maneuver, ui.theme.colors.maneuverDark, ui.theme.colors.maneuver },
+											{ ui.fonts.pionillium.medium, ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium },
+											ui.anchor.center, ui.anchor.top,
+											{ "The time until the maneuver burn.", "The delta-v for the maneuver burn.", "The delta-v for the maneuver burn.", "The approximate duration of the burn with main thrusters" })
+		end
 	end
 	if frame then
 		local frameVelocity = -frame:GetVelocityRelTo(player)
 		local awayFromFrame = player:GetPositionRelTo(frame) * 1.01
-		if frameVelocity:magnitude() > 0.5 then
+		if frameVelocity:magnitude() > 1 then
 			local onscreen,position,direction = Engine.ProjectToScreenSpace(frameVelocity)
 			displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.frame, true)
 			local onscreen,position,direction = Engine.ProjectToScreenSpace(-frameVelocity)

@@ -67,6 +67,23 @@ void pi_lua_generic_pull(lua_State *l, int index, ImColor &color) {
 	color.Value.w = c.Get<int>("a", 255) * sc;
 }
 
+int pushOnScreenPositionDirection(lua_State *l, vector3d position)
+{
+	const int width = Graphics::GetScreenWidth();
+	const int height = Graphics::GetScreenHeight();
+	vector3d direction = (position - vector3d(width / 2, height / 2, 0)).Normalized();
+	if(vector3d(0,0,0) == position || position.x < 0 || position.y < 0 || position.x > width || position.y > height || position.z > 0) {
+		LuaPush<bool>(l, false);
+		LuaPush<vector3d>(l, vector3d(0, 0, 0));
+		LuaPush<vector3d>(l, direction * (position.z > 0 ? -1 : 1)); // reverse direction if behind camera
+	} else {
+		LuaPush<bool>(l, true);
+		LuaPush<vector3d>(l, vector3d(position.x, position.y, 0));
+		LuaPush<vector3d>(l, direction);
+	}
+	return 3;
+}
+
 static std::map<std::string, ImGuiSelectableFlags_> imguiSelectableFlagsTable
 = {
 	{ "DontClosePopups", ImGuiSelectableFlags_DontClosePopups },
