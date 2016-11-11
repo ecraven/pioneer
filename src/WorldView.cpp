@@ -1982,18 +1982,6 @@ void WorldView::DrawCombatTargetIndicator(const Indicator &target, const Indicat
 	}
 }
 
-void WorldView::DrawTargetSquare(const Indicator &marker, const Color &c)
-{
-	if (marker.side == INDICATOR_HIDDEN) return;
-	if (marker.side != INDICATOR_ONSCREEN)
-		DrawEdgeMarker(marker, c);
-
-	m_targetIcon->Draw(Pi::renderer,
-						vector2f(marker.pos.x - HUD_CROSSHAIR_SIZE,
-								marker.pos.y - HUD_CROSSHAIR_SIZE),
-						vector2f(HUD_CROSSHAIR_SIZE, HUD_CROSSHAIR_SIZE) * 2.0f, c);
-}
-
 void WorldView::DrawVelocityIndicator(const Indicator &marker, VelIconType d, const Color &c)
 {
 	if (marker.side == INDICATOR_HIDDEN) return;
