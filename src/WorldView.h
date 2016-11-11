@@ -211,7 +211,6 @@ private:
 	Indicator m_navVelIndicator;
 	Indicator m_burnIndicator;
 	Indicator m_retroVelIndicator;
-	Indicator m_navTargetIndicator;
 	Indicator m_combatTargetIndicator;
 	Indicator m_targetLeadIndicator;
 	Indicator m_mouseDirIndicator;
