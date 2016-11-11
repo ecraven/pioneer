@@ -256,13 +256,11 @@ void WorldView::InitObject()
 	}
 	Gui::Screen::PopFont();
 
-	m_navVelIndicator.label = (new Gui::Label(""))->Color(0, 255, 0);
 	m_combatTargetIndicator.label = new Gui::Label(""); // colour set dynamically
 	m_targetLeadIndicator.label = new Gui::Label("");
 	m_burnIndicator.label = (new Gui::Label(""))->Color(0, 153, 255);
 
 	// these labels are repositioned during Draw3D()
-	Add(m_navVelIndicator.label, 0, 0);
 	Add(m_combatTargetIndicator.label, 0, 0);
 	Add(m_targetLeadIndicator.label, 0, 0);
 	Add(m_burnIndicator.label, 0, 0);
@@ -1616,16 +1614,6 @@ void WorldView::UpdateProjectedObjects()
 		}
 	}
 
-	// velocity relative to current frame (white)
-	const vector3d camSpaceVel = Pi::player->GetVelocity() * cam_rot;
-	if (camSpaceVel.LengthSqr() >= 1e-4) {
-		UpdateIndicator(m_velIndicator, camSpaceVel);
-		UpdateIndicator(m_retroVelIndicator, -camSpaceVel);
-	} else {
-		HideIndicator(m_velIndicator);
-		HideIndicator(m_retroVelIndicator);
-	}
-
 	const Frame* frame = Pi::player->GetFrame();
 	if(frame->IsRotFrame())
 		frame = frame->GetNonRotFrame();
@@ -1661,37 +1649,6 @@ void WorldView::UpdateProjectedObjects()
 		UpdateIndicator(m_mouseDirIndicator, (Pi::player->GetPhysRadius() * 1.5) * mouseDir);
 	} else
 		HideIndicator(m_mouseDirIndicator);
-
-	// navtarget info
-	if (Body *navtarget = Pi::player->GetNavTarget()) {
-		// if navtarget and body frame are the same,
-		// then we hide the frame-relative velocity indicator
-		// (which would be hidden underneath anyway)
-		if (navtarget == Pi::player->GetFrame()->GetBody())
-			HideIndicator(m_velIndicator);
-
-		// velocity relative to navigation target
-		vector3d navvelocity = -navtarget->GetVelocityRelTo(Pi::player);
-		double navspeed = navvelocity.Length();
-		const vector3d camSpaceNavVel = navvelocity * cam_rot;
-
-		if (navspeed >= 0.01) { // 1 cm per second
-			char buf[128];
-			if (navspeed > 1000)
-				snprintf(buf, sizeof(buf), "%.2f km/s", navspeed*0.001);
-			else
-				snprintf(buf, sizeof(buf), "%.0f m/s", navspeed);
-			// ECRAVEN m_navVelIndicator.label->SetText(buf);
-			UpdateIndicator(m_navVelIndicator, camSpaceNavVel);
-			UpdateIndicator(m_retroVelIndicator, -camSpaceNavVel);
-
-			assert(m_navVelIndicator.side != INDICATOR_HIDDEN);
-		} else
-			HideIndicator(m_navVelIndicator);
-
-	} else {
-		HideIndicator(m_navVelIndicator);
-	}
 
 	// later we might want non-ship enemies (e.g., for assaults on military bases)
 	assert(!Pi::player->GetCombatTarget() || Pi::player->GetCombatTarget()->IsType(Object::SHIP));
@@ -1959,9 +1916,6 @@ void WorldView::Draw()
 	// glLineWidth(1.0f);
 
 	// velocity indicators
-	DrawVelocityIndicator(m_velIndicator, V_PROGRADE, white);
-	DrawVelocityIndicator(m_retroVelIndicator, V_RETROGRADE, retroIconColor);
-	DrawVelocityIndicator(m_navVelIndicator, V_PROGRADE, green);
 	DrawVelocityIndicator(m_burnIndicator, V_BURN, Color::STEELBLUE);
 
 	// glLineWidth(2.0f);
