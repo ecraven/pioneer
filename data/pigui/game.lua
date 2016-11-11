@@ -294,18 +294,25 @@ local function displayReticule(center)
 										{ "The speed of approach towards the frame", "The speed of approach towards the frame" })
 	end
 	local function displayIndicator(onscreen, position, direction, icon, color, showIndicator)
+		local size = 32
+		local iconSize = 10
 		local dir = direction * reticuleCircleRadius * 0.90
 		local indicator = center + dir
 		if onscreen then
-			ui.addIcon(position, icon, color, 48, ui.anchor.center, ui.anchor.center)
+			ui.addIcon(position, icon, color, size, ui.anchor.center, ui.anchor.center)
 		end
 		if showIndicator and (center - position):magnitude() > reticuleCircleRadius * 1.2 then
-			ui.addIcon(indicator, icon, color, 12, ui.anchor.center, ui.anchor.center)
+			ui.addIcon(indicator, icon, color, iconSize, ui.anchor.center, ui.anchor.center)
 		end
 	end
 	if navTarget then
 		local onscreen,position,direction = navTarget:GetProjectedScreenPosition()
 		displayIndicator(onscreen, position, direction, ui.theme.icons.square, ui.theme.colors.navTarget, true)
+		local navVelocity = -navTarget:GetVelocityRelTo(player)
+		local onscreen,position,direction = Engine.ProjectToScreenSpace(navVelocity)
+		displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.navTarget, true)
+		local onscreen,position,direction = Engine.ProjectToScreenSpace(-navVelocity)
+		displayIndicator(onscreen, position, direction, ui.theme.icons.retrograde, ui.theme.colors.navTarget, true)
 	end
 	if target then
 		local velocity = player:GetVelocityRelTo(target)
