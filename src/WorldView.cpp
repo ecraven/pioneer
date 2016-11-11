@@ -2271,6 +2271,25 @@ vector3d WorldView::ProjectToScreenSpace(Body *body) const {
 }
 
 // needs to be run inside m_cameraContext->Begin/EndFrame();
+vector3d WorldView::ProjectToScreenSpace(vector3d position) const {
+	const Frame *cam_frame = m_cameraContext->GetCamFrame();
+	matrix3x3d cam_rot = cam_frame->GetInterpOrient();
+	const Graphics::Frustum frustum = m_cameraContext->GetFrustum();
+	vector3d pos = position * cam_rot;
+	const float h = Graphics::GetScreenHeight();
+	const float w = Graphics::GetScreenWidth();
+	vector3d proj;
+	if (!frustum.ProjectPoint(pos, proj)) {
+		return vector3d(w / 2, h / 2, 0);
+	}
+	proj.x *= w;
+	proj.y = h - proj.y * h;
+	// set z to -1 if in front of camera, 1 else
+	proj.z = pos.z < 0 ? -1 : 1;
+	return proj;
+}
+
+// needs to be run inside m_cameraContext->Begin/EndFrame();
 vector3d WorldView::ShipSpaceToScreenSpace(vector3d pos) const {
 	matrix3x3d orient = Pi::player->GetInterpOrient();
 	const Frame *cam_frame = m_cameraContext->GetCamFrame();

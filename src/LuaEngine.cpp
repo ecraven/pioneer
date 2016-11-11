@@ -787,7 +787,27 @@ static int l_engine_ship_space_to_screen_space(lua_State *l)
 	LuaPush(l, cam);
 	return 1;
 }
-	
+
+static int l_engine_project_to_screen_space(lua_State *l)
+{
+	vector3d pos = LuaPull<vector3d>(l, 1);
+	WorldView *wv = Pi::game->GetWorldView();
+	vector3d p = wv->ProjectToScreenSpace(pos);
+	const int width = Graphics::GetScreenWidth();
+	const int height = Graphics::GetScreenHeight();
+	vector3d direction = (p - vector3d(width / 2, height / 2, 0)).Normalized();
+	if(vector3d(0,0,0) == p || p.x < 0 || p.y < 0 || p.x > width || p.y > height || p.z > 0) {
+		LuaPush<bool>(l, false);
+		LuaPush<vector3d>(l, vector3d(0, 0, 0));
+		LuaPush<vector3d>(l, direction * (p.z > 0 ? -1 : 1)); // reverse direction if behind camera
+	} else {
+		LuaPush<bool>(l, true);
+		LuaPush<vector3d>(l, vector3d(p.x, p.y, 0));
+		LuaPush<vector3d>(l, direction);
+	}
+	return 3;
+}
+
 static int l_engine_get_compact_radar(lua_State *l)
 {
 	lua_pushboolean(l, Pi::config->Int("CompactRadar") != 0);
@@ -944,6 +964,7 @@ void LuaEngine::Register()
 		{ "GetModel", l_engine_get_model },
 
 		{ "ShipSpaceToScreenSpace", l_engine_ship_space_to_screen_space },
+		{ "ProjectToScreenSpace",   l_engine_project_to_screen_space },
 		{ 0, 0 }
 	};
 
