@@ -256,14 +256,12 @@ void WorldView::InitObject()
 	}
 	Gui::Screen::PopFont();
 
-	m_navTargetIndicator.label = (new Gui::Label(""))->Color(0, 255, 0);
 	m_navVelIndicator.label = (new Gui::Label(""))->Color(0, 255, 0);
 	m_combatTargetIndicator.label = new Gui::Label(""); // colour set dynamically
 	m_targetLeadIndicator.label = new Gui::Label("");
 	m_burnIndicator.label = (new Gui::Label(""))->Color(0, 153, 255);
 
 	// these labels are repositioned during Draw3D()
-	Add(m_navTargetIndicator.label, 0, 0);
 	Add(m_navVelIndicator.label, 0, 0);
 	Add(m_combatTargetIndicator.label, 0, 0);
 	Add(m_targetLeadIndicator.label, 0, 0);
@@ -1671,12 +1669,6 @@ void WorldView::UpdateProjectedObjects()
 		if (navtarget == Pi::player->GetFrame()->GetBody())
 			HideIndicator(m_velIndicator);
 
-		// navtarget distance/target square indicator (displayed with navtarget label)
-		double dist = (navtarget->GetTargetIndicatorPosition(cam_frame)
-			- Pi::player->GetPositionRelTo(cam_frame)).Length();
-		// ECRAVEN m_navTargetIndicator.label->SetText(format_distance(dist).c_str());
-		UpdateIndicator(m_navTargetIndicator, navtarget->GetTargetIndicatorPosition(cam_frame));
-
 		// velocity relative to navigation target
 		vector3d navvelocity = -navtarget->GetVelocityRelTo(Pi::player);
 		double navspeed = navvelocity.Length();
@@ -1692,14 +1684,11 @@ void WorldView::UpdateProjectedObjects()
 			UpdateIndicator(m_navVelIndicator, camSpaceNavVel);
 			UpdateIndicator(m_retroVelIndicator, -camSpaceNavVel);
 
-			assert(m_navTargetIndicator.side != INDICATOR_HIDDEN);
 			assert(m_navVelIndicator.side != INDICATOR_HIDDEN);
-			SeparateLabels(m_navTargetIndicator.label, m_navVelIndicator.label);
 		} else
 			HideIndicator(m_navVelIndicator);
 
 	} else {
-		HideIndicator(m_navTargetIndicator);
 		HideIndicator(m_navVelIndicator);
 	}
 
@@ -1966,9 +1955,6 @@ void WorldView::Draw()
 
 	const Color retroIconColor( (Pi::player->GetNavTarget()) ? green : white );
 
-	// nav target square
-	DrawTargetSquare(m_navTargetIndicator, green);
-
 	// glLineWidth(1.0f);
 
 	// velocity indicators
@@ -2139,7 +2125,11 @@ void NavTunnelWidget::Draw() {
 
 		const int maxSquareHeight = std::max(Gui::Screen::GetWidth(), Gui::Screen::GetHeight()) / 2;
 		const double angle = atan(maxSquareHeight / distToDest);
-		const vector2f tpos(m_worldView->m_navTargetIndicator.realpos);
+		// ECRAVEN: TODO
+		m_worldView->BeginCameraFrame();
+		const vector3d nav_screen = m_worldView->ProjectToScreenSpace(navtarget);
+		m_worldView->EndCameraFrame();
+		const vector2f tpos(vector2f(nav_screen.x / Graphics::GetScreenWidth() * Gui::Screen::GetWidth(), nav_screen.y / Graphics::GetScreenHeight() * Gui::Screen::GetHeight()));
 		const vector2f distDiff(tpos - vector2f(Gui::Screen::GetWidth() / 2.0f, Gui::Screen::GetHeight() / 2.0f));
 
 		double dist = 0.0;
