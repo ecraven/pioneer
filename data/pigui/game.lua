@@ -314,6 +314,13 @@ local function displayReticule(center)
 		local onscreen,position,direction = Engine.ProjectToScreenSpace(-navVelocity)
 		displayIndicator(onscreen, position, direction, ui.theme.icons.retrograde, ui.theme.colors.navTarget, true)
 	end
+	if frame then
+		local frameVelocity = -frame:GetVelocityRelTo(player)
+		local onscreen,position,direction = Engine.ProjectToScreenSpace(frameVelocity)
+		displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.frame, true)
+		local onscreen,position,direction = Engine.ProjectToScreenSpace(-frameVelocity)
+		displayIndicator(onscreen, position, direction, ui.theme.icons.retrograde, ui.theme.colors.frame, true)
+	end
 	if target then
 		local velocity = player:GetVelocityRelTo(target)
 		local position = player:GetPositionRelTo(target)
