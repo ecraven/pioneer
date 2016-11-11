@@ -258,12 +258,10 @@ void WorldView::InitObject()
 
 	m_combatTargetIndicator.label = new Gui::Label(""); // colour set dynamically
 	m_targetLeadIndicator.label = new Gui::Label("");
-	m_burnIndicator.label = (new Gui::Label(""))->Color(0, 153, 255);
 
 	// these labels are repositioned during Draw3D()
 	Add(m_combatTargetIndicator.label, 0, 0);
 	Add(m_targetLeadIndicator.label, 0, 0);
-	Add(m_burnIndicator.label, 0, 0);
 
 	// XXX m_renderer not set yet
 	Graphics::TextureBuilder b1 = Graphics::TextureBuilder::UI("icons/indicator_mousedir.png");
@@ -271,22 +269,6 @@ void WorldView::InitObject()
 
 	const Graphics::TextureDescriptor &descriptor = b1.GetDescriptor();
 	m_indicatorMousedirSize = vector2f(descriptor.dataSize.x*descriptor.texSize.x,descriptor.dataSize.y*descriptor.texSize.y);
-
-	// prograde icon
-	Graphics::TextureBuilder b4 = Graphics::TextureBuilder::UI("icons/prograde_icon.png");
-	m_progradeIcon.reset(new Gui::TexturedQuad(b4.GetOrCreateTexture(Gui::Screen::GetRenderer(), "ui")));
-
-	// retrograde icon
-	Graphics::TextureBuilder b5 = Graphics::TextureBuilder::UI("icons/retrograde_icon.png");
-	m_retrogradeIcon.reset(new Gui::TexturedQuad(b5.GetOrCreateTexture(Gui::Screen::GetRenderer(), "ui")));
-
-	// burn icon
-	Graphics::TextureBuilder b6 = Graphics::TextureBuilder::UI("icons/burn_icon.png");
-	m_burnIcon.reset(new Gui::TexturedQuad(b6.GetOrCreateTexture(Gui::Screen::GetRenderer(), "ui")));
-
-	// target icon
-	Graphics::TextureBuilder b7 = Graphics::TextureBuilder::UI("icons/target_icon.png");
-	m_targetIcon.reset(new Gui::TexturedQuad(b7.GetOrCreateTexture(Gui::Screen::GetRenderer(), "ui")));
 
 	m_speedLines.reset(new SpeedLines(Pi::player));
 
@@ -1613,33 +1595,6 @@ void WorldView::UpdateProjectedObjects()
 		}
 	}
 
-	const Frame* frame = Pi::player->GetFrame();
-	if(frame->IsRotFrame())
-		frame = frame->GetNonRotFrame();
-	const SystemBody* systemBody = frame->GetSystemBody();
-
-	if(Pi::planner->GetOffsetVel().ExactlyEqual(vector3d(0,0,0))) {
-		HideIndicator(m_burnIndicator);
-	} else if(systemBody) {
-		Orbit playerOrbit = Pi::player->ComputeOrbit();
-		if(!is_zero_exact(playerOrbit.GetSemiMajorAxis())) {
-			double mass = systemBody->GetMass();
-			// XXX The best solution would be to store the mass(es) on Orbit
-			const vector3d camSpacePlanSpeed = (Pi::planner->GetVel() - playerOrbit.OrbitalVelocityAtTime(mass, playerOrbit.OrbitalTimeAtPos(Pi::planner->GetPosition(), mass))) * cam_rot;
-			double relativeSpeed = camSpacePlanSpeed.Length();
-
-			std::stringstream ddV;
-			ddV << std::setprecision(2) << std::fixed;
-			if(relativeSpeed > 1000)
-				ddV << relativeSpeed / 1000. << " km/s";
-			else
-				ddV << relativeSpeed << " m/s";
-			m_burnIndicator.label->SetText(ddV.str());
-			m_burnIndicator.side = INDICATOR_TOP;
-			UpdateIndicator(m_burnIndicator, camSpacePlanSpeed);
-		}
-	}
-
 	// orientation according to mouse
 	if (Pi::player->GetPlayerController()->IsMouseActive()) {
 		vector3d mouseDir = Pi::player->GetPlayerController()->GetMouseDir() * cam_rot;
@@ -1910,12 +1865,7 @@ void WorldView::Draw()
 
 	// glLineWidth(2.0f);
 
-	const Color retroIconColor( (Pi::player->GetNavTarget()) ? green : white );
-
 	// glLineWidth(1.0f);
-
-	// velocity indicators
-	DrawVelocityIndicator(m_burnIndicator, V_BURN, Color::STEELBLUE);
 
 	// glLineWidth(2.0f);
 
@@ -1980,32 +1930,6 @@ void WorldView::DrawCombatTargetIndicator(const Indicator &target, const Indicat
 	} else {
 		DrawEdgeMarker(target, c);
 	}
-}
-
-void WorldView::DrawVelocityIndicator(const Indicator &marker, VelIconType d, const Color &c)
-{
-	if (marker.side == INDICATOR_HIDDEN) return;
-	if (marker.side == INDICATOR_ONSCREEN) {
-		const float posx = marker.pos.x;
-		const float posy = marker.pos.y;
-		const vector2f crosshairSize = vector2f(HUD_CROSSHAIR_SIZE, HUD_CROSSHAIR_SIZE) * 2;
-		const vector2f crosshairPos  = vector2f(posx - HUD_CROSSHAIR_SIZE, posy - HUD_CROSSHAIR_SIZE);
-
-		switch(d) {
-		case V_PROGRADE:
-			m_progradeIcon->Draw(Pi::renderer, crosshairPos, crosshairSize, c);
-			break;
-		case V_RETROGRADE:
-			m_retrogradeIcon->Draw(Pi::renderer, crosshairPos, crosshairSize, c);
-			break;
-		case V_BURN:
-			m_burnIcon->Draw(Pi::renderer, crosshairPos, crosshairSize, c);
-			break;
-		}
-	} else {
-		DrawEdgeMarker(marker, c);
-	}
-
 }
 
 void WorldView::DrawImageIndicator(const Indicator &marker, Gui::TexturedQuad *quad, const Color &c)
@@ -2192,58 +2116,54 @@ std::tuple<double, double, double> WorldView::CalculateHeadingPitchRoll(PlaneTyp
 		std::isnan(roll) ? 0.0 : roll);
 }
 
-// needs to be run inside m_cameraContext->Begin/EndFrame();
+static vector3d projectToScreenSpace(vector3d pos, RefCountedPtr<CameraContext> cameraContext, bool adjustZ = true) {
+	const Graphics::Frustum frustum = cameraContext->GetFrustum();
+	const float h = Graphics::GetScreenHeight();
+	const float w = Graphics::GetScreenWidth();
+	vector3d proj;
+	if (!frustum.ProjectPoint(pos, proj)) {
+		return vector3d(w / 2, h / 2, 0);
+	}
+	proj.x *= w;
+	proj.y = h - proj.y * h;
+	// set z to -1 if in front of camera, 1 else
+	if(adjustZ)
+		proj.z = pos.z < 0 ? -1 : 1;
+	return proj;
+}
+
+// needs to run inside m_cameraContext->Begin/EndFrame();
 vector3d WorldView::ProjectToScreenSpace(Body *body) const {
 	if (body->IsType(Object::PLAYER) && GetCamType() == CAM_INTERNAL)
 		return vector3d(0, 0, 0);
 	const Frame *cam_frame = m_cameraContext->GetCamFrame();
-	const Graphics::Frustum frustum = m_cameraContext->GetFrustum();
 	vector3d pos = body->GetInterpPositionRelTo(cam_frame);
-	const float h = Graphics::GetScreenHeight();
-	const float w = Graphics::GetScreenWidth();
-	vector3d proj;
-	if (!frustum.ProjectPoint(pos, proj)) {
-		return vector3d(w / 2, h / 2, 0);
-	}
-	proj.x *= w;
-	proj.y = h - proj.y * h;
-	// set z to -1 if in front of camera, 1 else
-	proj.z = pos.z < 0 ? -1 : 1;
-	return proj;
+	return projectToScreenSpace(pos, m_cameraContext);
 }
 
-// needs to be run inside m_cameraContext->Begin/EndFrame();
+// needs to run inside m_cameraContext->Begin/EndFrame();
 vector3d WorldView::ProjectToScreenSpace(vector3d position) const {
 	const Frame *cam_frame = m_cameraContext->GetCamFrame();
 	matrix3x3d cam_rot = cam_frame->GetInterpOrient();
-	const Graphics::Frustum frustum = m_cameraContext->GetFrustum();
 	vector3d pos = position * cam_rot;
-	const float h = Graphics::GetScreenHeight();
-	const float w = Graphics::GetScreenWidth();
-	vector3d proj;
-	if (!frustum.ProjectPoint(pos, proj)) {
-		return vector3d(w / 2, h / 2, 0);
-	}
-	proj.x *= w;
-	proj.y = h - proj.y * h;
-	// set z to -1 if in front of camera, 1 else
-	proj.z = pos.z < 0 ? -1 : 1;
-	return proj;
+	return projectToScreenSpace(pos, m_cameraContext);
 }
 
-// needs to be run inside m_cameraContext->Begin/EndFrame();
+// needs to run inside m_cameraContext->Begin/EndFrame();
 vector3d WorldView::ShipSpaceToScreenSpace(vector3d pos) const {
 	matrix3x3d orient = Pi::player->GetInterpOrient();
 	const Frame *cam_frame = m_cameraContext->GetCamFrame();
 	matrix3x3d cam_rot = cam_frame->GetInterpOrient();
 	vector3d camspace = orient * pos * cam_rot;
-	const Graphics::Frustum frustum = m_cameraContext->GetFrustum();
-	vector3d proj;
-	const float w = Graphics::GetScreenWidth();
-	const float h = Graphics::GetScreenHeight();
-	if(!frustum.ProjectPoint(camspace, proj))
-		return vector3d(w / 2, h / 2, 0);
-	proj.x *= w;
-	proj.y = h - proj.y * h;
-	return proj;
+	return projectToScreenSpace(camspace, m_cameraContext, false);
 }
+
+// needs to run inside m_cameraContext->Begin/EndFrame();
+vector3d WorldView::GetTargetIndicatorScreenPosition(Body *body) const {
+	if (body->IsType(Object::PLAYER) && GetCamType() == CAM_INTERNAL)
+		return vector3d(0, 0, 0);
+	const Frame *cam_frame = m_cameraContext->GetCamFrame();
+	vector3d pos = body->GetTargetIndicatorPosition(cam_frame);
+	return projectToScreenSpace(pos, m_cameraContext);
+}
+

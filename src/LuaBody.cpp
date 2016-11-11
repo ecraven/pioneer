@@ -443,19 +443,15 @@ static int l_body_get_projected_screen_position(lua_State *l)
 	Body *b = LuaObject<Body>::CheckFromLua(1);
 	WorldView *wv = Pi::game->GetWorldView();
 	vector3d p = wv->ProjectToScreenSpace(b);
-	const int width = Graphics::GetScreenWidth();
-	const int height = Graphics::GetScreenHeight();
-	vector3d direction = (p - vector3d(width / 2, height / 2, 0)).Normalized();
-	if(vector3d(0,0,0) == p || p.x < 0 || p.y < 0 || p.x > width || p.y > height || p.z > 0) {
-		LuaPush<bool>(l, false);
-		LuaPush<vector3d>(l, vector3d(0, 0, 0));
-		LuaPush<vector3d>(l, direction * (p.z > 0 ? -1 : 1)); // reverse direction if behind camera
-	} else {
-		LuaPush<bool>(l, true);
-		LuaPush<vector3d>(l, vector3d(p.x, p.y, 0));
-		LuaPush<vector3d>(l, direction);
-	}
-	return 3;
+	return pushOnScreenPositionDirection(l, p);
+}
+
+static int l_body_get_target_indicator_screen_position(lua_State *l)
+{
+	Body *b = LuaObject<Body>::CheckFromLua(1);
+	WorldView *wv = Pi::game->GetWorldView();
+	vector3d p = wv->GetTargetIndicatorScreenPosition(b);
+	return pushOnScreenPositionDirection(l, p);
 }
 
 static std::string _body_serializer(LuaWrappable *o)
@@ -524,6 +520,7 @@ template <> void LuaObject<Body>::RegisterClass()
 		{ "GetPositionRelTo",  l_body_get_position_rel_to },
 		{ "GetAltitudeRelTo",  l_body_get_altitude_rel_to },
 		{ "GetProjectedScreenPosition", l_body_get_projected_screen_position },
+		{ "GetTargetIndicatorScreenPosition", l_body_get_target_indicator_screen_position },
 		{ 0, 0 }
 	};
 

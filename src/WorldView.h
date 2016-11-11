@@ -76,7 +76,8 @@ public:
 	vector3d ProjectToScreenSpace(Body *body) const;
 	vector3d ProjectToScreenSpace(vector3d position) const;
 	vector3d ShipSpaceToScreenSpace(vector3d position) const;
-
+	vector3d GetTargetIndicatorScreenPosition(Body *body) const;
+		
 	void BeginCameraFrame() { m_cameraContext->BeginFrame(); };
 	void EndCameraFrame() { m_cameraContext->EndFrame(); };
 protected:
@@ -118,7 +119,6 @@ private:
 	void OnToggleLabels();
 
 	void DrawCombatTargetIndicator(const Indicator &target, const Indicator &lead, const Color &c);
-	void DrawVelocityIndicator(const Indicator &marker, VelIconType d, const Color &c);
 	void DrawImageIndicator(const Indicator &marker, Gui::TexturedQuad *quad, const Color &c);
 	void DrawEdgeMarker(const Indicator &marker, const Color &c);
 

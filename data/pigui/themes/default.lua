@@ -23,6 +23,8 @@ theme.colors = {
 	brakeLight = Color(200, 200, 200),
 	brakeNow = Color(150, 200, 150),
 	brakeOvershoot = Color(200, 150, 150),
+	maneuver = Color(200, 150, 200),
+	maneuverDark = Color(160, 50, 160),
 }
 
 theme.icons = {
