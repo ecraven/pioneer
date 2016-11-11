@@ -212,7 +212,7 @@ local function displayDirectionalMarkers(center)
 	if showDirection then
 		ui.addIcon(center, ui.theme.icons.direction_forward, ui.theme.colors.reticuleCircle, 32, ui.anchor.center, ui.anchor.center, nil, angle(forward, 0))
 	end
-	
+
 end
 
 local reticuleTarget = "frame"
@@ -270,7 +270,7 @@ local function displayReticule(center)
 		local approach_speed = position:dot(velocity) / position:magnitude()
 		local speed, speed_unit = ui.Format.Speed(approach_speed)
 
-		
+
 		local uiPos = ui.pointOnClock(center, radius, -2)
 		-- label of frame
 		ui.addStyledText(uiPos, frame.label, ui.theme.colors.frame, ui.fonts.pionillium.medium, ui.anchor.right, ui.anchor.baseline, "The current frame")
@@ -312,14 +312,28 @@ local function displayReticule(center)
 		local onscreen,position,direction = Engine.ProjectToScreenSpace(navVelocity)
 		displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.navTarget, true)
 		local onscreen,position,direction = Engine.ProjectToScreenSpace(-navVelocity)
-		displayIndicator(onscreen, position, direction, ui.theme.icons.retrograde, ui.theme.colors.navTarget, true)
+		displayIndicator(onscreen, position, direction, ui.theme.icons.retrograde, ui.theme.colors.navTarget, false)
 	end
 	if frame then
 		local frameVelocity = -frame:GetVelocityRelTo(player)
-		local onscreen,position,direction = Engine.ProjectToScreenSpace(frameVelocity)
-		displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.frame, true)
-		local onscreen,position,direction = Engine.ProjectToScreenSpace(-frameVelocity)
-		displayIndicator(onscreen, position, direction, ui.theme.icons.retrograde, ui.theme.colors.frame, true)
+		local awayFromFrame = player:GetPositionRelTo(frame) * 1.01
+		if frameVelocity:magnitude() > 0.5 then
+			local onscreen,position,direction = Engine.ProjectToScreenSpace(frameVelocity)
+			displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.frame, true)
+			local onscreen,position,direction = Engine.ProjectToScreenSpace(-frameVelocity)
+			displayIndicator(onscreen, position, direction, ui.theme.icons.retrograde, ui.theme.colors.frame, false)
+		end
+		local onscreen,position,direction = Engine.ProjectToScreenSpace(awayFromFrame)
+		displayIndicator(onscreen, position, direction, ui.theme.icons.frame_away, ui.theme.colors.frame, false)
+	end
+	if combatTarget then
+		-- local velocity = combatTarget:GetVelocityRelTo(player)
+		local pos = combatTarget:GetPositionRelTo(player)
+		-- local onscreen,position,direction = Engine.ProjectToScreenSpace(velocity)
+		-- displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.combatTarget, true)
+		local onscreen,position,direction = Engine.ProjectToScreenSpace(pos)
+		displayIndicator(onscreen, position, direction, ui.theme.icons.square, ui.theme.colors.combatTarget, true)
+
 	end
 	if target then
 		local velocity = player:GetVelocityRelTo(target)
@@ -336,11 +350,11 @@ local function displayReticule(center)
 		local speed, speed_unit = ui.Format.Speed(approach_speed)
 
 		ui.addFancyText(uiPos,
-										{ speed, speed_unit }, -- distance, distance_unit, " " .. 
-										{ colorLight, colorDark }, -- colorLight, colorDark, 
-										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small }, -- ui.fonts.pionillium.medium, ui.fonts.pionillium.small, 
+										{ speed, speed_unit }, -- distance, distance_unit, " " ..
+										{ colorLight, colorDark }, -- colorLight, colorDark,
+										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small }, -- ui.fonts.pionillium.medium, ui.fonts.pionillium.small,
 										ui.anchor.left, ui.anchor.baseline,
-										{ "The speed relative to the navigational target", "The speed relative to the navigational target" }) -- "The distance to the navigational target", "The distance to the navigational target", 
+										{ "The speed relative to the navigational target", "The speed relative to the navigational target" }) -- "The distance to the navigational target", "The distance to the navigational target",
 
 		-- current brake distance
 		local brake_distance = player:GetDistanceToZeroV(velocity:magnitude(),"forward")
