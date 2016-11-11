@@ -215,6 +215,38 @@
       "description" : "",
       "message" : "Communist"
    },
+	 "COMPASS_N" : {
+			 "description" : "Abbreviation for compass direction: North",
+			 "message" : "N"
+	 },
+	 "COMPASS_NE" : {
+			 "description" : "Abbreviation for compass direction: North East",
+			 "message" : "NE"
+	 },
+	 "COMPASS_E" : {
+			 "description" : "Abbreviation for compass direction: East",
+			 "message" : "E"
+	 },
+	 "COMPASS_SE" : {
+			 "description" : "Abbreviation for compass direction: South East",
+			 "message" : "SE"
+	 },
+	 "COMPASS_S" : {
+			 "description" : "Abbreviation for compass direction: South",
+			 "message" : "S"
+	 },
+	 "COMPASS_SW" : {
+			 "description" : "Abbreviation for compass direction: South West",
+			 "message" : "SW"
+	 },
+	 "COMPASS_W" : {
+			 "description" : "Abbreviation for compass direction: West",
+			 "message" : "W"
+	 },
+	 "COMPASS_NW" : {
+			 "description" : "Abbreviation for compass direction: North West",
+			 "message" : "NW"
+	 },
    "COMPUTERS" : {
       "description" : "",
       "message" : "Computers"

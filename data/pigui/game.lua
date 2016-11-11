@@ -66,7 +66,7 @@ end
 
 local function displayReticuleCompass(center, heading)
 	local relevant = {}
-	local directions = { [0] = "N", [45] = "NE", [90] = "E", [135] = "SE", [180] = "S", [225] = "SW", [270] = "W", [315] = "NW" }
+	local directions = { [0] = lc.COMPASS_N, [45] = lc.COMPASS_NE, [90] = lc.COMPASS_E, [135] = lc.COMPASS_SE, [180] = lc.COMPASS_S, [225] = lc.COMPASS_SW, [270] = lc.COMPASS_W, [315] = lc.COMPASS_NW }
 	local function cl(x)
 		if x < 0 then
 			return cl(x + 360)
@@ -273,7 +273,7 @@ local function displayReticule(center)
 
 		local uiPos = ui.pointOnClock(center, radius, -2)
 		-- label of frame
-		ui.addStyledText(uiPos, frame.label, ui.theme.colors.frame, ui.fonts.pionillium.medium, ui.anchor.right, ui.anchor.baseline, "The current frame")
+		ui.addStyledText(uiPos, frame.label, ui.theme.colors.frame, ui.fonts.pionillium.medium, ui.anchor.right, ui.anchor.baseline, lui.HUD_CURRENT_FRAME)
 
 		-- altitude above frame
 		uiPos = ui.pointOnClock(center, radius, -3)
@@ -282,7 +282,7 @@ local function displayReticule(center)
 										{ ui.theme.colors.frame, ui.theme.colors.frameDark },
 										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
 										ui.anchor.right, ui.anchor.baseline,
-										{ "The altitude above the frame", "The altitude above the frame" })
+										{ lui.HUD_DISTANCE_TO_SURFACE_OF_FRAME, lui.HUD_DISTANCE_TO_SURFACE_OF_FRAME })
 
 		-- speed of approach of frame
 		uiPos = ui.pointOnClock(center, radius, -2.5)
@@ -291,7 +291,7 @@ local function displayReticule(center)
 										{ ui.theme.colors.frame, ui.theme.colors.frameDark },
 										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
 										ui.anchor.right, ui.anchor.baseline,
-										{ "The speed of approach towards the frame", "The speed of approach towards the frame" })
+										{ lui.HUD_SPEED_OF_APPROACH_TO_FRAME, lui.HUD_SPEED_OF_APPROACH_TO_FRAME })
 	end
 	local function displayIndicator(onscreen, position, direction, icon, color, showIndicator)
 		local size = 32
@@ -319,7 +319,7 @@ local function displayReticule(center)
 	do
 		local maneuverVelocity = player:GetManeuverVelocity()
 		local maneuverSpeed = maneuverVelocity:magnitude()
-		if maneuverSpeed > 0 then
+		if maneuverSpeed > 0 and not player:IsDocked() or player:IsLanded() then
 			local onscreen,position,direction = Engine.ProjectToScreenSpace(maneuverVelocity)
 			displayIndicator(onscreen, position, direction, ui.theme.icons.bullseye, ui.theme.colors.maneuver, true)
 			uiPos = ui.pointOnClock(center, radius, 6)
@@ -333,7 +333,7 @@ local function displayReticule(center)
 											{ ui.theme.colors.maneuver, ui.theme.colors.maneuver, ui.theme.colors.maneuverDark, ui.theme.colors.maneuver },
 											{ ui.fonts.pionillium.medium, ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium },
 											ui.anchor.center, ui.anchor.top,
-											{ "The time until the maneuver burn.", "The delta-v for the maneuver burn.", "The delta-v for the maneuver burn.", "The approximate duration of the burn with main thrusters" })
+											{ lui.HUD_DURATION_UNTIL_MANEUVER_BURN, lui.HUD_DELTA_V_OF_MANEUVER_BURN, lui.HUD_DELTA_V_OF_MANEUVER_BURN, lui.HUD_DURATION_OF_MANEUVER_BURN })
 		end
 	end
 	if frame then
@@ -363,7 +363,8 @@ local function displayReticule(center)
 
 		local uiPos = ui.pointOnClock(center, radius, 2)
 		-- label of target
-		ui.addStyledText(uiPos, target.label, colorDark, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.baseline, "The current navigational target")
+		local tooltip = reticuleTarget == "combatTarget" and lui.HUD_CURRENT_COMBAT_TARGET or (reticuleTarget == "navTarget" and lui.HUD_CURRENT_NAV_TARGET or lui.HUD_CURRENT_FRAME)
+		ui.addStyledText(uiPos, target.label, colorDark, ui.fonts.pionillium.medium, ui.anchor.left, ui.anchor.baseline, tooltip)
 
 		-- current distance, relative speed
 		uiPos = ui.pointOnClock(center, radius, 2.5)
@@ -372,11 +373,11 @@ local function displayReticule(center)
 		local speed, speed_unit = ui.Format.Speed(approach_speed)
 
 		ui.addFancyText(uiPos,
-										{ speed, speed_unit }, -- distance, distance_unit, " " ..
-										{ colorLight, colorDark }, -- colorLight, colorDark,
-										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small }, -- ui.fonts.pionillium.medium, ui.fonts.pionillium.small,
+										{ speed, speed_unit },
+										{ colorLight, colorDark },
+										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
 										ui.anchor.left, ui.anchor.baseline,
-										{ "The speed relative to the navigational target", "The speed relative to the navigational target" }) -- "The distance to the navigational target", "The distance to the navigational target",
+										{ lui.HUD_SPEED_OF_APPROACH_TO_TARGET, lui.HUD_SPEED_OF_APPROACH_TO_TARGET })
 
 		-- current brake distance
 		local brake_distance = player:GetDistanceToZeroV(velocity:magnitude(),"forward")
@@ -396,7 +397,7 @@ local function displayReticule(center)
 										{ colorDark, colorDark, colorDark },
 										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium },
 										ui.anchor.left, ui.anchor.baseline,
-										{ "The braking distance using the main thrusters.", "The braking distance using the main thrusters.", "The percentage of brake distance vs. altitude." })
+										{ lui.HUD_BRAKE_DISTANCE_MAIN_THRUSTERS, lui.HUD_BRAKE_DISTANCE_MAIN_THRUSTERS, lui.HUD_PERCENTAGE_BRAKE_DISTANCE })
 		-- current altitude
 		uiPos = ui.pointOnClock(center, radius, 3)
 		local altitude, altitude_unit = ui.Format.Distance(altitude)
@@ -405,7 +406,7 @@ local function displayReticule(center)
 										{ colorLight, colorDark, colorLight, colorDark },
 										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
 										ui.anchor.left, ui.anchor.baseline,
-										{ "The altitude above the navigational target", "The altitude above the navigational target", "The speed of approach of the navigational target", "The speed of approach of the navigational target" })
+										{ lui.HUD_DISTANCE_TO_SURFACE_OF_TARGET, lui.HUD_DISTANCE_TO_SURFACE_OF_TARGET, lui.HUD_SPEED_RELATIVE_TO_TARGET, lui.HUD_SPEED_RELATIVE_TO_TARGET })
 		-- current speed of approach
 		if approach_speed < 0 then
 			displayReticuleBrakeGauge(center, ratio)
@@ -416,19 +417,25 @@ local function displayReticule(center)
 	local uiPos = ui.pointOnClock(center, radius, 4.2)
 	local mouse_position = ui.getMousePos()
 	local size = 24
-	ui.addIcon(uiPos, ui.theme.icons.moon, frameColor, size, ui.anchor.left, ui.anchor.bottom, "Show frame")
-	if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
-		reticuleTarget = "frame"
+	if combatTarget or navTarget then
+		ui.addIcon(uiPos, ui.theme.icons.moon, frameColor, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_FRAME)
+		if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
+			reticuleTarget = "frame"
+		end
+		uiPos = uiPos + Vector(size,0)
 	end
-	uiPos = uiPos + Vector(size,0)
-	ui.addIcon(uiPos, ui.theme.icons.forward, navTargetColor, size, ui.anchor.left, ui.anchor.bottom, "Show nav target")
-	if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
-		reticuleTarget = "navTarget"
+	if navTarget then
+		ui.addIcon(uiPos, ui.theme.icons.forward, navTargetColor, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_NAV_TARGET)
+		if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
+			reticuleTarget = "navTarget"
+		end
+		uiPos = uiPos + Vector(size,0)
 	end
-	uiPos = uiPos + Vector(size,0)
-	ui.addIcon(uiPos, ui.theme.icons.ship, combatTargetColor, size, ui.anchor.left, ui.anchor.bottom, "Show combat target")
-	if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
-		reticuleTarget = "combatTarget"
+	if combatTarget then
+		ui.addIcon(uiPos, ui.theme.icons.ship, combatTargetColor, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_COMBAT_TARGET)
+		if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
+			reticuleTarget = "combatTarget"
+		end
 	end
 
 	-- heading, pitch and roll
