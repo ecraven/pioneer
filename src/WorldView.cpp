@@ -263,13 +263,6 @@ void WorldView::InitObject()
 	Add(m_combatTargetIndicator.label, 0, 0);
 	Add(m_targetLeadIndicator.label, 0, 0);
 
-	// XXX m_renderer not set yet
-	Graphics::TextureBuilder b1 = Graphics::TextureBuilder::UI("icons/indicator_mousedir.png");
-	m_indicatorMousedir.reset(new Gui::TexturedQuad(b1.GetOrCreateTexture(Gui::Screen::GetRenderer(), "ui")));
-
-	const Graphics::TextureDescriptor &descriptor = b1.GetDescriptor();
-	m_indicatorMousedirSize = vector2f(descriptor.dataSize.x*descriptor.texSize.x,descriptor.dataSize.y*descriptor.texSize.y);
-
 	m_speedLines.reset(new SpeedLines(Pi::player));
 
 	//get near & far clipping distances
@@ -1861,8 +1854,6 @@ void WorldView::Draw()
 
 	// glLineWidth(2.0f);
 
-	DrawImageIndicator(m_mouseDirIndicator, m_indicatorMousedir.get(), yellow);
-
 	// combat target indicator
 	DrawCombatTargetIndicator(m_combatTargetIndicator, m_targetLeadIndicator, red);
 
@@ -1921,18 +1912,6 @@ void WorldView::DrawCombatTargetIndicator(const Indicator &target, const Indicat
 		m_indicator.Draw(m_renderer, m_blendState);
 	} else {
 		DrawEdgeMarker(target, c);
-	}
-}
-
-void WorldView::DrawImageIndicator(const Indicator &marker, Gui::TexturedQuad *quad, const Color &c)
-{
-	if (marker.side == INDICATOR_HIDDEN) return;
-
-	if (marker.side == INDICATOR_ONSCREEN) {
-		vector2f pos = marker.pos - m_indicatorMousedirSize/2.0f;
-		quad->Draw(Pi::renderer, pos, m_indicatorMousedirSize, c);
-	} else {
-		DrawEdgeMarker(marker, c);
 	}
 }
 

@@ -209,17 +209,8 @@ private:
 	std::unique_ptr<SiderealCameraController> m_siderealCameraController;
 	CameraController *m_activeCameraController; //one of the above
 
-	Indicator m_burnIndicator;
 	Indicator m_combatTargetIndicator;
 	Indicator m_targetLeadIndicator;
-	Indicator m_mouseDirIndicator;
-
-	std::unique_ptr<Gui::TexturedQuad> m_indicatorMousedir;
-	std::unique_ptr<Gui::TexturedQuad> m_progradeIcon;
-	std::unique_ptr<Gui::TexturedQuad> m_retrogradeIcon;
-	std::unique_ptr<Gui::TexturedQuad> m_burnIcon;
-	std::unique_ptr<Gui::TexturedQuad> m_targetIcon;
-	vector2f m_indicatorMousedirSize;
 
 	Graphics::RenderState *m_blendState;
 
