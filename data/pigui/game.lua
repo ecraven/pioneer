@@ -339,7 +339,7 @@ local function displayReticule(center)
 	if frame then
 		local frameVelocity = -frame:GetVelocityRelTo(player)
 		local awayFromFrame = player:GetPositionRelTo(frame) * 1.01
-		if frameVelocity:magnitude() > 1 then
+		if frameVelocity:magnitude() > 1 and frame ~= navTarget then
 			local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(frameVelocity)
 			displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.frame, true)
 			local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(-frameVelocity)
