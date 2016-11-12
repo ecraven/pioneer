@@ -73,11 +73,13 @@ public:
 
 	std::tuple<double, double, double> CalculateHeadingPitchRoll(enum PlaneType);
 
-	vector3d ProjectToScreenSpace(Body *body) const;
-	vector3d ProjectToScreenSpace(vector3d position) const;
+	vector3d WorldSpaceToScreenSpace(Body *body) const;
+	vector3d WorldSpaceToScreenSpace(vector3d position) const;
 	vector3d ShipSpaceToScreenSpace(vector3d position) const;
 	vector3d GetTargetIndicatorScreenPosition(Body *body) const;
-		
+	vector3d GetMouseDirection() const;
+	vector3d CameraSpaceToScreenSpace(vector3d pos) const;
+	
 	void BeginCameraFrame() { m_cameraContext->BeginFrame(); };
 	void EndCameraFrame() { m_cameraContext->EndFrame(); };
 protected:

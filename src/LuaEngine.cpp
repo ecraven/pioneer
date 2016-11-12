@@ -788,11 +788,19 @@ static int l_engine_ship_space_to_screen_space(lua_State *l)
 	return 1;
 }
 
-static int l_engine_project_to_screen_space(lua_State *l)
+static int l_engine_camera_space_to_screen_space(lua_State *l)
+{
+	vector3d pos = LuaPull<vector3d>(l, 1);
+	vector3d cam = Pi::game->GetWorldView()->CameraSpaceToScreenSpace(pos);
+	LuaPush(l, cam);
+	return 1;
+}
+
+static int l_engine_world_space_to_screen_space(lua_State *l)
 {
 	vector3d pos = LuaPull<vector3d>(l, 1);
 	WorldView *wv = Pi::game->GetWorldView();
-	vector3d p = wv->ProjectToScreenSpace(pos);
+	vector3d p = wv->WorldSpaceToScreenSpace(pos);
 	const int width = Graphics::GetScreenWidth();
 	const int height = Graphics::GetScreenHeight();
 	vector3d direction = (p - vector3d(width / 2, height / 2, 0)).Normalized();
@@ -963,8 +971,9 @@ void LuaEngine::Register()
 
 		{ "GetModel", l_engine_get_model },
 
-		{ "ShipSpaceToScreenSpace", l_engine_ship_space_to_screen_space },
-		{ "ProjectToScreenSpace",   l_engine_project_to_screen_space },
+		{ "ShipSpaceToScreenSpace",   l_engine_ship_space_to_screen_space },
+		{ "CameraSpaceToScreenSpace", l_engine_camera_space_to_screen_space },
+		{ "WorldSpaceToScreenSpace",     l_engine_world_space_to_screen_space },
 		{ 0, 0 }
 	};
 

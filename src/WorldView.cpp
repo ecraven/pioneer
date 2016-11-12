@@ -1596,15 +1596,6 @@ void WorldView::UpdateProjectedObjects()
 		}
 	}
 
-	// orientation according to mouse
-	if (Pi::player->GetPlayerController()->IsMouseActive()) {
-		vector3d mouseDir = Pi::player->GetPlayerController()->GetMouseDir() * cam_rot;
-		if (GetCamType() == CAM_INTERNAL && m_internalCameraController->GetMode() == InternalCameraController::MODE_REAR)
-			mouseDir = -mouseDir;
-		UpdateIndicator(m_mouseDirIndicator, (Pi::player->GetPhysRadius() * 1.5) * mouseDir);
-	} else
-		HideIndicator(m_mouseDirIndicator);
-
 	// later we might want non-ship enemies (e.g., for assaults on military bases)
 	assert(!Pi::player->GetCombatTarget() || Pi::player->GetCombatTarget()->IsType(Object::SHIP));
 
@@ -1992,9 +1983,9 @@ void NavTunnelWidget::Draw() {
 
 		const int maxSquareHeight = std::max(Gui::Screen::GetWidth(), Gui::Screen::GetHeight()) / 2;
 		const double angle = atan(maxSquareHeight / distToDest);
-		// ECRAVEN: TODO
+		// ECRAVEN: TODO not the ideal way to handle Begin/EndCameraFrame here :-/
 		m_worldView->BeginCameraFrame();
-		const vector3d nav_screen = m_worldView->ProjectToScreenSpace(navtarget);
+		const vector3d nav_screen = m_worldView->WorldSpaceToScreenSpace(navtarget);
 		m_worldView->EndCameraFrame();
 		const vector2f tpos(vector2f(nav_screen.x / Graphics::GetScreenWidth() * Gui::Screen::GetWidth(), nav_screen.y / Graphics::GetScreenHeight() * Gui::Screen::GetHeight()));
 		const vector2f distDiff(tpos - vector2f(Gui::Screen::GetWidth() / 2.0f, Gui::Screen::GetHeight() / 2.0f));
@@ -2134,7 +2125,7 @@ static vector3d projectToScreenSpace(vector3d pos, RefCountedPtr<CameraContext> 
 }
 
 // needs to run inside m_cameraContext->Begin/EndFrame();
-vector3d WorldView::ProjectToScreenSpace(Body *body) const {
+vector3d WorldView::WorldSpaceToScreenSpace(Body *body) const {
 	if (body->IsType(Object::PLAYER) && GetCamType() == CAM_INTERNAL)
 		return vector3d(0, 0, 0);
 	const Frame *cam_frame = m_cameraContext->GetCamFrame();
@@ -2143,7 +2134,7 @@ vector3d WorldView::ProjectToScreenSpace(Body *body) const {
 }
 
 // needs to run inside m_cameraContext->Begin/EndFrame();
-vector3d WorldView::ProjectToScreenSpace(vector3d position) const {
+vector3d WorldView::WorldSpaceToScreenSpace(vector3d position) const {
 	const Frame *cam_frame = m_cameraContext->GetCamFrame();
 	matrix3x3d cam_rot = cam_frame->GetInterpOrient();
 	vector3d pos = position * cam_rot;
@@ -2160,6 +2151,11 @@ vector3d WorldView::ShipSpaceToScreenSpace(vector3d pos) const {
 }
 
 // needs to run inside m_cameraContext->Begin/EndFrame();
+vector3d WorldView::CameraSpaceToScreenSpace(vector3d pos) const {
+	return projectToScreenSpace(pos, m_cameraContext);
+}
+
+// needs to run inside m_cameraContext->Begin/EndFrame();
 vector3d WorldView::GetTargetIndicatorScreenPosition(Body *body) const {
 	if (body->IsType(Object::PLAYER) && GetCamType() == CAM_INTERNAL)
 		return vector3d(0, 0, 0);
@@ -2168,3 +2164,13 @@ vector3d WorldView::GetTargetIndicatorScreenPosition(Body *body) const {
 	return projectToScreenSpace(pos, m_cameraContext);
 }
 
+// needs to run inside m_cameraContext->Begin/EndFrame();
+vector3d WorldView::GetMouseDirection() const {
+	// orientation according to mouse
+	const Frame *cam_frame = m_cameraContext->GetCamFrame();
+	matrix3x3d cam_rot = cam_frame->GetInterpOrient();
+	vector3d mouseDir = Pi::player->GetPlayerController()->GetMouseDir() * cam_rot;
+	if (GetCamType() == CAM_INTERNAL && m_internalCameraController->GetMode() == InternalCameraController::MODE_REAR)
+		mouseDir = -mouseDir;
+	return (Pi::player->GetPhysRadius() * 1.5) * mouseDir;
+}
