@@ -319,7 +319,7 @@ local function displayReticule(center)
 	do
 		local maneuverVelocity = player:GetManeuverVelocity()
 		local maneuverSpeed = maneuverVelocity:magnitude()
-		if maneuverSpeed > 0 and not player:IsDocked() or player:IsLanded() then
+		if maneuverSpeed > 0 and not (player:IsDocked() or player:IsLanded()) then
 			local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(maneuverVelocity)
 			displayIndicator(onscreen, position, direction, ui.theme.icons.bullseye, ui.theme.colors.maneuver, true)
 			uiPos = ui.pointOnClock(center, radius, 6)
