@@ -25,6 +25,7 @@ theme.colors = {
 	brakeOvershoot = Color(200, 150, 150),
 	maneuver = Color(200, 150, 200),
 	maneuverDark = Color(160, 50, 160),
+	mouseMovementDirection = Color(160, 160, 50),
 }
 
 theme.icons = {

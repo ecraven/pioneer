@@ -360,7 +360,7 @@ local function displayReticule(center)
 	if player:IsMouseActive() then
 		local direction = player:GetMouseDirection()
 		local screen = Engine.CameraSpaceToScreenSpace(direction)
-		ui.addIcon(screen, ui.theme.icons.mouse_move_direction, ui.theme.colors.combatTarget, 32, ui.anchor.center, ui.anchor.center)
+		ui.addIcon(screen, ui.theme.icons.mouse_move_direction, ui.theme.colors.mouseMovementDirection, 32, ui.anchor.center, ui.anchor.center)
 	end
 	if target then
 		local velocity = player:GetVelocityRelTo(target)
