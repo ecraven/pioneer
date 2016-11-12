@@ -193,6 +193,8 @@ theme.icons = {
    factory = 169,
    star = 170,
    -- TODO: manual / autopilot
+	 -- dummy, until actually defined correctly
+	 mouse_move_direction = 14
 }
 
 return theme

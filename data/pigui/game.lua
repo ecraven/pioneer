@@ -310,9 +310,9 @@ local function displayReticule(center)
 		displayIndicator(onscreen, position, direction, ui.theme.icons.square, ui.theme.colors.navTarget, true)
 		local navVelocity = -navTarget:GetVelocityRelTo(player)
 		if navVelocity:magnitude() > 1 then
-			local onscreen,position,direction = Engine.ProjectToScreenSpace(navVelocity)
+			local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(navVelocity)
 			displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.navTarget, true)
-			local onscreen,position,direction = Engine.ProjectToScreenSpace(-navVelocity)
+			local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(-navVelocity)
 			displayIndicator(onscreen, position, direction, ui.theme.icons.retrograde, ui.theme.colors.navTarget, false)
 		end
 	end
@@ -320,7 +320,7 @@ local function displayReticule(center)
 		local maneuverVelocity = player:GetManeuverVelocity()
 		local maneuverSpeed = maneuverVelocity:magnitude()
 		if maneuverSpeed > 0 and not player:IsDocked() or player:IsLanded() then
-			local onscreen,position,direction = Engine.ProjectToScreenSpace(maneuverVelocity)
+			local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(maneuverVelocity)
 			displayIndicator(onscreen, position, direction, ui.theme.icons.bullseye, ui.theme.colors.maneuver, true)
 			uiPos = ui.pointOnClock(center, radius, 6)
 			local speed, speed_unit = ui.Format.Speed(maneuverSpeed)
@@ -340,22 +340,27 @@ local function displayReticule(center)
 		local frameVelocity = -frame:GetVelocityRelTo(player)
 		local awayFromFrame = player:GetPositionRelTo(frame) * 1.01
 		if frameVelocity:magnitude() > 1 then
-			local onscreen,position,direction = Engine.ProjectToScreenSpace(frameVelocity)
+			local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(frameVelocity)
 			displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.frame, true)
-			local onscreen,position,direction = Engine.ProjectToScreenSpace(-frameVelocity)
+			local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(-frameVelocity)
 			displayIndicator(onscreen, position, direction, ui.theme.icons.retrograde, ui.theme.colors.frame, false)
 		end
-		local onscreen,position,direction = Engine.ProjectToScreenSpace(awayFromFrame)
+		local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(awayFromFrame)
 		displayIndicator(onscreen, position, direction, ui.theme.icons.frame_away, ui.theme.colors.frame, false)
 	end
 	if combatTarget then
 		-- local velocity = combatTarget:GetVelocityRelTo(player)
 		local pos = combatTarget:GetPositionRelTo(player)
-		-- local onscreen,position,direction = Engine.ProjectToScreenSpace(velocity)
+		-- local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(velocity)
 		-- displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.combatTarget, true)
-		local onscreen,position,direction = Engine.ProjectToScreenSpace(pos)
+		local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(pos)
 		displayIndicator(onscreen, position, direction, ui.theme.icons.square, ui.theme.colors.combatTarget, true)
 
+	end
+	if player:IsMouseActive() then
+		local direction = player:GetMouseDirection()
+		local screen = Engine.CameraSpaceToScreenSpace(direction)
+		ui.addIcon(screen, ui.theme.icons.mouse_move_direction, ui.theme.colors.combatTarget, 32, ui.anchor.center, ui.anchor.center)
 	end
 	if target then
 		local velocity = player:GetVelocityRelTo(target)

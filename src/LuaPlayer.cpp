@@ -208,6 +208,20 @@ static int l_set_hyperspace_target(lua_State *l)
 		return luaL_error(l, "Player:SetHyperspaceTarget() cannot be used while in hyperspace");
 }
 
+static int l_get_mouse_direction(lua_State *l)
+{
+	//		Player *player = LuaObject<Player>::CheckFromLua(1);
+	LuaPush(l, Pi::game->GetWorldView()->GetMouseDirection());
+	return 1;
+}
+	
+static int l_get_is_mouse_active(lua_State *l)
+{
+		Player *player = LuaObject<Player>::CheckFromLua(1);
+		LuaPush(l, player->GetPlayerController()->IsMouseActive());
+		return 1;
+}
+
 static int l_get_max_delta_v(lua_State *l)
 {
 	Player *player = LuaObject<Player>::CheckFromLua(1);
@@ -313,6 +327,8 @@ template <> void LuaObject<Player>::RegisterClass()
 		{ "GetManeuverVelocity", l_get_maneuver_velocity },
 		{ "GetManeuverTime",     l_get_maneuver_time },
 		{ "GetAcceleration",     l_get_acceleration },
+		{ "IsMouseActive",       l_get_is_mouse_active },
+		{ "GetMouseDirection",   l_get_mouse_direction },
 		{ 0, 0 }
 	};
 
