@@ -3,6 +3,10 @@
       "description" : "",
       "message" : "Air processors"
    },
+   "AIR_PROCESSORS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Air processors"
+   },
    "ALERT_CANCELLED" : {
       "description" : "",
       "message" : "Alert cancelled."
@@ -30,6 +34,10 @@
    "ANIMAL_MEAT" : {
       "description" : "",
       "message" : "Animal Meat"
+   },
+   "ANIMAL_MEAT_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Animal Meat"
    },
    "APOAPSIS_DISTANCE" : {
       "description" : "",
@@ -86,6 +94,10 @@
    "BATTLE_WEAPONS" : {
       "description" : "",
       "message" : "Battle weapons"
+   },
+   "BATTLE_WEAPONS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Battle weapons"
    },
    "BINARY_SYSTEM" : {
       "description" : "",
@@ -251,6 +263,10 @@
       "description" : "",
       "message" : "Computers"
    },
+   "COMPUTERS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Computers"
+   },
    "COMPUTER_HEADING_CONTROL" : {
       "description" : "",
       "message" : "Computer heading control"
@@ -262,6 +278,10 @@
    "CONSUMER_GOODS" : {
       "description" : "",
       "message" : "Consumer goods"
+   },
+   "CONSUMER_GOODS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Consumer goods"
    },
    "CONTROLS" : {
       "description" : "",
@@ -407,9 +427,17 @@
       "description" : "",
       "message" : "Farm machinery"
    },
+   "FARM_MACHINERY_DESCRIPTION" : {
+      "description" : "",
+      "message" : "Todo: Farm machinery"
+   },
    "FERTILIZER" : {
       "description" : "",
       "message" : "Fertilizer"
+   },
+   "FERTILIZER_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Fertilizer"
    },
    "FINE_PAID_N" : {
       "description" : "",
@@ -434,6 +462,10 @@
    "FRUIT_AND_VEG" : {
       "description" : "",
       "message" : "Fruit and Veg"
+   },
+   "FRUIT_AND_VEG_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Fruit and Veg"
    },
    "FUEL" : {
       "description" : "",
@@ -483,9 +515,17 @@
       "description" : "like wheat or barley",
       "message" : "Grain"
    },
+   "GRAIN_DESCRIPTION" : {
+      "description" : "like wheat or barley",
+      "message" : "TODO: Grain"
+   },
    "HAND_WEAPONS" : {
       "description" : "",
       "message" : "Hand weapons"
+   },
+   "HAND_WEAPONS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Hand weapons"
    },
    "HARD_CAPITALIST" : {
       "description" : "",
@@ -643,6 +683,10 @@
       "description" : "",
       "message" : "Industrial machinery"
    },
+   "INDUSTRIAL_MACHINERY_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Industrial machinery"
+   },
    "INTERNAL_VIEW" : {
       "description" : "",
       "message" : "Internal view"
@@ -719,9 +763,17 @@
       "description" : "",
       "message" : "Liquor"
    },
+   "LIQUOR_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Liquor"
+   },
    "LIVE_ANIMALS" : {
       "description" : "",
       "message" : "Live Animals"
+   },
+   "LIVE_ANIMALS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Live Animals"
    },
    "LOCKED" : {
       "description" : "to lock a hyperspace target",
@@ -835,6 +887,10 @@
       "description" : "",
       "message" : "Medicines"
    },
+   "MEDICINES_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Medicines"
+   },
    "MEDIUM_GAS_GIANT" : {
       "description" : "",
       "message" : "Medium gas giant"
@@ -851,9 +907,17 @@
       "description" : "",
       "message" : "Metal alloys"
    },
+	 "METAL_ALLOYS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Metal Alloys"
+   },
    "METAL_ORE" : {
       "description" : "",
       "message" : "Metal ore"
+   },
+	 "METAL_ORE_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Metal Ore"
    },
    "MILITARY_DICTATORSHIP" : {
       "description" : "",
@@ -863,6 +927,10 @@
       "description" : "",
       "message" : "Military fuel"
    },
+   "MILITARY_FUEL_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Military fuel"
+   },
    "MINING_COLONY" : {
       "description" : "",
       "message" : "Mining colony."
@@ -870,6 +938,10 @@
    "MINING_MACHINERY" : {
       "description" : "",
       "message" : "Mining machinery"
+   },
+   "MINING_MACHINERY_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Mining machinery"
    },
    "MINOR_EXPORTS" : {
       "description" : "",
@@ -959,6 +1031,10 @@
       "description" : "",
       "message" : "Narcotics"
    },
+   "NARCOTICS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Narcotics"
+   },
    "NAVIGATION_STAR_MAPS" : {
       "description" : "",
       "message" : "Navigation and star maps"
@@ -970,6 +1046,10 @@
    "NERVE_GAS" : {
       "description" : "",
       "message" : "Nerve Gas"
+   },
+   "NERVE_GAS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Nerve Gas"
    },
    "NOT_FOUND" : {
       "description" : "searching star system in sector view",
@@ -1107,6 +1187,10 @@
       "description" : "",
       "message" : "Occupied Passenger Cabin"
    },
+   "PASSENGER_CABIN_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Occupied Passenger Cabin"
+   },
    "PAUSED" : {
       "description" : "",
       "message" : "PAUSED"
@@ -1175,6 +1259,10 @@
       "description" : "",
       "message" : "Plastics"
    },
+   "PLASTICS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Plastics"
+   },
    "PLUTOCRATIC_DICTATORSHIP" : {
       "description" : "",
       "message" : "Plutocratic dictatorship"
@@ -1187,6 +1275,10 @@
       "description" : "",
       "message" : "Precious metals"
    },
+   "PRECIOUS_METALS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Precious metals"
+   },
    "PRESSURE_N_ATMOSPHERES" : {
       "description" : "",
       "message" : "P: %pressure{f.2} atm"
@@ -1198,6 +1290,10 @@
    "RADIOACTIVES" : {
       "description" : "",
       "message" : "Radioactive waste"
+   },
+   "RADIOACTIVES_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Radioactive waste"
    },
    "RADIUS" : {
       "description" : "",
@@ -1222,6 +1318,10 @@
    "ROBOTS" : {
       "description" : "",
       "message" : "Robots"
+   },
+   "ROBOTS_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Robots"
    },
    "ROCKY_PLANET" : {
       "description" : "",
@@ -1274,6 +1374,10 @@
    "RUBBISH" : {
       "description" : "",
       "message" : "Rubbish"
+   },
+   "RUBBISH_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Rubbish"
    },
    "RADAR_CONTROL" : {
       "description" : "",
@@ -1398,6 +1502,10 @@
    "SLAVES" : {
       "description" : "",
       "message" : "Slaves"
+   },
+   "SLAVES_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Slaves"
    },
    "SMALL" : {
       "description" : "",
@@ -1631,6 +1739,10 @@
       "description" : "",
       "message" : "Textiles"
    },
+   "TEXTILES_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Textiles"
+   },
    "THICK" : {
       "description" : "",
       "message" : "thick"
@@ -1814,6 +1926,10 @@
    "WATER" : {
       "description" : "",
       "message" : "Water"
+   },
+   "WATER_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Water"
    },
    "WEAPONS" : {
       "description" : "",

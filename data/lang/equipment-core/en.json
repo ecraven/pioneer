@@ -43,73 +43,145 @@
       "description" : "",
       "message" : "Class 1 Hyperdrive"
    },
+   "DRIVE_CLASS1_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 1 Hyperdrive"
+   },
    "DRIVE_CLASS2" : {
       "description" : "",
       "message" : "Class 2 Hyperdrive"
+   },
+   "DRIVE_CLASS2_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 2 Hyperdrive"
    },
    "DRIVE_CLASS3" : {
       "description" : "",
       "message" : "Class 3 Hyperdrive"
    },
+   "DRIVE_CLASS3_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 3 Hyperdrive"
+   },
    "DRIVE_CLASS4" : {
       "description" : "",
       "message" : "Class 4 Hyperdrive"
+   },
+   "DRIVE_CLASS4_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 4 Hyperdrive"
    },
    "DRIVE_CLASS5" : {
       "description" : "",
       "message" : "Class 5 Hyperdrive"
    },
+   "DRIVE_CLASS5_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 5 Hyperdrive"
+   },
    "DRIVE_CLASS6" : {
       "description" : "",
       "message" : "Class 6 Hyperdrive"
+   },
+   "DRIVE_CLASS6_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 6 Hyperdrive"
    },
    "DRIVE_CLASS7" : {
       "description" : "",
       "message" : "Class 7 Hyperdrive"
    },
+   "DRIVE_CLASS7_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 7 Hyperdrive"
+   },
    "DRIVE_CLASS8" : {
       "description" : "",
       "message" : "Class 8 Hyperdrive"
+   },
+   "DRIVE_CLASS8_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 8 Hyperdrive"
    },
    "DRIVE_CLASS9" : {
       "description" : "",
       "message" : "Class 9 Hyperdrive"
    },
+   "DRIVE_CLASS9_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 9 Hyperdrive"
+   },
    "DRIVE_MIL1" : {
       "description" : "",
       "message" : "Class 1 Military drive"
+   },
+   "DRIVE_MIL1_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 1 Military drive"
    },
    "DRIVE_MIL2" : {
       "description" : "",
       "message" : "Class 2 Military drive"
    },
+   "DRIVE_MIL2_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 2 Military drive"
+   },
    "DRIVE_MIL3" : {
       "description" : "",
       "message" : "Class 3 Military drive"
+   },
+   "DRIVE_MIL3_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 3 Military drive"
    },
    "DRIVE_MIL4" : {
       "description" : "",
       "message" : "Class 4 Military drive"
    },
+   "DRIVE_MIL4_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 4 Military drive"
+   },
    "DRIVE_MIL5" : {
       "description" : "",
       "message" : "Class 5 Military drive"
+   },
+   "DRIVE_MIL5_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 5 Military drive"
    },
    "DRIVE_MIL6" : {
       "description" : "",
       "message" : "Class 6 Military drive"
    },
+   "DRIVE_MIL6_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 6 Military drive"
+   },
    "DRIVE_MIL7" : {
       "description" : "",
       "message" : "Class 7 Military drive"
+   },
+   "DRIVE_MIL7_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 7 Military drive"
    },
    "DRIVE_MIL8" : {
       "description" : "",
       "message" : "Class 8 Military drive"
    },
+   "DRIVE_MIL8_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 8 Military drive"
+   },
    "DRIVE_MIL9" : {
       "description" : "",
       "message" : "Class 9 Military drive"
+   },
+   "DRIVE_MIL9_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Class 9 Military drive"
    },
    "ECM_ADVANCED" : {
       "description" : "",
@@ -155,6 +227,10 @@
       "description" : "",
       "message" : "Large plasma accelerator"
    },
+   "LARGE_PLASMA_ACCEL_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Large plasma accelerator"
+   },
    "LASER_COOLING_BOOSTER" : {
       "description" : "",
       "message" : "Laser Cooling Booster"
@@ -175,17 +251,33 @@
       "description" : "",
       "message" : "Guided Missile"
    },
+   "MISSILE_GUIDED_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Guided Missile"
+   },
    "MISSILE_NAVAL" : {
       "description" : "",
       "message" : "Naval Missile"
+   },
+   "MISSILE_NAVAL_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Naval Missile"
    },
    "MISSILE_SMART" : {
       "description" : "",
       "message" : "Smart Missile"
    },
+   "MISSILE_SMART_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Smart Missile"
+   },
    "MISSILE_UNGUIDED" : {
       "description" : "",
       "message" : "R40 Unguided Rocket"
+   },
+   "MISSILE_UNGUIDED_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: R40 Unguided Rocket"
    },
    "MULTI_SCOOP" : {
       "description" : "A ship equipment: a cargo scoop and fuel scoop combined to one",
@@ -211,29 +303,57 @@
       "description" : "",
       "message" : "10MW pulse cannon"
    },
+   "PULSECANNON_10MW_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: 10MW pulse cannon"
+   },
    "PULSECANNON_1MW" : {
       "description" : "",
       "message" : "1MW pulse cannon"
+   },
+   "PULSECANNON_1MW_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: 1MW pulse cannon"
    },
    "PULSECANNON_20MW" : {
       "description" : "",
       "message" : "20MW pulse cannon"
    },
+   "PULSECANNON_20MW_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: 20MW pulse cannon"
+   },
    "PULSECANNON_2MW" : {
       "description" : "",
       "message" : "2MW pulse cannon"
+   },
+   "PULSECANNON_2MW_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: 2MW pulse cannon"
    },
    "PULSECANNON_4MW" : {
       "description" : "",
       "message" : "4MW pulse cannon"
    },
+   "PULSECANNON_4MW_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: 4MW pulse cannon"
+   },
    "PULSECANNON_DUAL_1MW" : {
       "description" : "",
       "message" : "1MW dual-fire pulse cannon"
    },
+   "PULSECANNON_DUAL_1MW_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: 1MW dual-fire pulse cannon"
+   },
    "PULSECANNON_RAPID_2MW" : {
       "description" : "",
       "message" : "2MW rapid-fire pulse cannon"
+   },
+   "PULSECANNON_RAPID_2MW_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: 2MW rapid-fire pulse cannon"
    },
    "RADAR" : {
       "description" : "",
@@ -270,6 +390,10 @@
    "SMALL_PLASMA_ACCEL" : {
       "description" : "",
       "message" : "Small plasma accelerator"
+   },
+   "SMALL_PLASMA_ACCEL_DESCRIPTION" : {
+      "description" : "",
+      "message" : "TODO: Small plasma accelerator"
    },
    "STARTING_SCAN" : {
       "description" : "",

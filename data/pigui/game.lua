@@ -293,7 +293,7 @@ local function displayReticule(center)
 
 		local uiPos = ui.pointOnClock(center, radius, -2)
 		-- label of frame
-		ui.addStyledText(uiPos, frame.label, ui.theme.colors.frame, ui.fonts.pionillium.medium, ui.anchor.right, ui.anchor.baseline, lui.HUD_CURRENT_FRAME)
+		ui.addStyledText(uiPos, frame.label, ui.theme.colors.frame, ui.fonts.pionillium.medium, ui.anchor.right, ui.anchor.baseline, lui.HUD_CURRENT)
 
 		-- altitude above frame
 		uiPos = ui.pointOnClock(center, radius, -3)

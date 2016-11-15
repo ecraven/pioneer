@@ -63,6 +63,10 @@
       "description" : "custom cargo",
       "message" : "Aluminium tubes"
    },
+   "ALUMINIUM_TUBES_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Aluminium tubes"
+   },
    "AMOUNT" : {
       "description" : "Shown in mission summary. The amount of cargo",
       "message" : "Amount:"
@@ -70,6 +74,10 @@
    "ART_OBJECTS" : {
       "description" : "custom cargo",
       "message" : "Art objects"
+   },
+   "ART_OBJECTS_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Art objects"
    },
    "CARGO" : {
       "description" : "",
@@ -86,6 +94,10 @@
    "CLUS" : {
       "description" : "custom cargo",
       "message" : "Containerized living units"
+   },
+   "CLUS_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Containerized living units"
    },
    "COULD_YOU_REPEAT_THE_ORIGINAL_REQUEST" : {
       "description" : "",
@@ -131,9 +143,17 @@
       "description" : "custom cargo",
       "message" : "Diamonds"
    },
+   "DIAMONDS_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Diamonds"
+   },
    "DIGESTERS" : {
       "description" : "custom cargo",
       "message" : "Digesters"
+   },
+   "DIGESTERS_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Digesters"
    },
    "DISTANCE" : {
       "description" : "distance in space, between two locations",
@@ -142,6 +162,10 @@
    "ELECTRICAL_APPLIANCES" : {
       "description" : "custom cargo",
       "message" : "Electrical appliances"
+   },
+   "ELECTRICAL_APPLIANCES_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Electrical appliances"
    },
    "ESCORT_CHATTER_1" : {
       "description" : "",
@@ -167,6 +191,10 @@
       "description" : "custom cargo",
       "message" : "Explosives"
    },
+   "EXPLOSIVES_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Explosives"
+   },
    "FAILUREMSG_1" : {
       "description" : "",
       "message" : "I'm very disappointed by the late delivery. You will not be paid."
@@ -191,9 +219,17 @@
       "description" : "custom cargo",
       "message" : "Furniture"
    },
+   "FURNITURE_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Furniture"
+   },
    "GREENHOUSES" : {
       "description" : "custom cargo",
       "message" : "Greenhouses"
+   },
+   "GREENHOUSES_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Greenhouses"
    },
    "GUNS_GUNS_GUNS" : {
       "description" : "Military radio call to avoid friendly fire. It indicates that the cannon has been activated and should ensure that other friendly pilots do not maneuver into the path of harm.",
@@ -202,6 +238,10 @@
    "HAZARDOUS_SUBSTANCES" : {
       "description" : "custom cargo",
       "message" : "Hazardous substances"
+   },
+   "HAZARDOUS_SUBSTANCES_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Hazardous substances"
    },
    "HOWMUCH_1" : {
       "description" : "regarding mass, always more than 1t",
@@ -299,6 +339,10 @@
       "description" : "",
       "message" : "Greetings. Have you heard of the wedding season of {starport} in the {system} ({sectorx}, {sectory}, {sectorz}) system? We want to transport {cargoname} there. It's {dist} ly away. The pay is {cash}. How about it?"
    },
+   "INTROTEXT_CONSUMER_GOODS_1" : {
+      "description" : "",
+      "message" : "TODO: Greetings. Have you heard of the wedding season of {starport} in the {system} ({sectorx}, {sectory}, {sectorz}) system? We want to transport {cargoname} there. It's {dist} ly away. The pay is {cash}. How about it?"
+   },
    "INTROTEXT_WHOLESALER_1" : {
       "description" : "",
       "message" : "Hello, my name is {name} and I'm a wholesale dealer in the {system} system. I pay {cash} for the run to {starport} in the {system} ({sectorx}, {sectory}, {sectorz}) system, {dist} ly."
@@ -327,9 +371,17 @@
       "description" : "custom cargo",
       "message" : "Machine tools"
    },
+   "MACHINE_TOOLS_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Machine tools"
+   },
    "NEPTUNIUM" : {
       "description" : "custom cargo",
       "message" : "Neptunium"
+   },
+   "NEPTUNIUM_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Neptunium"
    },
    "OK_AGREED" : {
       "description" : "",
@@ -383,9 +435,17 @@
       "description" : "custom cargo",
       "message" : "Plutonium"
    },
+   "PLUTONIUM_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Plutonium"
+   },
    "QUIBBLES" : {
       "description" : "custom cargo, also used in the NewsEventCommodity module, a nod to Star Trek's Tribble (check wikipedia)",
       "message" : "Quibbles"
+   },
+   "QUIBBLES_DESCRIPTION" : {
+      "description" : "custom cargo, also used in the NewsEventCommodity module, a nod to Star Trek's Tribble (check wikipedia)",
+      "message" : "TODO: Quibbles"
    },
    "RISK_1" : {
       "description" : "",
@@ -443,6 +503,10 @@
       "description" : "custom cargo",
       "message" : "Semi-finished products"
    },
+   "SEMI_FINISHED_PRODUCTS_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Semi-finished products"
+   },
    "SET_AS_TARGET" : {
       "description" : "",
       "message" : "Set as navigation target"
@@ -458,6 +522,10 @@
    "SPACESHIP_PARTS" : {
       "description" : "custom cargo",
       "message" : "Spaceship parts"
+   },
+   "SPACESHIP_PARTS_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Spaceship parts"
    },
    "SUCCESSMSG_1" : {
       "description" : "",
@@ -491,13 +559,25 @@
       "description" : "custom cargo",
       "message" : "Titanium"
    },
+   "TITANIUM_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Titanium"
+   },
    "TUNGSTEN" : {
       "description" : "custom cargo",
       "message" : "Tungsten"
    },
+   "TUNGSTEN_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Tungsten"
+   },
    "URANIUM" : {
       "description" : "custom cargo",
       "message" : "Uranium"
+   },
+   "URANIUM_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Uranium"
    },
    "URGENCY_1" : {
       "description" : "",
@@ -530,6 +610,10 @@
    "WEDDING_DRESSES" : {
       "description" : "custom cargo",
       "message" : "Wedding dresses"
+   },
+   "WEDDING_DRESSES_DESCRIPTION" : {
+      "description" : "custom cargo",
+      "message" : "TODO: Wedding dresses"
    },
    "WE_HAVE_LOADED_UP_THE_CARGO_ON_YOUR_SHIP" : {
       "description" : "",
