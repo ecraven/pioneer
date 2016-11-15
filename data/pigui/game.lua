@@ -234,31 +234,51 @@ local function displayReticule(center)
 		reticuleTarget = "navTarget"
 	end
 	lastNavTarget = navTarget
+
 	if lastCombatTarget ~= combatTarget then
 		reticuleTarget = "combatTarget"
 	end
 	lastCombatTarget = combatTarget
-	if reticuleTarget == "frame" then
-		target = frame
-		colorLight = ui.theme.colors.frame
-		colorDark = ui.theme.colors.frameDark
-		frameColor = ui.theme.colors.reticuleCircle
-		navTargetColor = ui.theme.colors.reticuleCircleDark
-		combatTargetColor = ui.theme.colors.reticuleCircleDark
-	elseif reticuleTarget == "navTarget" then
+
+
+	if reticuleTarget == "navTarget" then
 		target = navTarget
+		if not target then
+			reticuleTarget = combatTarget and "combatTarget" or "frame"
+		end
 		colorLight = ui.theme.colors.navTarget
 		colorDark = ui.theme.colors.navTargetDark
 		frameColor = ui.theme.colors.reticuleCircleDark
 		navTargetColor = ui.theme.colors.reticuleCircle
 		combatTargetColor = ui.theme.colors.reticuleCircleDark
-	elseif reticuleTarget == "combatTarget" then
+	end
+
+	if reticuleTarget == "combatTarget" then
 		target = player:GetCombatTarget()
+		if not target then
+			reticuleTarget = navTarget and "navTarget" or "frame"
+		end
 		colorLight = ui.theme.colors.combatTarget
 		colorDark = ui.theme.colors.combatTargetDark
 		frameColor = ui.theme.colors.reticuleCircleDark
 		navTargetColor = ui.theme.colors.reticuleCircleDark
 		combatTargetColor = ui.theme.colors.reticuleCircle
+	end
+
+	if not reticuleTarget then
+		reticuleTarget = "frame"
+	end
+
+	if reticuleTarget == "frame" then
+		target = frame
+		if not target then
+			reticuleTarget = nil
+		end
+		colorLight = ui.theme.colors.frame
+		colorDark = ui.theme.colors.frameDark
+		frameColor = ui.theme.colors.reticuleCircle
+		navTargetColor = ui.theme.colors.reticuleCircleDark
+		combatTargetColor = ui.theme.colors.reticuleCircleDark
 	end
 
 	local radius = reticuleCircleRadius * 1.2
@@ -355,7 +375,6 @@ local function displayReticule(center)
 		-- displayIndicator(onscreen, position, direction, ui.theme.icons.prograde, ui.theme.colors.combatTarget, true)
 		local onscreen,position,direction = Engine.WorldSpaceToScreenSpace(pos)
 		displayIndicator(onscreen, position, direction, ui.theme.icons.square, ui.theme.colors.combatTarget, true)
-
 	end
 	if player:IsMouseActive() then
 		local direction = player:GetMouseDirection()
