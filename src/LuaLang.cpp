@@ -15,7 +15,7 @@ static int _resource_index(lua_State *l)
 
 static int l_lang_has_key(lua_State *l)
 {
-	// TODO
+
 }
 	
 static int l_lang_get_resource(lua_State *l)
