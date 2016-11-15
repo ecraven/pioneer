@@ -423,21 +423,21 @@ local function displayReticule(center)
 	local mouse_position = ui.getMousePos()
 	local size = 24
 	if combatTarget or navTarget then
-		ui.addIcon(uiPos, ui.theme.icons.moon, frameColor, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_FRAME)
+		ui.addIcon(uiPos, ui.theme.icons.display_frame, frameColor, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_FRAME)
 		if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
 			reticuleTarget = "frame"
 		end
 		uiPos = uiPos + Vector(size,0)
 	end
 	if navTarget then
-		ui.addIcon(uiPos, ui.theme.icons.forward, navTargetColor, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_NAV_TARGET)
+		ui.addIcon(uiPos, ui.theme.icons.display_navtarget, navTargetColor, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_NAV_TARGET)
 		if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
 			reticuleTarget = "navTarget"
 		end
 		uiPos = uiPos + Vector(size,0)
 	end
 	if combatTarget then
-		ui.addIcon(uiPos, ui.theme.icons.ship, combatTargetColor, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_COMBAT_TARGET)
+		ui.addIcon(uiPos, ui.theme.icons.display_combattarget, combatTargetColor, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_COMBAT_TARGET)
 		if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
 			reticuleTarget = "combatTarget"
 		end
