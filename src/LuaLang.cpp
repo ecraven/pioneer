@@ -13,9 +13,10 @@ static int _resource_index(lua_State *l)
 	return luaL_error(l, "unknown translation token: %s", lua_tostring(l, 2));
 }
 
-static int l_lang_has_key(lua_State *l)
+static int _get(lua_State *l)
 {
-
+	lua_rawget(l, -2);
+	return 1;
 }
 	
 static int l_lang_get_resource(lua_State *l)
@@ -58,6 +59,10 @@ static int l_lang_get_resource(lua_State *l)
 		lua_pushlstring(l, text.c_str(), text.size());
 		lua_rawset(l, -3);
 	}
+
+	lua_pushstring(l, "get");
+	lua_pushcfunction(l, _get);
+	lua_rawset(l, -3);
 
 	lua_newtable(l);
 	lua_pushstring(l, "__newindex");
@@ -134,7 +139,6 @@ void LuaLang::Register()
 		{ "GetResource",           l_lang_get_resource },
 		{ "GetAvailableLanguages", l_lang_get_available_languages },
 		{ "SetCurrentLanguage",    l_lang_set_current_language },
-		{ "HasKey",                l_lang_has_key },
 		{ 0, 0 }
 	};
 
