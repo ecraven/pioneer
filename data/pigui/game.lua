@@ -315,7 +315,7 @@ local function displayReticule(center)
 	end
 	local function displayIndicator(onscreen, position, direction, icon, color, showIndicator)
 		local size = 32
-		local iconSize = 10
+		local iconSize = 16
 		local dir = direction * reticuleCircleRadius * 0.90
 		local indicator = center + dir
 		if onscreen then
