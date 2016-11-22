@@ -153,7 +153,7 @@ end
 
 local brakeNowRatio = 0.90
 
-local function displayReticuleBrakeGauge(center, ratio)
+local function displayReticuleBrakeGauge(center, ratio, ratio_secondary)
 	local function gauge(ratio, center, radius, color, thickness)
 		if ratio < 0 then
 			ratio = 0
@@ -176,12 +176,13 @@ local function displayReticuleBrakeGauge(center, ratio)
 		if ratio > brakeNowRatio then
 			color = ui.theme.colors.brakeNow
 		else
-			color = ui.theme.colors.brakeLight
+			color = ui.theme.colors.brakePrimary
 		end
+		gauge(ratio_secondary, center, reticuleCircleRadius + offset, ui.theme.colors.brakeSecondary, thickness)
 		gauge(ratio, center, reticuleCircleRadius + offset, color, thickness)
 	else
 		gauge(1, center, reticuleCircleRadius + offset, ui.theme.colors.brakeOvershoot, thickness)
-		gauge(2 - math.min(ratio, 2), center, reticuleCircleRadius + offset, ui.theme.colors.brakeLight, thickness)
+		gauge(2 - math.min(ratio, 2), center, reticuleCircleRadius + offset, ui.theme.colors.brakePrimary, thickness)
 	end
 end
 
@@ -405,8 +406,10 @@ local function displayReticule(center)
 
 		-- current brake distance
 		local brake_distance = player:GetDistanceToZeroV(velocity:magnitude(),"forward")
+		local brake_distance_retro = player:GetDistanceToZeroV(velocity:magnitude(),"reverse")
 		local altitude = player:GetAltitudeRelTo(target)
 		local ratio = brake_distance / altitude
+		local ratio_retro = brake_distance_retro / altitude
 		local speed, speed_unit = ui.Format.Speed(velocity:magnitude())
 
 		local ratio_text = math.floor(ratio * 100) .. "%"
@@ -433,7 +436,7 @@ local function displayReticule(center)
 										{ lui.HUD_DISTANCE_TO_SURFACE_OF_TARGET, lui.HUD_DISTANCE_TO_SURFACE_OF_TARGET, lui.HUD_SPEED_RELATIVE_TO_TARGET, lui.HUD_SPEED_RELATIVE_TO_TARGET })
 		-- current speed of approach
 		if approach_speed < 0 then
-			displayReticuleBrakeGauge(center, ratio)
+			displayReticuleBrakeGauge(center, ratio, ratio_retro)
 		end
 
 	end
