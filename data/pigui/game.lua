@@ -412,19 +412,15 @@ local function displayReticule(center)
 		local ratio_retro = brake_distance_retro / altitude
 		local speed, speed_unit = ui.Format.Speed(velocity:magnitude())
 
-		local ratio_text = math.floor(ratio * 100) .. "%"
-		if ratio > 2 then
-			ratio_text = ">200%"
-		end
 		-- speed
 		uiPos = ui.pointOnClock(center, radius, 3.5)
 		local distance,unit = ui.Format.Distance(brake_distance)
 		ui.addFancyText(uiPos,
-										{ "~" .. distance, unit, approach_speed < 0 and "  " .. ratio_text or "" },
-										{ colorDark, colorDark, colorDark },
-										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small, ui.fonts.pionillium.medium },
+										{ "~" .. distance, unit },
+										{ colorDark, colorDark },
+										{ ui.fonts.pionillium.medium, ui.fonts.pionillium.small },
 										ui.anchor.left, ui.anchor.baseline,
-										{ lui.HUD_BRAKE_DISTANCE_MAIN_THRUSTERS, lui.HUD_BRAKE_DISTANCE_MAIN_THRUSTERS, lui.HUD_PERCENTAGE_BRAKE_DISTANCE })
+										{ lui.HUD_BRAKE_DISTANCE_MAIN_THRUSTERS, lui.HUD_BRAKE_DISTANCE_MAIN_THRUSTERS })
 		-- current altitude
 		uiPos = ui.pointOnClock(center, radius, 3)
 		local altitude, altitude_unit = ui.Format.Distance(altitude)

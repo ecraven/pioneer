@@ -447,10 +447,6 @@
 			"description": "Tooltip: The braking distance using the main thrusters.",
 			"message": "The braking distance using the main thrusters"
 	 },
-   "HUD_PERCENTAGE_BRAKE_DISTANCE" : {
-			"description" : "Tooltip: The percentage of brake distance vs. distance to surface.",
-			"message" : "The percentage of brake distance vs. distance to surface"
-	 },
    "HUD_DISTANCE_TO_SURFACE_OF_TARGET" : {
 			"description" : "Tooltip: Distance to the surface of the target.",
 			"message" : "Distance to the surface of the target"
