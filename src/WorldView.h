@@ -148,12 +148,9 @@ private:
 	void SelectBody(Body *, bool reselectIsDeselect);
 	Body* PickBody(const double screenX, const double screenY) const;
 	void MouseWheel(bool up);
-	bool OnClickHeadingLabel(void);
-	void RefreshHeadingPitch(void);
 
 	Game* m_game;
 
-	PlaneType m_curPlane;
 	NavTunnelWidget *m_navTunnel;
 	std::unique_ptr<SpeedLines> m_speedLines;
 
@@ -180,13 +177,7 @@ private:
 
 	// useful docking locations for new-ui widgets in the HUD
 	RefCountedPtr<UI::Widget> m_hudRoot;
-	RefCountedPtr<UI::Single> m_hudDockTop;
-	RefCountedPtr<UI::Single> m_hudDockLeft;
-	RefCountedPtr<UI::Single> m_hudDockRight;
-	RefCountedPtr<UI::Single> m_hudDockBottom;
-	RefCountedPtr<UI::Single> m_hudDockCentre;
 	// new-ui HUD components
-	RefCountedPtr<UI::Label> m_headingInfo, m_pitchInfo;
 
 	Gui::Label *m_hudVelocity, *m_hudTargetDist, *m_hudAltitude, *m_hudPressure,
 		   *m_hudHyperspaceInfo, *m_hudTargetInfo;

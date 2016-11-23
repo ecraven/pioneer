@@ -194,30 +194,6 @@ void WorldView::InitObject()
 	  NEW UI
 	*/
 
-	// set up anchored docking positions for new-ui HUD widgets
-	m_hudDockTop.Reset(Pi::ui->Align(UI::Align::TOP));
-	m_hudDockRight.Reset(Pi::ui->Align(UI::Align::RIGHT));
-	m_hudDockLeft.Reset(Pi::ui->Align(UI::Align::LEFT));
-	m_hudDockBottom.Reset(Pi::ui->Align(UI::Align::BOTTOM));
-	m_hudDockCentre.Reset(Pi::ui->Align(UI::Align::MIDDLE));
-
-	// It's not ideal to use a nested VBox/HBox set for this, but it's
-	// probably adequate for now and we can easily replace it later
-	UI::VBox *hud_root = Pi::ui->VBox();
-	hud_root->PackEnd(m_hudDockTop.Get());
-	hud_root->PackEnd(Pi::ui->HBox()->
-										PackEnd(m_hudDockLeft.Get())->
-										PackEnd(Pi::ui->Expand()->SetInnerWidget(m_hudDockCentre.Get()))->
-										PackEnd(m_hudDockRight.Get()));
-	hud_root->PackEnd(m_hudDockBottom.Get());
-
-	m_hudRoot.Reset(hud_root);
-
-	m_headingInfo.Reset(Pi::ui->Label("heading")->SetColor(s_hudTextColor));
-	m_pitchInfo.Reset(Pi::ui->Label("pitch")->SetColor(s_hudTextColor));
-	m_headingInfo->onClick.connect(sigc::mem_fun(*this, &WorldView::OnClickHeadingLabel));
-	m_curPlane = NONE;
-
 	// --
 
 	m_hudHyperspaceInfo = (new Gui::Label(""))->Color(s_hudTextColor);
@@ -578,27 +554,6 @@ void WorldView::RefreshHyperspaceButton() {
 		m_hyperspaceButton->Hide();
 }
 
-void WorldView::RefreshHeadingPitch(void) {
-	if(m_curPlane == NONE) {
-		m_hudDockTop->SetInnerWidget(m_headingInfo.Get());
-		m_hudDockRight->SetInnerWidget(m_pitchInfo.Get());
-		m_curPlane = ROTATIONAL;
-	}
-	// heading and pitch
-	auto headingPitch = CalculateHeadingPitchRoll(m_curPlane);
-	char buf[6];
-	const double heading_deg = RAD2DEG(std::get<0>(headingPitch));
-	const double pitch_deg = RAD2DEG(std::get<1>(headingPitch));
-	// \xC2\xB0 is the UTF-8 degree symbol
-	// normal rounding (as performed by printf) is incorrect for the heading
-	// because it rounds x >= 359.5 *up* to 360 without wrapping back to zero.
-	snprintf(buf, sizeof(buf), "%3.0f\xC2\xB0",
-					 (heading_deg < 359.5 ? heading_deg : 0.0));
-	m_headingInfo->SetText(buf);
-	snprintf(buf, sizeof(buf), "%3.0f\xC2\xB0", pitch_deg);
-	m_pitchInfo->SetText(buf);
-}
-
 void WorldView::RefreshButtonStateAndVisibility()
 {
 	assert(m_game);
@@ -810,8 +765,6 @@ void WorldView::RefreshButtonStateAndVisibility()
 					double vspeed = velocity.Dot(surface_pos);
 					if (fabs(vspeed) < 0.05) vspeed = 0.0; // Avoid alternating between positive/negative zero
 
-					RefreshHeadingPitch();
-
 					// show lat/long when altitude is shownr
 					const float lat = RAD2DEG(asin(surface_pos.y));
 					const float lon = RAD2DEG(atan2(surface_pos.x, surface_pos.z));
@@ -827,22 +780,12 @@ void WorldView::RefreshButtonStateAndVisibility()
 					m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_2, "");
 					m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_3, "");
 					m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_4, "");
-					if(m_curPlane != NONE) {
-						m_curPlane = NONE;
-						m_hudDockTop->RemoveInnerWidget();
-						m_hudDockRight->RemoveInnerWidget();
-					}
 				}
 			} else {
 				m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_1, "");
 				m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_2, "");
 				m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_3, "");
 				m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_OVER_PANEL_RIGHT_4, "");
-				if(m_curPlane != NONE) {
-					m_curPlane = NONE;
-					m_hudDockTop->RemoveInnerWidget();
-					m_hudDockRight->RemoveInnerWidget();
-				}
 			}
 
 			if (astro->IsType(Object::PLANET)) {
@@ -865,11 +808,6 @@ void WorldView::RefreshButtonStateAndVisibility()
 		} else {
 			m_game->GetCpan()->SetOverlayText(ShipCpanel::OVERLAY_BOTTOM_LEFT, "");
 			m_hudHullTemp->Hide();
-			if(m_curPlane != NONE) {
-				m_curPlane = NONE;
-				m_hudDockTop->RemoveInnerWidget();
-				m_hudDockRight->RemoveInnerWidget();
-			}
 		}
 
 		int hasSensors = 0;
@@ -1044,12 +982,6 @@ void WorldView::RefreshButtonStateAndVisibility()
 	}
 }
 
-bool WorldView::OnClickHeadingLabel(void) {
-	m_curPlane = m_curPlane == ROTATIONAL ? PARENT : ROTATIONAL;
-	m_game->log->Add(m_curPlane == ROTATIONAL ? Lang::SWITCHED_TO_ROTATIONAL : Lang::SWITCHED_TO_PARENT);
-	return true;
-}
-
 void WorldView::Update()
 {
 	PROFILE_SCOPED()
@@ -1161,7 +1093,6 @@ void WorldView::Update()
 
 void WorldView::BuildUI(UI::Single *container)
 {
-	container->SetInnerWidget(m_hudRoot.Get());
 }
 
 void WorldView::OnSwitchTo()
