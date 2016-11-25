@@ -7,6 +7,7 @@
 // https://github.com/ocornut/imgui
 
 #include "imgui.h"
+#include "imgui_freetype.h"
 #include "imgui_impl_sdl_gl3.h"
 
 // SDL,GL3W
@@ -180,6 +181,10 @@ void ImGui_ImplSdlGL3_CreateFontsTexture()
 {
     // Build texture atlas
     ImGuiIO& io = ImGui::GetIO();
+
+		unsigned int flags = ImGuiFreeType::DisableHinting;
+		ImGuiFreeType::BuildFontAtlas(io.Fonts, flags);
+
     unsigned char* pixels;
     int width, height;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);   // Load as RGBA 32-bits for OpenGL3 demo because it is more likely to be compatible with user's existing shader.

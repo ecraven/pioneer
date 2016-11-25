@@ -118,15 +118,19 @@ void PiGui::Init(SDL_Window *window) {
 	std::strncpy(ioIniFilename, imguiIni.c_str(), imguiIni.size() + 1);
 	io.IniFilename = ioIniFilename;
 
-	static unsigned short glyph_ranges[] = { 0x1, 0x3c0, 0x0, 0x0 };
-	pionillium12 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), "PionilliumText22L-Medium.ttf").c_str(), 12.0f, nullptr, glyph_ranges);
-	pionillium9 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), "PionilliumText22L-Medium.ttf").c_str(), 9.0f, nullptr, glyph_ranges);
-	pionillium15 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), "PionilliumText22L-Medium.ttf").c_str(), 15.0f, nullptr, glyph_ranges);
-	pionillium18 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), "PionilliumText22L-Medium.ttf").c_str(), 18.0f, nullptr, glyph_ranges);
-	pionillium30 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), "PionilliumText22L-Medium.ttf").c_str(), 30.0f, nullptr, glyph_ranges);
-	pionillium36 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), "PionilliumText22L-Medium.ttf").c_str(), 36.0f, nullptr, glyph_ranges);
-	orbiteer18 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), "Orbiteer-Bold.ttf").c_str(), 18.0f, nullptr, glyph_ranges);
-	orbiteer30 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), "Orbiteer-Bold.ttf").c_str(), 30.0f, nullptr, glyph_ranges);
+	static unsigned short glyph_ranges[] = { 0x1, 0x3ff, 0x4e00, 0x9fff, 0x0, 0x0 }; // 
+	//	char *defaultFont = "PionilliumText22L-Medium.ttf";
+	const char *defaultFont = "unifont-9.0.04.ttf";
+	//	const char *orbiteerFont = "Orbiteer-Bold.ttf";
+	const char *orbiteerFont = "unifont-9.0.04.ttf";
+	//pionillium12 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), defaultFont).c_str(), 12.0f, nullptr, glyph_ranges);
+	//pionillium9 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), defaultFont).c_str(), 9.0f, nullptr, glyph_ranges);
+	// pionillium15 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), defaultFont).c_str(), 15.0f, nullptr, glyph_ranges);
+	// pionillium18 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), defaultFont).c_str(), 18.0f, nullptr, glyph_ranges);
+	// pionillium30 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), defaultFont).c_str(), 30.0f, nullptr, glyph_ranges);
+	// pionillium36 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), defaultFont).c_str(), 36.0f, nullptr, glyph_ranges);
+	orbiteer18 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), orbiteerFont).c_str(), 18.0f, nullptr, glyph_ranges);
+	//orbiteer30 = io.Fonts->AddFontFromFileTTF(FileSystem::JoinPath(FileSystem::JoinPath(FileSystem::GetDataDir(), "fonts"), orbiteerFont).c_str(), 30.0f, nullptr, glyph_ranges);
 }
 
 int PiGui::RadialPopupSelectMenu(const ImVec2& center, std::string popup_id, std::vector<ImTextureID> tex_ids, std::vector<std::pair<ImVec2,ImVec2>> uvs, unsigned int size, std::vector<std::string> tooltips)
