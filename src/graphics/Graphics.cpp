@@ -16,6 +16,7 @@ namespace Graphics {
 static RendererCreateFunc rendererCreateFunc[MAX_RENDERER_TYPE] = {};
 
 void RegisterRenderer(RendererType type, RendererCreateFunc fn) {
+	Output("registering renderer %d\n", type);
 	assert(type < MAX_RENDERER_TYPE);
 	assert(fn);
 	rendererCreateFunc[type] = fn;

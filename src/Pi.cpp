@@ -70,6 +70,7 @@
 #include "galaxy/StarSystem.h"
 #include "gameui/Lua.h"
 #include "graphics/opengl/RendererGL.h"
+#include "graphics/dummy/RendererDummy.h"
 #include "graphics/Graphics.h"
 #include "graphics/Light.h"
 #include "graphics/Renderer.h"
@@ -454,10 +455,11 @@ void Pi::Init(const std::map<std::string,std::string> &options, bool no_gui)
 	Output("SDL Version %d.%d.%d\n", ver.major, ver.minor, ver.patch);
 
 	Graphics::RendererOGL::RegisterRenderer();
-
+	Graphics::RendererDummy::RegisterRenderer();
+	
 	// Do rest of SDL video initialization and create Renderer
 	Graphics::Settings videoSettings = {};
-	videoSettings.rendererType = Graphics::RENDERER_OPENGL;
+	videoSettings.rendererType = Graphics::RENDERER_DUMMY; // Graphics::RENDERER_OPENGL;
 	videoSettings.width = config->Int("ScrWidth");
 	videoSettings.height = config->Int("ScrHeight");
 	videoSettings.fullscreen = (config->Int("StartFullscreen") != 0);
