@@ -78,7 +78,6 @@ local function displayReticuleCompass(center, heading)
 	end
 	local left = math.floor(heading - 45)
 	local right = left + 90
-	local d = left
 
 	local function stroke(d, p, n, height, thickness)
 		if d % n == 0 then
@@ -92,10 +91,7 @@ local function displayReticuleCompass(center, heading)
 						 ui.pointOnClock(center, reticuleCircleRadius - 3, 0),
 						 ui.theme.colors.reticuleCircle, 1)
 
-	while true do
-		if d > right then
-			break
-		end
+	for d=left,right do
 		local p = (d - left) / 90
 		stroke(d, p, 15, 3, 1)
 		stroke(d, p, 45, 4, 1)
@@ -106,7 +102,6 @@ local function displayReticuleCompass(center, heading)
 				ui.addStyledText(a, v, ui.theme.colors.navigationalElements, ui.fonts.pionillium.tiny, ui.anchor.center, ui.anchor.bottom, "")
 			end
 		end
-		d = d + 1
 	end
 end
 
@@ -116,8 +111,9 @@ local function displayReticuleDeltaV(center)
 		if ratio < 0 then
 			ratio = 0
 		end
-		if ratio > 0 and ratio < 0.001 then
-			ratio = 0.001
+		-- clamp to reduce flickering
+		if ratio > 0 and ratio < 0.01 then
+			ratio = 0.01
 		end
 		if ratio > 1 then
 			ratio = 1
@@ -151,15 +147,19 @@ local function displayReticuleDeltaV(center)
 
 end
 
-local brakeNowRatio = 0.90
+-- if the ratio of current distance to brake distance is greater than this,
+-- display the gauge in green (or whatever the theme's colour is)
+-- to tell the user to flip and start braking now
+local brakeNowRatio = 0.93
 
 local function displayReticuleBrakeGauge(center, ratio, ratio_secondary)
 	local function gauge(ratio, center, radius, color, thickness)
 		if ratio < 0 then
 			ratio = 0
 		end
-		if ratio > 0 and ratio < 0.001 then
-			ratio = 0.001
+		-- clamp to reduce flickering
+		if ratio > 0 and ratio < 0.01 then
+			ratio = 0.01
 		end
 		if ratio > 1 then
 			ratio = 1
