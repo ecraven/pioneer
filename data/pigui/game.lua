@@ -216,6 +216,149 @@ local function displayDirectionalMarkers(center)
 
 end
 
+
+local function draw_thrust_fwd(position, step, ratio)
+   local x = position.x
+   local y = position.y
+   ui.addConvexPolyFilled( {x,y, x+step,y+step/2, x+step,y+3*step, x-step,y+3*step, x-step,y+step/2, x,y}, ui.theme.colors.frameDark, true)
+   ui.pushClipRect(Vector(x-step,y), Vector(x+step,y+3*step*ratio), false)
+   ui.addConvexPolyFilled( {x,y, x+step,y+step/2, x+step,y+3*step, x-step,y+3*step, x-step,y+step/2, x,y}, ui.theme.colors.frame, true)
+   ui.popClipRect()
+end
+
+local function draw_thrust_bwd(position, step, ratio)
+   local x = position.x
+   local y = position.y
+   ui.addConvexPolyFilled( {x,y, x+step,y-step/2, x+step,y-2*step, x-step,y-2*step, x-step,y-step/2, x,y}, ui.theme.colors.frameDark, true)
+   ui.pushClipRect(Vector(x-step,y-2*step*ratio), Vector(x+step,y), false)
+   ui.addConvexPolyFilled( {x,y, x+step,y-step/2, x+step,y-2*step, x-step,y-2*step, x-step,y-step/2, x,y}, ui.theme.colors.frame, true)
+   ui.popClipRect()
+end
+
+local function draw_thrust_down(position, step, ratio)
+   local x = position.x
+   local y = position.y
+   ui.addConvexPolyFilled( {x,y, x+step,y-step, x+step,y-2*step, x-step,y-2*step, x-step,y-step, x,y}, ui.theme.colors.frameDark, true)
+   ui.pushClipRect(Vector(x-step,y-2*step*ratio), Vector(x+step,y), false)
+   ui.addConvexPolyFilled( {x,y, x+step,y-step, x+step,y-2*step, x-step,y-2*step, x-step,y-step, x,y}, ui.theme.colors.frame, true)
+   ui.popClipRect()
+end
+
+local function draw_thrust_up(position, step, ratio)
+   local x = position.x
+   local y = position.y
+   ui.addConvexPolyFilled( {x,y, x+step,y+step, x+step,y+2*step, x-step,y+2*step, x-step,y+step, x,y}, ui.theme.colors.frameDark, true)
+   ui.pushClipRect(Vector(x-step,y), Vector(x+step,y+2*step*ratio), false)
+   ui.addConvexPolyFilled( {x,y, x+step,y+step, x+step,y+2*step, x-step,y+2*step, x-step,y+step, x,y}, ui.theme.colors.frame, true)
+   ui.popClipRect()
+end
+
+local function draw_thrust_left(position, step, ratio)
+   local x = position.x
+   local y = position.y
+   ui.addConvexPolyFilled( {x,y, x-step,y+step, x-2*step,y+step, x-2*step,y-step, x-step,y-step, x,y}, ui.theme.colors.frameDark, true)
+   ui.pushClipRect(Vector(x-2*step*ratio,y-step), Vector(x,y+step), false)
+   ui.addConvexPolyFilled( {x,y, x-step,y+step, x-2*step,y+step, x-2*step,y-step, x-step,y-step, x,y}, ui.theme.colors.frame, true)
+   ui.popClipRect()
+end
+
+local function draw_thrust_right(position, step, ratio)
+   local x = position.x
+   local y = position.y
+   ui.addConvexPolyFilled( {x,y, x+step,y+step, x+2*step,y+step, x+2*step,y-step, x+step,y-step, x,y}, ui.theme.colors.frameDark, true)
+   ui.pushClipRect(Vector(x,y-step), Vector(x+2*step*ratio,y+step), false)
+   ui.addConvexPolyFilled( {x,y, x+step,y+step, x+2*step,y+step, x+2*step,y-step, x+step,y-step, x,y}, ui.theme.colors.frame, true)
+   ui.popClipRect()
+end
+
+local function displayThrust()
+	local standard_gravity = 9.80665
+	local player = Game.player
+	local thrust = player:GetThrusterState()
+	local thrust_forward = (thrust.z < 0) and math.abs(thrust.z) * math.abs(player:GetAccel("forward")) or 0
+	local thrust_backward = (thrust.z > 0) and math.abs(thrust.z) * math.abs(player:GetAccel("backward")) or 0
+	local thrust_left = (thrust.x > 0) and math.abs(thrust.x) * math.abs(player:GetAccel("left")) or 0
+	local thrust_right = (thrust.x < 0) and math.abs(thrust.x) * math.abs(player:GetAccel("right")) or 0
+	local thrust_up = (thrust.y > 0) and math.abs(thrust.y) * math.abs(player:GetAccel("up")) or 0
+	local thrust_down = (thrust.y < 0) and math.abs(thrust.y) * math.abs(player:GetAccel("down")) or 0
+	local total_thrust = Vector(thrust_forward - thrust_backward,thrust_up - thrust_down, thrust_left - thrust_right):magnitude()
+	local total_g = string.format("%0.1f", total_thrust / standard_gravity)
+	local position = Vector(200, ui.screenHeight - 100)
+	local textsize = ui.addFancyText(position, { total_g, "G" }, { ui.theme.colors.frame, ui.theme.colors.frame }, { ui.fonts.pionillium.large, ui.fonts.pionillium.medium }, ui.anchor.center, ui.anchor.center, { "foo", "foo" })
+	local low_thrust_power = player:GetLowThrustPower()
+	position = position + Vector(0,-50)
+	local thickness = 12.0
+	ui.addCircle(position, 17, ui.theme.colors.frameDark, 128, thickness)
+	ui.pathArcTo(position, 17, 0, ui.twoPi * low_thrust_power, 64)
+	ui.pathStroke(ui.theme.colors.frame, false, thickness)
+	local mp = ui.getMousePos()
+	-- if (Vector(mp.x,mp.y) - position):magnitude() < 17 and ui.isMouseReleased(1) then
+	--   ui.openPopup("thrustsettings")
+	-- end
+	if ui.beginPopup("thrustsettings") then
+	  local settings = { 1, 5, 10, 25, 50, 75 }
+	  for _,setting in pairs(settings) do
+			if ui.selectable(string.interp(lui.HUD_SET_LOW_THRUST_TO, { percent = setting }), false, {}) then
+				player:SetLowThrustPower(setting / 100)
+			end
+	  end
+	  ui.endPopup()
+	end
+	local size = ui.calcTextSize(math.floor(low_thrust_power * 100))
+	ui.addText(position - Vector(size.x/2, size.y/2), ui.theme.colors.frame, math.floor(low_thrust_power * 100))
+	local time_position = Vector(60, ui.screenHeight - 90)
+	-- local year, month, day, hour, minute, second = Game.GetDateTime()
+	-- withFont("pionillium", 18, function()
+	-- 					 local months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
+	-- 					 local ymd = string.format("%04d %s. %02d ", year, months[month], day)
+	-- 					 local hms = string.format("%02d:%02d:%02d", hour, minute, second)
+	-- 					 local size = ui.calcTextSize(ymd)
+	-- 					 ui.addText(time_position, ui.theme.colors.frameDark, ymd)
+	-- 					 ui.addText(time_position + Vector(size.x, 0), ui.theme.colors.frame, hms)
+	-- end)
+	local position = Vector(100, ui.screenHeight - 150)
+	local step = 12
+	local distance = 2
+
+	local thrust_fb_center = position + Vector(step * 5, 0)
+	draw_thrust_fwd(thrust_fb_center + Vector(0, distance), step, thrust.z < 0 and math.abs(thrust.z) or 0)
+	draw_thrust_bwd(thrust_fb_center + Vector(0,-distance), step, thrust.z > 0 and math.abs(thrust.z) or 0)
+
+	draw_thrust_up(position + Vector(0, distance), step, thrust.y > 0 and math.abs(thrust.y) or 0)
+	draw_thrust_down(position + Vector(0, -distance), step, thrust.y < 0 and math.abs(thrust.y) or 0)
+	draw_thrust_left(position + Vector(-distance, 0), step, thrust.x > 0 and math.abs(thrust.x) or 0)
+	draw_thrust_right(position + Vector(distance, 0), step, thrust.x < 0 and math.abs(thrust.x) or 0)
+
+	-- ******************** directional spaceship markers ********************
+	do
+	  local vel = player:GetOrientedVelocity()
+	  local max = math.max(math.abs(vel.x),(math.max(math.abs(vel.y), math.abs(vel.z))))
+	  local size = 2*step
+	  local thickness = 5
+	  local velocity_center = Vector(50,50)
+
+	  if max < size then
+			max = size
+	  end
+
+	  local vx,vy,vz = vel.x/max, -vel.y/max, vel.z/max
+
+	  -- ui.AddText(velocity_center + Vector(-13,-size*1.5-8), ui.theme.colors.darkgrey, "L")
+	  -- ui.AddText(velocity_center + Vector(-13,size*1.5), ui.theme.colors.darkgrey, "R")
+	  ui.addLine(position + Vector(-size, step*3), position + Vector(size, step*3), ui.theme.colors.frameDark, thickness)
+	  ui.addLine(position + Vector(0,step * 3), position + Vector(vx * size, step * 3), ui.theme.colors.frame, thickness)
+	  -- ui.AddText(velocity_center + Vector(-3,-size*1.5-8), ui.theme.colors.darkgrey, "U")
+	  -- ui.AddText(velocity_center + Vector(-3,size*1.5), ui.theme.colors.darkgrey, "D")
+	  ui.addLine(position + Vector(-step*3, -size), position + Vector(-step*3, size), ui.theme.colors.frameDark, thickness)
+	  ui.addLine(position + Vector(-step*3,0), position + Vector(-step*3, vy * size), ui.theme.colors.frame, thickness)
+	  -- ui.AddText(velocity_center + Vector(7,-size*1.5-8), ui.theme.colors.darkgrey, "F")
+	  -- ui.AddText(velocity_center + Vector(7,size*1.5), ui.theme.colors.darkgrey, "B")
+	  ui.addLine(thrust_fb_center + Vector(-20, - size), thrust_fb_center + Vector(-20, size), ui.theme.colors.frameDark, thickness)
+	  ui.addLine(thrust_fb_center + Vector(-20,0), thrust_fb_center + Vector(-20, vz * size), ui.theme.colors.frame, thickness)
+	end
+
+end
+
 local reticuleTarget = "frame"
 
 local lastNavTarget = nil
@@ -483,7 +626,7 @@ local function displayReticule(center)
 		displayReticuleHorizon(center, roll_degrees)
 		displayReticuleCompass(center, heading_degrees)
 		displayReticuleDeltaV(center)
-
+		displayThrust()
 		displayDirectionalMarkers(center)
 	end
 end

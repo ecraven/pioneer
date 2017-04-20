@@ -357,10 +357,19 @@ ui.pi_2 = pi_2
 ui.pi_4 = pi_4
 ui.pi = pi
 ui.isMouseClicked = pigui.IsMouseClicked
+-- ui.isMouseReleased = ui.IsMouseReleased
 ui.getMousePos = pigui.GetMousePos
 ui.setTooltip = pigui.SetTooltip
 ui.shouldDrawUI = pigui.ShouldDrawUI
 ui.getWindowPos = pigui.GetWindowPos
+ui.addConvexPolyFilled = pigui.AddConvexPolyFilled
+ui.pushClipRect = pigui.PushClipRect
+ui.popClipRect = pigui.PopClipRect
+ui.openPopup = pigui.OpenPopup
+ui.beginPopup = pigui.BeginPopup
+ui.endPopup = pigui.EndPopup
+ui.selectable = pigui.Selectable
+ui.addText = pigui.AddText
 ui.loadTextureFromSVG = function(a, b, c)
 	return pigui:LoadTextureFromSVG(a, b, c)
 end

@@ -397,5 +397,10 @@ Event.Register("onGameEnd", onGameEnd)
 Event.Register("onGameStart", onGameStart)
 Serializer:RegisterClass("CrimeRecord", CrimeRecord)
 Serializer:Register("Player", serialize, unserialize)
-
+function Player:GetThrusterState()
+	return { x = 0, y = 0, z = 0 }
+end
+function Player:GetLowThrustPower()
+	return 0.25
+end
 return Player

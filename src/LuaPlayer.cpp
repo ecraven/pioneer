@@ -271,6 +271,17 @@ static int l_get_distance_to_zero_v(lua_State *l)
 	return 1;
 }
 
+static int l_get_oriented_velocity(lua_State *l)
+{
+	Player *player = LuaObject<Player>::CheckFromLua(1);
+	auto vel = player->GetVelocity() * player->GetOrient();
+	LuaTable v(l);
+	v.Set("x", vel.x);
+	v.Set("y", vel.y);
+	v.Set("z", vel.z);
+	return 1;
+}
+
 static int l_get_maneuver_time(lua_State *l)
 {
 	Player *player = LuaObject<Player>::CheckFromLua(1);
@@ -332,6 +343,7 @@ template <> void LuaObject<Player>::RegisterClass()
 		{ "GetAcceleration",     l_get_acceleration },
 		{ "IsMouseActive",       l_get_is_mouse_active },
 		{ "GetMouseDirection",   l_get_mouse_direction },
+		{ "GetOrientedVelocity", l_get_oriented_velocity },
 		{ 0, 0 }
 	};
 
