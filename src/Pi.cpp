@@ -85,6 +85,7 @@
 #include <algorithm>
 #include <sstream>
 #include "Chibi.h"
+#include <time.h>
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
 	// RegisterClassA and RegisterClassW are defined as macros in WinUser.h
@@ -1696,10 +1697,23 @@ float Pi::GetMoveSpeedShiftModifier() {
 }
 
 void Pi::DrawPiGui(double delta, std::string handler) {
+	auto before = clock();
 	Pi::pigui->Render(delta, handler);
-	if(handler == "GAME")
-		chibi.eval("(game)");
-	if(handler == "INIT")
-		chibi.eval("(init " + std::to_string(delta) + ")");
+	auto after = clock();
+	Output("Lua   took %f\n", double(after - before)/CLOCKS_PER_SEC);
+
+	if(handler == "GAME") {
+		before = clock();
+		chibi.game(delta);
+		after = clock();
+	}
+	if(handler == "INIT") {
+		before = clock();
+		chibi.init(delta);
+		after = clock();
+	}
+
+	Output("Chibi took %f\n", double(after - before)/CLOCKS_PER_SEC);
+
 	PiGui::RenderImGui();
 }
