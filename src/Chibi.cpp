@@ -53,6 +53,18 @@ static sexp ui_player_max_delta_v(sexp ctx, sexp self, sexp n) {
 	double ev = st->effectiveExhaustVelocity * log((double(p->GetStats().static_mass + st->fuelTankMass)) / (p->GetStats().static_mass));
 	return sexp_make_flonum(ctx, ev);
 }
+static sexp ui_player_current_delta_v(sexp ctx, sexp self, sexp n) {
+	Player *p = Pi::game->GetPlayer();
+	double ev = p->GetVelocityRelTo(p->GetFrame()).Length();
+	return sexp_make_flonum(ctx, ev);
+}
+static sexp ui_player_remaining_delta_v(sexp ctx, sexp self, sexp n) {
+	Player *player = Pi::game->GetPlayer();
+	const double fuelmass = 1000*player->GetShipType()->fuelTankMass * player->GetFuel();
+	double ev = player->GetShipType()->effectiveExhaustVelocity * log(player->GetMass()/(player->GetMass()-fuelmass));
+	return sexp_make_flonum(ctx, ev);
+}
+
 Chibi::Chibi() {
 	std::cout << "Starting chibi..." << std::endl;
 	ctx = sexp_make_eval_context(nullptr, nullptr, nullptr, 0, 0);
@@ -72,6 +84,8 @@ Chibi::Chibi() {
 	defun("ui:screen-size", (sexp_proc1)ui_screen_size, 0);
 	defun("ui:player", (sexp_proc1)ui_player, 0);
 	defun("ui:player-max-delta-v", (sexp_proc1)ui_player_max_delta_v, 0);
+	defun("ui:player-current-delta-v", (sexp_proc1)ui_player_current_delta_v, 0);
+	defun("ui:player-remaining-delta-v", (sexp_proc1)ui_player_remaining_delta_v, 0);
 	// sexp env = sexp_context_env(ctx);
 	// sexp v3 = sexp_register_simple_type(ctx, sexp_c_string(ctx, "v3", -1), SEXP_FALSE, sexp_cons(ctx, sexp_intern(ctx, "x", -1), sexp_cons(ctx, sexp_intern(ctx, "y", -1), sexp_cons(ctx, sexp_intern(ctx, "z", -1), SEXP_NULL))));
 	// sexp_env_define(ctx, env, sexp_intern(ctx, "<v3>", -1), v3);

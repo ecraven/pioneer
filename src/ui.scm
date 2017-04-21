@@ -22,7 +22,7 @@
 	)
 
 (define (game)
-	(show #t (ui:player-max-delta-v) nl)
+	(show #t (ui:player-max-delta-v) "  " (ui:player-current-delta-v) "  " (ui:player-remaining-delta-v) nl)
 	)
 
 (display "Hello from Chibi")
