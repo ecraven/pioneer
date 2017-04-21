@@ -34,13 +34,36 @@ static sexp print(sexp ctx, sexp self, sexp n) {
 	std::cout << "Called print with " << sexp_unbox_fixnum(n) << " arguments" << std::endl;
 	return SEXP_VOID;
 }
-static sexp ui_set_next_window_pos(sexp ctx, sexp self, sexp n, sexp x, sexp y) {
-	ImGui::SetNextWindowPos(ImVec2(sexp_unbox_fixnum(x),sexp_unbox_fixnum(y)));
+static sexp ui_set_next_window_pos(sexp ctx, sexp self, sexp n, sexp v3) {
+	
+	ImGui::SetNextWindowPos(ImVec2(sexp_unbox_fixnum(sexp_slot_ref(v3, 0)),sexp_unbox_fixnum(sexp_slot_ref(v3, 1))));
+	return SEXP_VOID;
+}
+static sexp ui_set_next_window_size(sexp ctx, sexp self, sexp n, sexp v3) {
+	ImGui::SetNextWindowSize(ImVec2(sexp_unbox_fixnum(sexp_slot_ref(v3, 0)),sexp_unbox_fixnum(sexp_slot_ref(v3, 1))));
+	return SEXP_VOID;
+}
+static sexp ui_dummy(sexp ctx, sexp self, sexp n, sexp v3) {
+	ImGui::Dummy(ImVec2(sexp_unbox_fixnum(sexp_slot_ref(v3, 0)),sexp_unbox_fixnum(sexp_slot_ref(v3, 1))));
+	return SEXP_VOID;
+}
+static sexp ui_same_line(sexp ctx, sexp self, sexp n) {
+	ImGui::SameLine();
+	return SEXP_VOID;
+}
+static sexp ui_progress_bar(sexp ctx, sexp self, sexp n, sexp fraction, sexp v3_size) {
+	std::cout << "fraction flonum? " << sexp_flonump(fraction) << std::endl;
+	ImGui::ProgressBar(sexp_flonum_value(fraction), ImVec2(sexp_unbox_fixnum(sexp_slot_ref(v3_size, 0)),sexp_unbox_fixnum(sexp_slot_ref(v3_size, 1))));
 	return SEXP_VOID;
 }
 static sexp ui_screen_width(sexp ctx, sexp self, sexp n) {
 	return sexp_make_fixnum(Graphics::GetScreenWidth());
 }
+static sexp ui_calc_text_size(sexp ctx, sexp self, sexp n, sexp text) {
+	const ImVec2 &size = ImGui::CalcTextSize(sexp_string_data(text));
+	return sexp_apply(ctx, v3_sexp, sexp_cons(ctx, sexp_make_flonum(ctx, size.x), sexp_cons(ctx, sexp_make_flonum(ctx, size.y), sexp_cons(ctx, SEXP_ZERO, SEXP_NULL))));	
+}
+
 static sexp ui_screen_height(sexp ctx, sexp self, sexp n) {
 	return sexp_make_fixnum(Graphics::GetScreenHeight());
 }
@@ -78,7 +101,12 @@ Chibi::Chibi() {
 	defun("ui:begin", (sexp_proc1)ui_begin, 1);
 	defun("ui:end", (sexp_proc1)ui_end, 0);
 	defun("ui:text", (sexp_proc1)ui_text, 1);
-	defun("ui:set-next-window-pos", (sexp_proc1)ui_set_next_window_pos, 2);
+	defun("ui:dummy", (sexp_proc1)ui_dummy, 1);
+	defun("ui:same-line", (sexp_proc1)ui_same_line, 0);
+	defun("ui:calc-text-size", (sexp_proc1)ui_calc_text_size, 1);
+	defun("ui:progress-bar", (sexp_proc1)ui_progress_bar, 2);
+	defun("ui:set-next-window-pos", (sexp_proc1)ui_set_next_window_pos, 1);
+	defun("ui:set-next-window-size", (sexp_proc1)ui_set_next_window_size, 1);
 	defun("ui:screen-width", (sexp_proc1)ui_screen_width, 0);
 	defun("ui:screen-height", (sexp_proc1)ui_screen_height, 0);
 	defun("ui:screen-size", (sexp_proc1)ui_screen_size, 0);

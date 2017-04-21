@@ -1700,6 +1700,6 @@ void Pi::DrawPiGui(double delta, std::string handler) {
 	if(handler == "GAME")
 		chibi.eval("(game)");
 	if(handler == "INIT")
-		chibi.eval("(init)");
+		chibi.eval("(init " + std::to_string(delta) + ")");
 	PiGui::RenderImGui();
 }
