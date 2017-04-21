@@ -42,7 +42,7 @@ static sexp ui_screen_height(sexp ctx, sexp self, sexp n) {
 	return sexp_make_fixnum(Graphics::GetScreenHeight());
 }
 static sexp ui_player(sexp ctx, sexp self, sexp n) {
-	return sexp_make_cpointer(ctx, 0, Game.player, SEXP_FALSE, 0);
+	return sexp_make_cpointer(ctx, sexp_unbox_fixnum(sexp_opcode_arg1_type(self)), Game.player, SEXP_FALSE, 1);
 }
 Chibi::Chibi() {
 	std::cout << "Starting chibi..." << std::endl;
