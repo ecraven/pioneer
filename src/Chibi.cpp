@@ -3,6 +3,9 @@
 #include <iostream>
 #include "imgui/imgui.h"
 #include "graphics/Graphics.h"
+#include "Player.h"
+#include "Game.h"
+#include "Pi.h"
 
 static sexp v3_sexp;
 
@@ -42,7 +45,13 @@ static sexp ui_screen_height(sexp ctx, sexp self, sexp n) {
 	return sexp_make_fixnum(Graphics::GetScreenHeight());
 }
 static sexp ui_player(sexp ctx, sexp self, sexp n) {
-	return sexp_make_cpointer(ctx, sexp_unbox_fixnum(sexp_opcode_arg1_type(self)), Game.player, SEXP_FALSE, 1);
+	return sexp_make_cpointer(ctx, sexp_unbox_fixnum(sexp_opcode_arg1_type(self)), Pi::game->GetPlayer(), SEXP_FALSE, 0);
+}
+static sexp ui_player_max_delta_v(sexp ctx, sexp self, sexp n) {
+	Player *p = Pi::game->GetPlayer();
+	const ShipType *st = p->GetShipType();
+	double ev = st->effectiveExhaustVelocity * log((double(p->GetStats().static_mass + st->fuelTankMass)) / (p->GetStats().static_mass));
+	return sexp_make_flonum(ctx, ev);
 }
 Chibi::Chibi() {
 	std::cout << "Starting chibi..." << std::endl;
@@ -61,6 +70,8 @@ Chibi::Chibi() {
 	defun("ui:screen-width", (sexp_proc1)ui_screen_width, 0);
 	defun("ui:screen-height", (sexp_proc1)ui_screen_height, 0);
 	defun("ui:screen-size", (sexp_proc1)ui_screen_size, 0);
+	defun("ui:player", (sexp_proc1)ui_player, 0);
+	defun("ui:player-max-delta-v", (sexp_proc1)ui_player_max_delta_v, 0);
 	// sexp env = sexp_context_env(ctx);
 	// sexp v3 = sexp_register_simple_type(ctx, sexp_c_string(ctx, "v3", -1), SEXP_FALSE, sexp_cons(ctx, sexp_intern(ctx, "x", -1), sexp_cons(ctx, sexp_intern(ctx, "y", -1), sexp_cons(ctx, sexp_intern(ctx, "z", -1), SEXP_NULL))));
 	// sexp_env_define(ctx, env, sexp_intern(ctx, "<v3>", -1), v3);

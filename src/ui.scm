@@ -22,6 +22,8 @@
 	)
 
 (define (game)
-	3)
+	(show #t (ui:player-max-delta-v) nl)
+	)
+
 (display "Hello from Chibi")
 (newline)
