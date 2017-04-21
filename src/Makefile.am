@@ -156,7 +156,8 @@ noinst_HEADERS = \
 	utils.h \
 	vector2.h \
 	vector3.h \
-	enum_table.h
+	enum_table.h \
+  Chibi.h
 
 pioneer_SOURCES	= \
 	AmbientSounds.cpp \
@@ -293,7 +294,8 @@ pioneer_SOURCES	= \
 	main.cpp \
 	perlin.cpp \
 	utils.cpp \
-	enum_table.cpp
+	enum_table.cpp \
+  Chibi.cpp
 
 pioneer_LDADD = \
 	collider/libcollider.a \
@@ -317,7 +319,8 @@ pioneer_LDADD = \
 pioneer_LDADD += \
 	$(FREETYPE_LIBS) $(GL_LIBS) \
 	$(SDL2_LIBS) $(SIGC_LIBS) $(LUA_LIBS) $(VORBIS_LIBS) \
-	$(PNG_LIBS) $(CURL_LIBS) $(ASSIMP_LIBS) $(EXTRA_LIBS)
+	$(PNG_LIBS) $(CURL_LIBS) $(ASSIMP_LIBS) $(EXTRA_LIBS) \
+	/usr/lib/libchibi-scheme.so
 
 if BUILD_WIN32
 pioneer_LDFLAGS = -Wl,-Map=pioneer.map

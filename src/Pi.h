@@ -18,7 +18,7 @@
 #include <map>
 #include <string>
 #include <vector>
-
+#include "Chibi.h"
 class Intro;
 class LuaConsole;
 class LuaNameGen;
@@ -58,6 +58,7 @@ class Game;
 
 class Pi {
 public:
+	static Chibi chibi;
 	static void Init(const std::map<std::string,std::string> &options, bool no_gui = false);
 	static void InitGame();
 	static void StartGame();
@@ -135,7 +136,7 @@ public:
 #endif
 
 	static RefCountedPtr<UI::Context> ui;
-    static RefCountedPtr<PiGui> pigui;
+	static RefCountedPtr<PiGui> pigui;
 
 	static Random rng;
 	static int statSceneTris;

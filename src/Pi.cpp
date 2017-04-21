@@ -84,6 +84,7 @@
 #include "ui/Lua.h"
 #include <algorithm>
 #include <sstream>
+#include "Chibi.h"
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
 	// RegisterClassA and RegisterClassW are defined as macros in WinUser.h
@@ -159,6 +160,7 @@ Sound::MusicPlayer Pi::musicPlayer;
 std::unique_ptr<AsyncJobQueue> Pi::asyncJobQueue;
 std::unique_ptr<SyncJobQueue> Pi::syncJobQueue;
 
+Chibi Pi::chibi;
 // Leaving define in place in case of future rendering problems.
 #define USE_RTT 0
 
@@ -1695,5 +1697,9 @@ float Pi::GetMoveSpeedShiftModifier() {
 
 void Pi::DrawPiGui(double delta, std::string handler) {
 	Pi::pigui->Render(delta, handler);
+	if(handler == "GAME")
+		chibi.eval("(game)");
+	if(handler == "INIT")
+		chibi.eval("(init)");
 	PiGui::RenderImGui();
 }
