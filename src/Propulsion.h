@@ -11,6 +11,7 @@
 #include "json/JsonUtils.h"
 #include "scenegraph/Model.h"
 #include "DynamicBody.h"
+#include "utils.h"
 
 enum Thruster { // <enum scope='ShipType' name=ShipTypeThruster prefix=THRUSTER_ public>
 	THRUSTER_REVERSE,
@@ -70,8 +71,8 @@ class Propulsion
 
 		inline FuelState GetFuelState() const { return m_thrusterFuel > 0.05f ? FUEL_OK : m_thrusterFuel > 0.0f ? FUEL_WARNING : FUEL_EMPTY; }
 		// fuel left, 0.0-1.0
-		inline double GetFuel() const { return m_thrusterFuel;	}
-		inline void SetFuel(const double f) { m_thrusterFuel = Clamp( f, 0.0, 1.0 ); }
+	inline double GetFuel() const { Output("Propulsion: GetFuel -> %f\n", m_thrusterFuel); return m_thrusterFuel;	}
+		inline void SetFuel(const double f) { m_thrusterFuel = Clamp( f, 0.0, 1.0 ); Output("Propulsion: SetFuel -> %f\n", m_thrusterFuel);  }
 		inline double GetFuelReserve() const { return m_reserveFuel; }
 		inline void SetFuelReserve(const double f) { m_reserveFuel = Clamp( f, 0.0, 1.0 ); }
 		float GetFuelUseRate();

@@ -155,9 +155,11 @@ local lobby = function (tab)
 			total = price * mass
 			fuel = Game.player.fuel + mass * 100 / shipDef.fuelTankMass
 		end
-
+    print("AddMoney " .. -total)
 		Game.player:AddMoney(-total)
 		station:AddEquipmentStock(Equipment.cargo.hydrogen, -math.ceil(mass))
+		print("Game.player.fuel " .. Game.player.fuel)
+    print("SetFuelPercent " .. fuel)
 		Game.player:SetFuelPercent(fuel)
 	end
 

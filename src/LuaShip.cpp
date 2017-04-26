@@ -190,8 +190,10 @@ static int l_ship_set_fuel_percent(lua_State *l)
 				s->GetLabel().c_str(), percent);
 		}
 	}
-
+	Output("C++ SetFuelPercent %f\n", percent);
 	s->SetFuel(percent/100.0);
+	// HACK
+	s->Properties().Set("fuel", s->GetFuel()*100); // XXX to match SetFuelPercent
 
 	LUA_DEBUG_END(l, 0);
 
