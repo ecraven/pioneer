@@ -228,7 +228,7 @@ local function displayDirectionalMarkers()
 	local function displayDirectionalMarker(ship_space, icon, showDirection, angle)
 		local screen = Engine.ShipSpaceToScreenSpace(ship_space)
 		if screen.z <= 1 then
-			ui.addIcon(screen, icon, colors.reticuleCircle, 32, ui.anchor.center, ui.anchor.center, nil, angle)
+			ui.addFancyIcon(screen, icon, colors.reticuleCircle, 32, ui.anchor.center, ui.anchor.center, nil, angle)
 		end
 		return showDirection and (screen - center):magnitude() > reticuleCircleRadius
 	end
@@ -248,7 +248,7 @@ local function displayDirectionalMarkers()
 	showDirection = displayDirectionalMarker(Vector(-1,0,0), icons.left, showDirection)
 
 	if showDirection then
-		ui.addIcon(center, icons.direction_forward, colors.reticuleCircle, 32, ui.anchor.center, ui.anchor.center, nil, angle(forward, 0))
+		ui.addFancyIcon(center, icons.direction_forward, colors.reticuleCircle, 32, ui.anchor.center, ui.anchor.center, nil, angle(forward, 0))
 	end
 end
 
@@ -283,7 +283,7 @@ local function displayIndicator(onscreen, position, direction, icon, color, show
 	local dir = direction * reticuleCircleRadius * 0.90
 	local indicator = center + dir
 	if onscreen then
-		ui.addIcon(position, icon, color, size, ui.anchor.center, ui.anchor.center)
+		ui.addFancyIcon(position, icon, color, size, ui.anchor.center, ui.anchor.center)
 		if tooltip then
 			local mouse_position = ui.getMousePos()
 			if (mouse_position - position):magnitude() < indicatorSize then -- not size on purpose, most icons are much smaller
@@ -293,7 +293,7 @@ local function displayIndicator(onscreen, position, direction, icon, color, show
 	end
 	-- only show small indicator if the large icon is outside the reticule radius
 	if showIndicator and (center - position):magnitude() > reticuleCircleRadius * 1.2 then
-		ui.addIcon(indicator, icon, color, indicatorSize, ui.anchor.center, ui.anchor.center)
+		ui.addFancyIcon(indicator, icon, color, indicatorSize, ui.anchor.center, ui.anchor.center)
 	end
 end
 
@@ -306,7 +306,7 @@ local function displayDetailButtons(radius, navTarget, combatTarget)
 	local size = 24
 	if combatTarget or navTarget then
 		local color = reticuleTarget == "frame" and colors.reticuleCircle or colors.reticuleCircleDark
-		ui.addIcon(uiPos, icons.display_frame, color, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_FRAME)
+		ui.addFancyIcon(uiPos, icons.display_frame, color, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_FRAME)
 		if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
 			reticuleTarget = "frame"
 		end
@@ -314,7 +314,7 @@ local function displayDetailButtons(radius, navTarget, combatTarget)
 	end
 	if navTarget then
 		local color = reticuleTarget == "navTarget" and colors.reticuleCircle or colors.reticuleCircleDark
-		ui.addIcon(uiPos, icons.display_navtarget, color, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_NAV_TARGET)
+		ui.addFancyIcon(uiPos, icons.display_navtarget, color, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_NAV_TARGET)
 		if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
 			reticuleTarget = "navTarget"
 		end
@@ -322,7 +322,7 @@ local function displayDetailButtons(radius, navTarget, combatTarget)
 	end
 	if combatTarget then
 		local color = reticuleTarget == "combatTarget" and colors.reticuleCircle or colors.reticuleCircleDark
-		ui.addIcon(uiPos, icons.display_combattarget, color, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_COMBAT_TARGET)
+		ui.addFancyIcon(uiPos, icons.display_combattarget, color, size, ui.anchor.left, ui.anchor.bottom, lui.HUD_SHOW_COMBAT_TARGET)
 		if ui.isMouseClicked(0) and (mouse_position - (uiPos + Vector(size/2, -size/2))):magnitude() < size/2 then
 			reticuleTarget = "combatTarget"
 		end
@@ -477,7 +477,7 @@ local function displayMouseMoveIndicator()
 	if player:IsMouseActive() then
 		local direction = player:GetMouseDirection()
 		local screen = Engine.CameraSpaceToScreenSpace(direction)
-		ui.addIcon(screen, icons.mouse_move_direction, colors.mouseMovementDirection, 32, ui.anchor.center, ui.anchor.center)
+		ui.addFancyIcon(screen, icons.mouse_move_direction, colors.mouseMovementDirection, 32, ui.anchor.center, ui.anchor.center)
 	end
 end
 
@@ -621,6 +621,21 @@ local function callModules(mode)
 	end
 end
 
+local function displayPressure()
+	local frame = player.frameBody
+	if frame then
+		local pressure, density = frame:GetAtmosphericState()
+		if pressure then
+			local position = Vector(100,100)
+			local color = colors.white
+			if pressure > 8 then
+				color = colors.combatTarget
+			end
+			ui.circularGauge(position, pressure, 11.0, icons.pressure, color, "Pressure")
+		end
+	end
+end
+
 local function displayOnScreenObjects()
 	local should_show_label = ui.shouldShowLabels()
 	local iconsize = 18
@@ -673,7 +688,7 @@ local function displayOnScreenObjects()
 	for k,v in pairs(onscreen) do
 		table.sort(v.others, function(a,b) return a.body:IsMoreImportantThan(b.body) end)
 		local coords = v.mainBody.screenCoordinates
-		ui.addIcon(coords, getBodyIcon(v.mainBody.body), colors.frame, iconsize, ui.anchor.center, ui.anchor.center)
+		ui.addFancyIcon(coords, getBodyIcon(v.mainBody.body), colors.frame, iconsize, ui.anchor.center, ui.anchor.center)
 		if should_show_label then
 			local multipleText = ""
 			if v.multiple then
@@ -745,6 +760,7 @@ ui.registerHandler(
 											else
 												displayOnScreenObjects()
 												displayReticule()
+												displayPressure()
 												callModules("game")
 											end
 										else

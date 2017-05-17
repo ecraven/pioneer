@@ -663,6 +663,22 @@ static int l_body_get_target_indicator_screen_position(lua_State *l)
 	return pushOnScreenPositionDirection(l, p);
 }
 
+static int l_body_get_atmospheric_state(lua_State *l) {
+	Body *b = LuaObject<Body>::CheckFromLua(1);
+	//	const SystemBody *sb = b->GetSystemBody();
+	vector3d pos = Pi::player->GetPosition();
+	double center_dist = pos.Length();
+	if (b->IsType(Object::PLANET)) {
+		double pressure, density;
+		static_cast<Planet*>(b)->GetAtmosphericState(center_dist, &pressure, &density);
+		lua_pushnumber(l, pressure);
+		lua_pushnumber(l, density);
+		return 2;
+	} else {
+		return 0;
+	}
+}
+
 static std::string _body_serializer(LuaWrappable *o)
 {
 	static char buf[256];
@@ -739,6 +755,7 @@ template <> void LuaObject<Body>::RegisterClass()
 		{ "IsMissile",           l_body_is_missile },
 		{ "IsCargoContainer",    l_body_is_cargo_container },
 		{ "GetSystemBody",       l_body_get_system_body },
+		{ "GetAtmosphericState", l_body_get_atmospheric_state },
 		{ 0, 0 }
 	};
 

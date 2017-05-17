@@ -260,7 +260,7 @@ ui.calcTextAlignment = function(pos, size, anchor_horizontal, anchor_vertical)
 	return position
 end
 
-ui.addIcon = function(position, icon, color, size, anchor_horizontal, anchor_vertical, tooltip, angle_rad)
+ui.addFancyIcon = function(position, icon, color, size, anchor_horizontal, anchor_vertical, tooltip, angle_rad)
 	local pos = ui.calcTextAlignment(position, Vector(size, size), anchor_horizontal, anchor_vertical)
 	local uv0, uv1 = get_icon_tex_coords(icon)
 	if angle_rad then
@@ -335,7 +335,7 @@ ui.addFancyText = function(position, anchor_horizontal, anchor_vertical, data, b
 										position.x = position.x + s.x + spacing
 			end)
 	  else
-			local s = ui.addIcon(position, item.text, item.color, item.font.size, ui.anchor.left, ui.anchor.bottom, item.tooltip)
+			local s = ui.addFancyIcon(position, item.text, item.color, item.font.size, ui.anchor.left, ui.anchor.bottom, item.tooltip)
 			position.x = position.x + s.x + spacing
 	  end
 	end
@@ -374,6 +374,11 @@ end
 ui.icon = function(icon, size, color)
 	local uv0, uv1 = get_icon_tex_coords(icon)
 	pigui.Image(ui.icons_texture, size, uv0, uv1, color)
+end
+
+ui.addIcon = function(icon, position, size, color)
+	local uv0, uv1 = get_icon_tex_coords(icon)
+	pigui.AddImage(ui.icons_texture, position, position + size, uv0, uv1, color)
 end
 
 -- Forward selected functions
@@ -462,6 +467,27 @@ end
 
 ui.getModules = function(mode)
 	return modules[mode] or {}
+end
+
+local circularGaugeThickness = 10
+local circularGaugeLineThickness = 3
+
+ui.circularGauge = function(position, value, maximum, icon, color, tooltip)
+	local circularGaugeSize = ui.reticuleCircleRadius / 4
+	local circularGaugeIconSize = circularGaugeSize - circularGaugeLineThickness / 2 - 8
+	local segments = ui.circleSegments(circularGaugeSize)
+	ui.addCircle(position, circularGaugeSize, ui.theme.colors.lightBlackBackground, segments, circularGaugeThickness)
+	local from = ui.pi + ui.pi_2
+	local to = from + ui.twoPi * (value / maximum)
+	ui.pathArcTo(position, circularGaugeSize, from, to, segments)
+	ui.pathStroke(color, false, circularGaugeThickness)
+	ui.addLine(position + Vector(0, circularGaugeSize), position + Vector(0, circularGaugeSize - circularGaugeThickness / 2 - 1), ui.theme.colors.grey, circularGaugeLineThickness)
+	ui.addLine(position - Vector(0, circularGaugeSize), position - Vector(0, circularGaugeSize - circularGaugeThickness / 2 - 1), ui.theme.colors.grey, circularGaugeLineThickness)
+	ui.addLine(position + Vector(circularGaugeSize, 0), position + Vector(circularGaugeSize - circularGaugeThickness / 2 - 1, 0), ui.theme.colors.grey, circularGaugeLineThickness)
+	ui.addLine(position - Vector(circularGaugeSize, 0), position - Vector(circularGaugeSize - circularGaugeThickness / 2 - 1, 0), ui.theme.colors.grey, circularGaugeLineThickness)
+	ui.addIcon(icon, position - Vector(circularGaugeIconSize / 2, circularGaugeIconSize), Vector(circularGaugeIconSize, circularGaugeIconSize), ui.theme.colors.white)
+	local text = string.format("%.1f", value)
+	ui.addStyledText(position, ui.anchor.center, ui.anchor.top, text, color, ui.fonts.pionillium.medium, tooltip)
 end
 
 return ui
