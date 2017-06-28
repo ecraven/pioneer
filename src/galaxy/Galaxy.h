@@ -53,7 +53,7 @@ public:
 	RefCountedPtr<GalaxyGenerator> GetGenerator() const;
 	const std::string& GetGeneratorName() const;
 	int GetGeneratorVersion() const;
-
+	const SectorCache &GetSectorCache() const { return m_sectorCache; }
 private:
 	bool m_initialized;
 	RefCountedPtr<GalaxyGenerator> m_galaxyGenerator;

@@ -566,8 +566,10 @@ void Game::SwitchToNormalSpace()
 	m_hyperspaceClouds.clear();
 
 	m_space->GetBackground()->SetDrawFlags( Background::Container::DRAW_SKYBOX | Background::Container::DRAW_STARS );
+	m_space->GetBackground()->Refresh(Pi::rng);
 
 	m_state = STATE_NORMAL;
+	Output("Entered normal space...\n");
 }
 
 const float Game::s_timeAccelRates[] = {

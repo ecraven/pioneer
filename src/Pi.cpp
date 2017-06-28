@@ -817,6 +817,8 @@ void Pi::SetView(View *v)
 	if (currentView) currentView->Detach();
 	currentView = v;
 	if (currentView) currentView->Attach();
+	if(Pi::game && Pi::game->GetSpace())
+		Pi::game->GetSpace()->GetBackground()->Refresh(Pi::rng);
 }
 
 void Pi::OnChangeDetailLevel()

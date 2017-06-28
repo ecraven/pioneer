@@ -40,6 +40,9 @@ public:
 	typedef std::map<SystemPath,T*,CompareT> AtticMap;
 	typedef std::function<void()> CacheFilledCallback;
 
+	typename AtticMap::const_iterator Begin() const { return m_attic.begin(); }
+	typename AtticMap::const_iterator End() const { return m_attic.end(); }
+
 	class Slave : public RefCounted {
 		friend class GalaxyObjectCache<T,CompareT>;
 	public:

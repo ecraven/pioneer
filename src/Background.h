@@ -5,6 +5,7 @@
 #define _BACKGROUND_H
 
 #include "libs.h"
+#include "galaxy/Sector.h"
 #include "galaxy/SystemPath.h"
 #include "graphics/Drawables.h"
 #include "graphics/Texture.h"
@@ -109,9 +110,8 @@ namespace Background
 		void SetIntensity(float intensity);
 		void SetDrawFlags(const Uint32 flags);
 
-	private:
 		void Refresh(Random &rand);
-
+	private:
 		Graphics::Renderer *m_renderer;
 		MilkyWay m_milkyWay;
 		Starfield m_starField;
