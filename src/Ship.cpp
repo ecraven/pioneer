@@ -264,11 +264,13 @@ void Ship::PostLoadFixup(Space *space)
 	m_controller->PostLoadFixup(space);
 }
 
+unsigned int Ship::m_unlabeled_ship_index = 0;
+
 Ship::Ship(const ShipType::Id &shipId): DynamicBody(),
 	m_controller(0),
   m_flightState(FLYING),
   m_alertState(ALERT_NONE),
-	m_landingGearAnimation(nullptr)
+  m_landingGearAnimation(nullptr)
 {
 	AddFeature( Feature::PROPULSION ); // add component propulsion
 	AddFeature( Feature::FIXED_GUNS ); // add component fixed guns
@@ -319,7 +321,7 @@ Ship::Ship(const ShipType::Id &shipId): DynamicBody(),
 		}
 		GetModel()->SetThrusterColor(dir, m_type->directionThrusterColor[i]);
 	}
-	SetLabel("UNLABELED_SHIP");
+	SetLabel("UNLABELED_SHIP_" + std::to_string(m_unlabeled_ship_index++));
 	m_skin.SetRandomColors(Pi::rng);
 	m_skin.SetDecal(m_type->manufacturer);
 	m_skin.Apply(GetModel());

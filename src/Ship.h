@@ -301,6 +301,7 @@ private:
 	std::unordered_map<Body*, Uint8> m_relationsMap;
 
 	std::string m_shipName;
+	static unsigned int m_unlabeled_ship_index;
 public:
 	void ClearAngThrusterState() { GetPropulsion()->ClearAngThrusterState(); }
 	void ClearLinThrusterState() { GetPropulsion()->ClearLinThrusterState(); }
