@@ -289,7 +289,13 @@ ui.Format = {
   Datetime = function(date)
 		local second, minute, hour, day, month, year = Game.GetPartsFromDateTime(date)
 		return string.format("%4i-%02i-%02i %02i:%02i:%02i", year, month, day, hour, minute, second)
-  end
+  end,
+	Money = function(amount)
+		return Format.Money(amount, false) -- TODO: what does false mean here?
+	end,
+	Capacity = function(capacity)
+		return capacity .. 't'
+	end
 }
 
 ui.pointOnClock = function(center, radius, hours)
@@ -480,7 +486,9 @@ ui.separator = pigui.Separator
 ui.pushTextWrapPos = pigui.PushTextWrapPos
 ui.popTextWrapPos = pigui.PopTextWrapPos
 ui.setScrollHere = pigui.SetScrollHere
-ui.selectable = pigui.Selectable
+ui.selectable = function(label, selected, flags)
+	return pigui.Selectable(label or "MISSING", selected, flags or {})
+end
 ui.progressBar = pigui.ProgressBar
 ui.calcTextSize = pigui.CalcTextSize
 ui.addCircle = pigui.AddCircle

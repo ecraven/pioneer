@@ -237,6 +237,25 @@ theme.icons = {
    -- TODO: manual / autopilot
 	 -- dummy, until actually defined correctly
 	 mouse_move_direction = 14,
+	 -- twelfth row
+	 mission_default = 176,
+	 mission_searchrescue = 177,
+	 mission_fuel_club = 178,
+	 mission_assassination = 179,
+	 mission_advice = 170, -- missing, star
+	 mission_donate_to_cranks = 180,
+	 mission_news = 181,
+	 mission_crew_contracts = 182,
+	 mission_taxi = 183,
+	 mission_taxi_urgent = 184,
+	 mission_haul = 185,
+	 mission_haul_fast = 186,
+	 mission_delivery = 187,
+	 mission_delivery_urgent = 188,
+	 mission_goods_trader = 189,
+	 mission_breakdown_servicing = 190,
+	 -- thirteenth row
+	 mission_second_hand = 192,
 	 -- fourteenth row, wide icons
 	 missile_unguided = 208,
 	 missile_guided = 210,
