@@ -684,5 +684,24 @@ end
 ui.radialMenu = function(center, id, icons, font, size, tooltips)
 	pigui.RadialMenu(center, id, icons, font, size, tooltips)
 end
-
+ui.iconTabs = function(selected, tabs)
+	local buttonSize = Vector(32,32)
+	local framePadding = 3
+	local latter = false
+	for k,e in pairs(tabs) do
+		if(latter) then
+			ui.sameLine()
+		end
+		if(ui.coloredSelectedIconButton(e.icon, buttonSize, selected == k, framePadding, ui.theme.colors.buttonBlue, ui.theme.colors.white, e.tooltip)) then
+			selected = k
+		end
+		latter = true
+	end
+	for k,e in pairs(tabs) do
+		if selected == k then
+			(e.fun)()
+		end
+	end
+	return selected
+end
 return ui

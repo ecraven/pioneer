@@ -36,7 +36,7 @@ local show_item = function (label,value)
 	ui.text(value); ui.nextColumn()
 end
 local large_text = function(text)
-		ui.withFont(ui.fonts.pionillium.large, function()
+	ui.withFont(ui.fonts.pionillium.large, function()
 								ui.text(text)
 	end)
 end
@@ -152,9 +152,23 @@ local showPersonalInfo = function ()
 	show_item(l.ALLEGIANCE, l.NONE) -- TODO
 	show_item(l.RANK, l.NONE) -- TODO
 end
+
+local showMarket = function()
+	large_text(l.ECONOMY_TRADE)
+end
+
+local showMissions = function()
+	large_text(l.MISSIONS)
+end
+
+local showRoster = function()
+	large_text(l.CREW_ROSTER)
+end
+
 local buttonSize = Vector(32,32)
 local framePadding = 3
-local show_tab = "shipinfo"
+local show_tab = 1
+
 local displayInfoWindow = function ()
 	local font = ui.fonts.pionillium.medium;
 	player = Game.player
@@ -164,20 +178,13 @@ local displayInfoWindow = function ()
 												ui.setNextWindowSize(Vector(ui.screenWidth / 5, ui.screenHeight / 1.5) , "Always")
 												ui.window("ShipInfo", {"NoCollapse","NoTitleBar"},
 																	function()
-																		if(ui.coloredSelectedIconButton(icons.info, buttonSize, show_tab == 'shipinfo', framePadding, colors.buttonBlue, colors.white, "Ship Info")) then
-																			show_tab='shipinfo'
-																		end
-																		ui.sameLine()
-																		if(ui.coloredSelectedIconButton(icons.personal_info, buttonSize, show_tab == 'personalinfo', framePadding, colors.buttonBlue, colors.white, "Personal Info")) then
-																			show_tab='personalinfo'
-																		end
-																		if(show_tab == 'shipinfo') then
-																			showShipInfo()
-																		end
-																		if(show_tab == 'personalinfo') then
-																			showPersonalInfo()
-																		end
-
+																		show_tab = ui.iconTabs(show_tab,
+																													 {{ icon = icons.scanner, tooltip = l.SHIP_INFORMATION, fun = showShipInfo },
+																														 { icon = icons.personal, tooltip = l.PERSONAL_INFORMATION, fun = showPersonalInfo },
+																														 { icon = icons.market, tooltip = l.ECONOMY_TRADE, fun = showMarket },
+																														 { icon = icons.star, tooltip = l.MISSIONS, fun = showMissions },
+																														 { icon = icons.roster, tooltip = l.CREW_ROSTER, fun = showRoster }
+																		})
 												end)
 										end)
 								end)
@@ -187,3 +194,11 @@ end
 ui.registerModule("game", displayInfoWindow)
 
 return {}
+
+-- icons.info
+-- icons.bbs
+-- icons.market
+-- seems to be missing
+-- icons.equipment
+-- icons.repairs
+-- icons.shield_other
