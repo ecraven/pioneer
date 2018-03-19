@@ -89,6 +89,11 @@ function ui.child(id, size, fun)
 	pigui.EndChild()
 end
 function ui.withFont(name, size, fun)
+	if type(name) == 'table' then
+		fun = size
+		size = name.size
+		name = name.name
+	end
 	local font = pigui:PushFont(name, size)
 	fun()
 	if font then
@@ -497,8 +502,9 @@ ui.withID = function(id, fun)
 end
 ui.imageButton = function(icon, size, frame_padding, bg_color, tint_color, tooltip)
 	local uv0, uv1 = get_icon_tex_coords(icon)
-	pigui.withID(tooltip, function()
-								 local res = pigui.ImageButton(ui.icons_texture, size, uv0, uv1, frame_padding, bg_color, tint_color)
+	local res = false
+	ui.withID(tooltip, function()
+							res = pigui.ImageButton(ui.icons_texture, size, uv0, uv1, frame_padding, bg_color, tint_color)
 	end)
 	return res
 end
@@ -673,6 +679,10 @@ end
 
 ui.getModules = function(mode)
 	return modules[mode] or {}
+end
+
+ui.radialMenu = function(center, id, icons, font, size, tooltips)
+	pigui.RadialMenu(center, id, icons, font, size, tooltips)
 end
 
 return ui
