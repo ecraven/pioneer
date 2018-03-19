@@ -704,9 +704,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.56041974"
-     inkscape:cx="1024.8906"
-     inkscape:cy="1389.0864"
+     inkscape:zoom="0.7925532"
+     inkscape:cx="1040.2672"
+     inkscape:cy="990.70687"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -5897,30 +5897,23 @@
       </g>
     </g>
     <g
-       transform="matrix(7.0866142,0,0,7.0866142,907.08665,-81.496107)"
-       id="g4294"
-       inkscape:export-filename="D:\work\pioneer\graphics_design\icons\donate.png"
-       inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"
-       inkscape:label="Icon BBS Donate">
+       id="g2146">
       <rect
-         style="display:inline;fill:none;stroke:none"
+         style="display:inline;fill:none;stroke:none;stroke-width:7.08661413"
          id="rect4259"
-         width="32"
-         height="32"
-         x="0"
-         y="0" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Adobe Arabic';-inkscape-font-specification:'Adobe Arabic';letter-spacing:0px;word-spacing:0px;display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
-         x="5.6586308"
-         y="24.975393"
-         id="text3817-5"><tspan
-           sodipodi:role="line"
-           id="tspan3819-2"
-           x="5.6586308"
-           y="24.975393"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:29.29339409px;line-height:125%;font-family:Orbiteer;-inkscape-font-specification:'Orbiteer Bold';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1">$</tspan></text>
+         width="226.77165"
+         height="226.77165"
+         x="907.08667"
+         y="-81.496109" />
+      <g
+         id="text3817-5"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:85.03936768px;line-height:0%;font-family:'Adobe Arabic';-inkscape-font-specification:'Adobe Arabic';letter-spacing:0px;word-spacing:0px;display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:7.08661413"
+         aria-label="$">
+        <path
+           id="path2140"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:207.59098816px;line-height:125%;font-family:Orbiteer;-inkscape-font-specification:'Orbiteer Bold';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:7.08661413"
+           d="m 1027.7706,126.00507 h -16.4208 l -0.1013,-30.510197 Q 998.57813,94.988059 986.71868,92.656715 974.85924,90.325371 963.60797,86.169497 V 59.612446 q 11.65672,5.980405 23.51616,9.224014 11.96081,3.142246 24.22567,3.547698 V 40.860331 l -3.3449,-0.608177 Q 983.77916,35.994917 973.54152,26.872266 963.40524,17.749615 963.40524,0.61930424 q 0,-18.14393924 12.36626,-28.28021724 12.46762,-10.237642 35.477,-11.149907 l 0.1013,-23.414804 h 16.4208 v 23.009353 q 10.1363,0.810902 20.2726,2.53407 10.1362,1.723167 20.3739,4.459962 v 25.7461481 q -10.1363,-4.2572371 -20.2726,-6.5885811 -10.1362,-2.432707 -20.3739,-2.939521 v 29.09112 l 3.2436,0.608177 q 25.7462,4.054511 36.0852,13.582613 10.4403,9.426739 10.4403,27.97613 0,18.650752 -12.3662,28.685668 -12.3663,9.933553 -37.4029,11.352632 z M 1011.3498,10.755583 v -26.455687 q -7.1967,0.405451 -11.55532,3.953148 -4.25724,3.446335 -4.25724,8.8185627 0,5.9804044 3.95315,9.4267392 3.95311,3.344972 11.85941,4.2572371 z m 16.4208,33.044269 v 28.178854 q 8.8186,-0.101362 13.1772,-3.446334 4.4599,-3.344972 4.4599,-10.034916 0,-6.89267 -4.0545,-10.237642 -4.0545,-3.446335 -13.5826,-4.459962 z" />
+      </g>
     </g>
     <g
        transform="matrix(7.0866142,0,0,7.0866142,2494.4882,-81.496107)"
@@ -6193,22 +6186,19 @@
          transform="matrix(0.70083945,0,0,0.70083945,3.6107918,5.9623458)" />
     </g>
     <g
-       id="g4372"
-       transform="matrix(7.0866142,0,0,7.0866142,0,145.27555)"
-       inkscape:label="Icon BBS Used Part">
+       id="g2135">
       <rect
-         style="display:inline;fill:none;stroke:none"
+         style="display:inline;fill:none;stroke:none;stroke-width:7.08661413"
          id="rect3116"
-         width="32"
-         height="32"
+         width="226.77165"
+         height="226.77165"
          x="0"
-         y="0" />
+         y="145.27554" />
       <path
          id="path3577"
-         d="m 14.28125,5.65625 v 3.4375 c -0.693903,0.1718064 -1.340595,0.4539649 -1.9375,0.8125 l -2.4375,-2.4375 -2.4375,2.4375 2.4375,2.4375 c -0.3585351,0.596905 -0.6406936,1.243597 -0.8125,1.9375 h -3.4375 v 3.4375 h 3.4375 c 0.1718064,0.693903 0.4539649,1.340595 0.8125,1.9375 l -2.4375,2.4375 2.4375,2.4375 2.4375,-2.4375 c 0.596905,0.358535 1.243597,0.640694 1.9375,0.8125 v 3.4375 h 3.4375 v -3.4375 c 0.693903,-0.171806 1.340595,-0.453965 1.9375,-0.8125 l 2.4375,2.4375 2.4375,-2.4375 -2.4375,-2.4375 c 0.358535,-0.596905 0.640694,-1.243597 0.8125,-1.9375 h 3.4375 v -3.4375 h -3.4375 c -0.171806,-0.693903 -0.453965,-1.340595 -0.8125,-1.9375 l 2.4375,-2.4375 -2.4375,-2.4375 -2.4375,2.4375 C 19.059345,9.5477149 18.412653,9.2655564 17.71875,9.09375 v -3.4375 z"
-         style="fill:#ffffff;fill-opacity:1;stroke:none"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccccccccccccccccccccccccccccccccc" />
+         transform="matrix(0.93749997,0,0,0.93749997,0,-2575.9843)"
+         d="M 107.95312 2945.4336 L 107.95312 2971.418 C 102.70787 2972.7167 97.818678 2974.8484 93.306641 2977.5586 L 74.882812 2959.1348 L 56.457031 2977.5586 L 74.882812 2995.9844 C 72.172626 3000.4964 70.038929 3005.3856 68.740234 3010.6309 L 42.755859 3010.6309 L 42.755859 3036.6152 L 68.740234 3036.6152 C 70.038929 3041.8605 72.172626 3046.7477 74.882812 3051.2598 L 56.457031 3069.6855 L 74.882812 3088.1094 L 93.306641 3069.6855 C 97.818678 3072.3957 102.70787 3074.5275 107.95312 3075.8262 L 107.95312 3101.8105 L 133.9375 3101.8105 L 133.9375 3075.8262 C 139.18275 3074.5275 144.06999 3072.3957 148.58203 3069.6855 L 167.00781 3088.1094 L 185.43359 3069.6855 L 167.00781 3051.2598 C 169.718 3046.7477 171.85169 3041.8605 173.15039 3036.6152 L 199.13477 3036.6152 L 199.13477 3010.6309 L 173.15039 3010.6309 C 171.85169 3005.3856 169.718 3000.4964 167.00781 2995.9844 L 185.43359 2977.5586 L 167.00781 2959.1348 L 148.58203 2977.5586 C 144.06999 2974.8484 139.18275 2972.7167 133.9375 2971.418 L 133.9375 2945.4336 L 107.95312 2945.4336 z M 120.94531 2988.4746 A 35.147926 35.147926 0 0 1 156.09375 3023.623 A 35.147926 35.147926 0 0 1 120.94531 3058.7695 A 35.147926 35.147926 0 0 1 85.796875 3023.623 A 35.147926 35.147926 0 0 1 120.94531 2988.4746 z M 120.94531 2997.8418 A 25.779949 25.779949 0 0 0 95.164062 3023.623 A 25.779949 25.779949 0 0 0 120.94531 3049.4023 A 25.779949 25.779949 0 0 0 146.72461 3023.623 A 25.779949 25.779949 0 0 0 120.94531 2997.8418 z "
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:7.55905533" />
     </g>
     <g
        transform="matrix(7.0866142,0,0,7.0866142,3401.5748,-81.496099)"
