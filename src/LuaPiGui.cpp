@@ -871,12 +871,22 @@ static int l_pigui_begin_popup(lua_State *l) {
 	return 1;
 }
 
+static int l_pigui_begin_popup_modal(lua_State *l) {
+	std::string id = LuaPull<std::string>(l, 1);
+	// TODO: extra flags
+	LuaPush<bool>(l, ImGui::BeginPopupModal(id.c_str()));
+	return 1;
+}
+
 static int l_pigui_open_popup(lua_State *l) {
 	std::string id = LuaPull<std::string>(l, 1);
 	ImGui::OpenPopup(id.c_str());
 	return 0;
 }
-
+static int l_pigui_close_current_popup(lua_State *l) {
+	ImGui::CloseCurrentPopup();
+	return 0;
+}
 static int l_pigui_end_popup(lua_State *l) {
 	ImGui::EndPopup();
 	return 0;
@@ -1553,8 +1563,10 @@ template <> void LuaObject<PiGui>::RegisterClass()
 		{ "PushTextWrapPos",        l_pigui_push_text_wrap_pos },
 		{ "PopTextWrapPos",         l_pigui_pop_text_wrap_pos },
 		{ "BeginPopup",             l_pigui_begin_popup },
+		{ "BeginPopupModal",        l_pigui_begin_popup_modal },
 		{ "EndPopup",               l_pigui_end_popup },
 		{ "OpenPopup",              l_pigui_open_popup },
+		{ "CloseCurrentPopup",      l_pigui_close_current_popup },
 		{ "PushID",                 l_pigui_push_id },
 		{ "PopID",                  l_pigui_pop_id },
 		{ "IsMouseReleased",        l_pigui_is_mouse_released },

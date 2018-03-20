@@ -97,6 +97,28 @@ local showCommodityMarket = function ()
 end
 local sort_by = "name"
 local asc = true
+local showShipInfo = function (ship)
+	local shipType = ship.shipType
+	local deltav = shipType.effectiveExhaustVelocity * math.log((shipType.hullMass + shipType.fuelTankMass) / shipType.hullMass)
+	local deltav_full = shipType.effectiveExhaustVelocity * math.log((shipType.hullMass + shipType.fuelTankMass + shipType.capacity) / (shipType.hullMass + shipType.capacity))
+	local deltav_max = shipType.effectiveExhaustVelocity * math.log((shipType.hullMass + shipType.fuelTankMass + shipType.capacity) / shipType.hullMass)
+	local forwardAccelEmpty =  shipType.linearThrust.FORWARD / (-9.81*1000*(shipType.hullMass+shipType.fuelTankMass))
+	local forwardAccelFull  =  shipType.linearThrust.FORWARD / (-9.81*1000*(shipType.hullMass+shipType.capacity+shipType.fuelTankMass))
+
+	large_text(ship.name)
+	ui.text(shipType.name)
+	ui.columns(2, "foo", false)
+	ui.group(function ()
+			ui.columns(2, "bar", true)
+			show_item(l.FORWARD_ACCEL_EMPTY, ui.Format.Acceleration(forwardAccelEmpty))
+			show_item(l.FORWARD_ACCEL_FULL, ui.Format.Acceleration(forwardAccelFull))
+			show_item(l.DELTA_V_EMPTY, ui.Format.Speed(deltav))
+			show_item(l.DELTA_V_FULL, ui.Format.Speed(deltav_full))
+	end)
+	ui.nextColumn()
+	ui.text("foo")
+	ui.nextColumn()
+end
 local showShipMarket = function ()
 	local header = function(name, key)
 		if ui.selectable(name, sort_by == key, {}) then
@@ -125,7 +147,7 @@ local showShipMarket = function ()
 	for i = 1,#shipsOnSale do
 		local sos = shipsOnSale[i]
 		local def = sos.def
-		table.insert(ships, { icon = icons[def.shipClass] or icons.ship, name = def.name, price = def.basePrice, capacity = def.capacity } )
+		table.insert(ships, { icon = icons[def.shipClass] or icons.ship, name = def.name, price = def.basePrice, capacity = def.capacity, shipType = def } )
 	end
 	table.sort(ships, function(a,b)
 							 if asc then
@@ -137,13 +159,21 @@ local showShipMarket = function ()
 	for k,ship in pairs(ships) do
 		ui.icon(ship.icon, iconsize, colors.white); ui.sameLine()
 		if ui.selectable(ship.name, false, { "SpanAllColumns" }) then
-			print("clicked on " .. ship.name)
+			ui.openPopup("shipinfo" .. ship.name)
 		end
 		ui.nextColumn()
 		ui.text(ui.Format.Money(ship.price, false))
 		ui.nextColumn()
 		ui.text(ui.Format.Capacity(ship.capacity))
 		ui.nextColumn()
+		ui.setNextWindowSize(Vector(ui.screenWidth - 50, ui.screenHeight - 50), "Always")
+		ui.setNextWindowPos(Vector(25, 25), "Always")
+		ui.popupModal("shipinfo" .. ship.name, function()
+										showShipInfo(ship)
+										if ui.button("OK", Vector(0,0)) then
+											ui.closeCurrentPopup()
+										end
+		end)
 	end
 end
 
@@ -179,10 +209,10 @@ local showEquipmentMarket = function ()
 			if canTrade(e) then
 				local basePrice = station:GetEquipmentPrice(e)
 				table.insert(stationEquipment, { stock = station:GetEquipmentStock(e),
-																	buy_price = basePrice,
-																	sell_price = basePrice * (basePrice > 0 and sellPriceReduction or 1.0/sellPriceReduction),
-																	name = e:GetName(),
-																	mass = e.capabilities.mass
+																				 buy_price = basePrice,
+																				 sell_price = basePrice * (basePrice > 0 and sellPriceReduction or 1.0/sellPriceReduction),
+																				 name = e:GetName(),
+																				 mass = e.capabilities.mass
 				})
 			end
 		end
@@ -192,10 +222,10 @@ local showEquipmentMarket = function ()
 			if player:CountEquip(e) > 0 and canTrade(e) then
 				local basePrice = station:GetEquipmentPrice(e)
 				table.insert(shipEquipment, { stock = station:GetEquipmentStock(e),
-																	sell_price = basePrice * (basePrice > 0 and sellPriceReduction or 1.0/sellPriceReduction),
-																	name = e:GetName(),
-																	mass = e.capabilities.mass,
-																	total_mass = e.capabilities.mass * Game.player:CountEquip(e)
+																			sell_price = basePrice * (basePrice > 0 and sellPriceReduction or 1.0/sellPriceReduction),
+																			name = e:GetName(),
+																			mass = e.capabilities.mass,
+																			total_mass = e.capabilities.mass * Game.player:CountEquip(e)
 				})
 			end
 		end

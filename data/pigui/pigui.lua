@@ -79,6 +79,12 @@ function ui.popup(name, fun)
 		pigui.EndPopup()
 	end
 end
+function ui.popupModal(name, fun)
+	if pigui.BeginPopupModal(name) then
+		fun()
+		pigui.EndPopup()
+	end
+end
 function ui.child(id, size, fun)
 	if fun == nil then -- size is optional
 		fun = size
@@ -298,8 +304,10 @@ ui.Format = {
 	end,
 	Mass = function(mass)
 		return mass .. 't'
+	end,
+	Acceleration = function(acceleration)
+		return Format.AccelG(acceleration)
 	end
-
 }
 
 ui.pointOnClock = function(center, radius, hours)
@@ -539,6 +547,7 @@ ui.isMouseHoveringRect = pigui.IsMouseHoveringRect
 ui.isMouseHoveringAnyWindow = pigui.IsMouseHoveringAnyWindow
 ui.collapsingHeader = pigui.CollapsingHeader
 ui.openPopup = pigui.OpenPopup
+ui.closeCurrentPopup = pigui.CloseCurrentPopup
 ui.shouldShowLabels = pigui.ShouldShowLabels
 ui.columns = pigui.Columns
 ui.nextColumn = pigui.NextColumn
@@ -549,6 +558,7 @@ ui.playSfx = pigui.PlaySfx
 ui.isItemHovered = pigui.IsItemHovered
 ui.isItemActive = pigui.IsItemActive
 ui.isItemClicked = pigui.IsItemClicked
+ui.button = pigui.Button
 ui.ctrlHeld = function() return pigui.key_ctrl end
 ui.altHeld = function() return pigui.key_alt end
 ui.shiftHeld = function() return pigui.key_shift end
