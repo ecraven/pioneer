@@ -290,8 +290,8 @@ ui.Format = {
 		local second, minute, hour, day, month, year = Game.GetPartsFromDateTime(date)
 		return string.format("%4i-%02i-%02i %02i:%02i:%02i", year, month, day, hour, minute, second)
   end,
-	Money = function(amount)
-		return Format.Money(amount, false) -- TODO: what does false mean here?
+	Money = function(amount, decimals)
+		return Format.Money(amount, decimals) -- TODO: what does false mean here?
 	end,
 	Capacity = function(capacity)
 		return capacity .. 't'

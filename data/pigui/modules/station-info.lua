@@ -63,6 +63,37 @@ end
 
 local showCommodityMarket = function ()
 	large_text(l.COMMODITY_MARKET)
+	local station = player:GetDockedWith()
+	if not station then return end
+	local items = {}
+	for k,e in pairs(Equipment.cargo) do
+		-- if its purchasable, a cargo type equipment and a legal commodity in this system then we can list it in the commodity market
+		if e.purchasable and e:IsValidSlot("cargo") and Game.system:IsCommodityLegal(e) then
+			-- its ok, put it in the list
+			table.insert(items, { name = e:GetName(),
+														description = e:GetDescription(),
+														price = station:GetEquipmentPrice(e),
+														stock = station:GetEquipmentStock(e),
+														cargo = player:CountEquip(e) })
+		end
+	end
+
+	table.sort(items, function(e1,e2)
+		return e1.name < e2.name        -- cargo sorted on translated name
+	end)
+	ui.columns(4,"foo",true)
+	for k,e in pairs(items) do
+		ui.text(e.name)
+		ui.nextColumn()
+		ui.text(ui.Format.Money(e.price, true))
+		ui.nextColumn()
+		ui.text(e.stock)
+		ui.nextColumn()
+		if(e.cargo > 0) then
+			ui.text(e.cargo)
+		end
+		ui.nextColumn()
+	end
 end
 local sort_by = "name"
 local asc = true
@@ -94,7 +125,7 @@ local showShipMarket = function ()
 	for i = 1,#shipsOnSale do
 		local sos = shipsOnSale[i]
 		local def = sos.def
-		table.insert(ships, { icon = icons.ship, name = def.name, price = def.basePrice, capacity = def.capacity } )
+		table.insert(ships, { icon = icons[def.shipClass] or icons.ship, name = def.name, price = def.basePrice, capacity = def.capacity } )
 	end
 	table.sort(ships, function(a,b)
 							 if asc then
@@ -109,7 +140,7 @@ local showShipMarket = function ()
 			print("clicked on " .. ship.name)
 		end
 		ui.nextColumn()
-		ui.text(ui.Format.Money(ship.price))
+		ui.text(ui.Format.Money(ship.price, false))
 		ui.nextColumn()
 		ui.text(ui.Format.Capacity(ship.capacity))
 		ui.nextColumn()
