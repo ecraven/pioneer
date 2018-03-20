@@ -295,7 +295,11 @@ ui.Format = {
 	end,
 	Capacity = function(capacity)
 		return capacity .. 't'
+	end,
+	Mass = function(mass)
+		return mass .. 't'
 	end
+
 }
 
 ui.pointOnClock = function(center, radius, hours)

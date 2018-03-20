@@ -79,7 +79,7 @@ local showCommodityMarket = function ()
 	end
 
 	table.sort(items, function(e1,e2)
-		return e1.name < e2.name        -- cargo sorted on translated name
+							 return e1.name < e2.name        -- cargo sorted on translated name
 	end)
 	ui.columns(4,"foo",true)
 	for k,e in pairs(items) do
@@ -147,8 +147,83 @@ local showShipMarket = function ()
 	end
 end
 
+local hasTech = function (e)
+	local station = Game.player:GetDockedWith()
+	local equip_tech_level = e.tech_level or 1 -- default to 1
+
+	if type(equip_tech_level) == "string" then
+		if equip_tech_level == "MILITARY" then
+			return station.techLevel == 11
+		else
+			error("Unknown tech level:\t"..equip_tech_level)
+		end
+	end
+
+	assert(type(equip_tech_level) == "number")
+	return station.techLevel >= equip_tech_level
+end
+
+local canTrade = function(e)
+	return e.purchasable and hasTech(e) and not e:IsValidSlot("cargo", Game.player)
+end
+
 local showEquipmentMarket = function ()
 	large_text(l.EQUIPMENT_MARKET)
+	local station = Game.player:GetDockedWith()
+	if not station then return end
+	local stationEquipment = {}
+	local shipEquipment = {}
+	local sellPriceReduction = 0.8
+	for _,t in pairs({Equipment.cargo, Equipment.misc, Equipment.laser, Equipment.hyperspace}) do
+		for k,e in pairs(t) do
+			if canTrade(e) then
+				local basePrice = station:GetEquipmentPrice(e)
+				table.insert(stationEquipment, { stock = station:GetEquipmentStock(e),
+																	buy_price = basePrice,
+																	sell_price = basePrice * (basePrice > 0 and sellPriceReduction or 1.0/sellPriceReduction),
+																	name = e:GetName(),
+																	mass = e.capabilities.mass
+				})
+			end
+		end
+	end
+	for _,t in pairs({Equipment.cargo, Equipment.misc, Equipment.laser, Equipment.hyperspace}) do
+		for k,e in pairs(t) do
+			if player:CountEquip(e) > 0 and canTrade(e) then
+				local basePrice = station:GetEquipmentPrice(e)
+				table.insert(shipEquipment, { stock = station:GetEquipmentStock(e),
+																	sell_price = basePrice * (basePrice > 0 and sellPriceReduction or 1.0/sellPriceReduction),
+																	name = e:GetName(),
+																	mass = e.capabilities.mass,
+																	total_mass = e.capabilities.mass * Game.player:CountEquip(e)
+				})
+			end
+		end
+	end
+	ui.columns(5, "foo", true)
+	for k,e in pairs(stationEquipment) do
+		ui.text(e.name)
+		ui.nextColumn()
+		ui.text(ui.Format.Money(e.buy_price, true))
+		ui.nextColumn()
+		ui.text(ui.Format.Money(e.sell_price, true))
+		ui.nextColumn()
+		ui.text(e.stock)
+		ui.nextColumn()
+		ui.text(ui.Format.Mass(e.mass))
+		ui.nextColumn()
+	end
+	ui.columns(4, "bar", true)
+	for k,e in pairs(shipEquipment) do
+		ui.text(e.name)
+		ui.nextColumn()
+		ui.text(e.sell_price and ui.Format.Money(e.sell_price, true) or "--")
+		ui.nextColumn()
+		ui.text(ui.Format.Mass(e.mass))
+		ui.nextColumn()
+		ui.text(ui.Format.Mass(e.total_mass))
+		ui.nextColumn()
+	end
 end
 
 local showShipRepairs = function ()
