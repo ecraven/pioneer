@@ -291,7 +291,7 @@ Orbit Orbit::FromBodyState(const vector3d &pos, const vector3d &vel, double cent
 		ret.m_semiMajorAxis = 0.0;
 		ret.m_velocityAreaPerSecond = 0.0;
 		ret.m_orbitalPhaseAtStart = 0.0;
-		ret.m_orient =  matrix3x3d::Identity();
+		ret.m_orient = matrix3x3d::Identity();
 		return ret;
 	}
 
@@ -319,7 +319,7 @@ Orbit Orbit::FromBodyState(const vector3d &pos, const vector3d &vel, double cent
 
 	// There are two possible solutions of the equation and the only way how to find the correct one
 	// I know about is to try both and check if the position is transformed correctly. We minimize the difference
-	// of the transformed  position and expected result.
+	// of the transformed position and expected result.
 	double value = 1e99, offset = 0, cc = 0;
 	for (int i = -1; i <= 1; i += 2) {
 		double off = 0, ccc = 0;

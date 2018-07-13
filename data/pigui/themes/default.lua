@@ -55,7 +55,9 @@ theme.colors = {
 	radarCargo = Color(166, 166, 166),
 	radarNavTarget = Color(0, 255, 0),
 	radarStation = Color(255, 255, 255),
-	radarCloud = Color(128, 128, 255)
+	radarCloud = Color(128, 128, 255),
+	red = Color(250, 200, 200),
+	green = Color(200, 250, 200),
 }
 
 theme.icons = {

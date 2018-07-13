@@ -581,6 +581,26 @@ static int l_player_is_hyperspace_active(lua_State *l)
 	return 1;
 }
 
+static int l_player_get_orbit(lua_State *l)
+{
+	Player *player = LuaObject<Player>::CheckFromLua(1);
+	const Orbit &orbit = player->ComputeOrbit();
+	LuaTable o(l);
+	vector3d apoapsis = orbit.Apogeum();
+	vector3d periapsis = orbit.Perigeum();
+	// vector3d ascendingNode = orbit.AscendingNode();
+	o.Set("eccentricity", orbit.GetEccentricity());
+	// o.Set("inclination", orbit.GetInclination());
+	o.Set("semiMajorAxis", orbit.GetSemiMajorAxis());
+	o.Set("apoapsis", apoapsis);
+	o.Set("periapsis", periapsis);
+	// o.Set("ascendingNode", ascendingNode);
+	o.Set("apoapsisTime", orbit.OrbitalTimeAtPos(apoapsis, player->GetFrame()->GetNonRotFrame()->GetSystemBody()->GetMass()));
+	o.Set("periapsisTime", orbit.OrbitalTimeAtPos(periapsis, player->GetFrame()->GetNonRotFrame()->GetSystemBody()->GetMass()));
+	// o.Set("ascendingNodeTime", orbit.OrbitalTimeAtPos(ascendingNode, player->GetFrame()->GetNonRotFrame()->GetSystemBody()->GetMass()));
+	return 1;
+}
+
 template <> const char *LuaObject<Player>::s_type = "Player";
 
 template <> void LuaObject<Player>::RegisterClass()
@@ -616,7 +636,7 @@ template <> void LuaObject<Player>::RegisterClass()
 		{ "SetLowThrustPower",   l_set_low_thrust_power },
 		{ "IsHyperspaceActive",      l_player_is_hyperspace_active },
 		{ "GetHyperspaceCountdown",  l_player_get_hyperspace_countdown },
-			
+		{ "GetOrbit",                l_player_get_orbit },
 		{ 0, 0 }
 	};
 

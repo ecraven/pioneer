@@ -257,18 +257,27 @@ ui.Format = {
 		end
 		return result
 	end,
-	Distance = function(distance)
+	Distance = function(distance, return_single_string)
 		local d = math.abs(distance)
+		local dist, unit
 		if d < 1000 then
-			return math.floor(distance), lc.UNIT_METERS
+			dist = math.floor(distance)
+			unit = lc.UNIT_METERS
+		elseif d < 1000*1000 then
+			dist = string.format("%0.2f", distance / 1000)
+			unit = lc.UNIT_KILOMETERS
+		elseif d < 1000*1000*1000 then
+			dist = string.format("%0.2f", distance / 1000 / 1000)
+			unit = lc.UNIT_MILLION_METERS
+		else
+			dist = string.format("%0.2f", distance / 1.4960e11)
+			unit = lc.UNIT_AU
 		end
-		if d < 1000*1000 then
-			return string.format("%0.2f", distance / 1000), lc.UNIT_KILOMETERS
+		if return_single_string then
+			return dist .. " " .. unit
+		else
+			return dist, unit
 		end
-		if d < 1000*1000*1000 then
-			return string.format("%0.2f", distance / 1000 / 1000), lc.UNIT_MILLION_METERS
-		end
-		return string.format("%0.2f", distance / 1.4960e11), lc.UNIT_AU
 	end,
 	Speed = function(distance)
 		local d = math.abs(distance)
