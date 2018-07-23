@@ -138,6 +138,10 @@ public:
 	vector2<T> yz() { return vector2<T>(y,z); }
 	vector2<T> yx() { return vector2<T>(y,x); }
 	vector2<T> zx() { return vector2<T>(z,x); }
+
+	template<typename R> vector3<R> to() const {
+		return vector3<R>(static_cast<R>(x), static_cast<R>(y), static_cast<R>(z));
+	}
 };
 
 // These are here in this manner to enforce that only float and double versions are possible.

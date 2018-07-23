@@ -814,7 +814,7 @@ void SystemBody::Dump(FILE* file, const char* indent) const
 	fprintf(file, "%s\t\"%s\"\n", indent, m_name.c_str());
 	fprintf(file, "%s\tmass %.6f\n", indent, m_mass.ToDouble());
 	fprintf(file, "%s\torbit a=%.6f, e=%.6f, phase=%.6f\n", indent, m_orbit.GetSemiMajorAxis().to<double>(), m_orbit.GetEccentricity(),
-		m_orbit.GetOrbitalPhaseAtStart());
+		m_orbit.GetOrbitalPhaseAtStart().to<double>());
 	fprintf(file, "%s\torbit a=%.6f, e=%.6f, orbMin=%.6f, orbMax=%.6f\n", indent, m_semiMajorAxis.ToDouble(), m_eccentricity.ToDouble(),
 		m_orbMin.ToDouble(), m_orbMax.ToDouble());
 	fprintf(file, "%s\t\toffset=%.6f, phase=%.6f, inclination=%.6f\n", indent, m_orbitalOffset.ToDouble(), m_orbitalPhaseAtStart.ToDouble(),

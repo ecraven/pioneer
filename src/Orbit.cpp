@@ -166,14 +166,14 @@ vector3d Orbit::OrbitalPosAtTime(second_t t) const
 	return m_orient * vector3d(-cos_v * r, sin_v * r, 0);
 }
 
-second_t Orbit::OrbitalTimeAtPos(const vector3d &pos, kilogram_t centralMass) const
+second_t Orbit::OrbitalTimeAtPos(const position_t &pos, kilogram_t centralMass) const
 {
 	double c = m_eccentricity * m_semiMajorAxis.to<double>();
 	matrix3x3d matrixInv = m_orient.Inverse();
-	vector3d approx3dPos = (matrixInv * pos - vector3d(c, 0., 0.)).Normalized();
+	position_t approx3dPos = (position_t(matrixInv * pos.to<double>()) - position_t(static_cast<meter_t>(c), 0.0_m, 0.0_m)).Normalized();
 
-	double cos_v = -vector3d(1., 0., 0.).Dot(approx3dPos);
-	double sin_v = std::copysign(vector3d(1., 0., 0.).Cross(approx3dPos).Length(), approx3dPos.y);
+	double cos_v = -position_t(1.0_m, 0.0_m, 0.0_m).Dot(approx3dPos).to<double>();
+	double sin_v = std::copysign(position_t(1.0_m, 0.0_m, 0.0_m).Cross(approx3dPos).Length().to<double>(), approx3dPos.y.to<double>());
 
 	double cos_E = (cos_v + m_eccentricity) / (1. + m_eccentricity * cos_v);
 	double E;

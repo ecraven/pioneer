@@ -37,7 +37,7 @@ public:
 	void SetPhase(units::angle::radian_t orbitalPhaseAtStart) { m_orbitalPhaseAtStart = orbitalPhaseAtStart; }
 
 	vector3d OrbitalPosAtTime(units::time::second_t t) const;
-	units::time::second_t OrbitalTimeAtPos(const vector3d& pos, units::mass::kilogram_t centralMass) const;
+	units::time::second_t OrbitalTimeAtPos(const position_t& pos, units::mass::kilogram_t centralMass) const;
 	vector3d OrbitalVelocityAtTime(units::mass::kilogram_t totalMass, units::time::second_t t) const;
 
 	// 0.0 <= t <= 1.0. Not for finding orbital pos

@@ -505,7 +505,7 @@ void StarSystemCustomGenerator::CustomGetKidsOf(RefCountedPtr<StarSystem::Genera
 			if (kid->GetSuperType() == SystemBody::SUPERTYPE_STARPORT) {
 				fixed lowestOrbit = fixed().FromDouble(parent->CalcAtmosphereParams().atmosRadius + 500000.0/EARTH_RADIUS);
 				if (kid->m_orbit.GetSemiMajorAxis().to<double>() < lowestOrbit.ToDouble()) {
-					Error("%	s's orbit is too close to its parent (%.2f/%.2f)", csbody->name.c_str(),kid->m_orbit.GetSemiMajorAxis().to<double>(),lowestOrbit.ToFloat());
+					Error("%s's orbit is too close to its parent (%.2f/%.2f)", csbody->name.c_str(),kid->m_orbit.GetSemiMajorAxis().to<double>(),lowestOrbit.ToFloat());
 			}
 			}
 			else {

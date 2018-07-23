@@ -305,7 +305,8 @@ vector3d Player::GetManeuverVelocity() const {
 		if(!is_zero_exact(playerOrbit.GetSemiMajorAxis().to<double>())) {
 			kilogram_t mass(systemBody->GetMass());
 			// XXX The best solution would be to store the mass(es) on Orbit
-			const vector3d velocity = (Pi::planner->GetVel() - playerOrbit.OrbitalVelocityAtTime(mass, playerOrbit.OrbitalTimeAtPos(Pi::planner->GetPosition(), mass)));
+			const vector3d &p = Pi::planner->GetPosition();
+			const vector3d velocity = (Pi::planner->GetVel() - playerOrbit.OrbitalVelocityAtTime(mass, playerOrbit.OrbitalTimeAtPos(position_t(static_cast<meter_t>(p.x), static_cast<meter_t>(p.y), static_cast<meter_t>(p.z)), mass)));
 			return velocity;
 		}
 	}
