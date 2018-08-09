@@ -215,7 +215,7 @@ def load_sketchfab(filename):
         return json.load(data_file)
 
 def get_ship_type(s):
-    return "%s [[File:ship_class_%s.png]]" % (s.replace('_', ' ').capitalize(), s)
+    return "%s [[File:ship_class_%s.svg|32px]]" % (s.replace('_', ' ').capitalize(), s)
 
 # hard coded mapping:
 manufacturers = {
@@ -363,7 +363,7 @@ def make_chart(ship_folder):
         name = ships[filename]['name']
         print("|[[" + name.replace(" ", "_") + "|" + name + "]]")
         shipclass = ships[filename]['ship_class']
-        print("|" + "[[File:Ship_class_" + shipclass + ".png]]")
+        print("|" + "[[File:Ship_class_" + shipclass + ".svg|32px]]")
         print("|" + shipclass.replace("_"," ").capitalize())
         print("| %s" % ships[filename]['slots-laser_front'])
         print("| %s" % ships[filename]['slots-missile'])
