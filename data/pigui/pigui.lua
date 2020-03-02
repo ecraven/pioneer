@@ -544,6 +544,7 @@ ui.addLine = pigui.AddLine
 ui.addText = pigui.AddText
 ui.pathArcTo = pigui.PathArcTo
 ui.pathStroke = pigui.PathStroke
+ui.plotHistogram = pigui.PlotHistogram
 ui.twoPi = two_pi
 ui.pi_2 = pi_2
 ui.pi_4 = pi_4

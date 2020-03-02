@@ -2099,6 +2099,24 @@ static int l_pigui_play_sfx(lua_State *l)
 	return 0;
 }
 
+static int l_pigui_plot_histogram(lua_State *l)
+{
+	PROFILE_SCOPED()
+    std::string label = LuaPull<std::string>(l, 1);
+	LuaTable vals = LuaTable(l, 2);
+	float values[vals.Size()];
+	for(int i = 1; i <= vals.Size(); i++) {
+		values[i-1] = vals.Get<int>(i);
+	}
+	int values_offset = LuaPull<int>(l, 3);
+	const char *overlay_text = LuaPull<const char*>(l, 4, NULL);
+	float scale_min = LuaPull<float>(l, 5, FLT_MIN);
+	float scale_max = LuaPull<float>(l, 6, FLT_MAX);
+	ImVec2 graph_size = LuaPull<ImVec2>(l, 7, ImVec2(0, 0));
+	ImGui::PlotHistogram(label.c_str(), values, vals.Size(), values_offset, overlay_text, scale_min, scale_max, graph_size);
+	return 0;
+}
+
 static int l_pigui_circular_slider(lua_State *l)
 {
 	PROFILE_SCOPED()
@@ -2535,6 +2553,7 @@ void LuaObject<PiGui>::RegisterClass()
 		{ "LowThrustButton", l_pigui_low_thrust_button },
 		{ "ThrustIndicator", l_pigui_thrust_indicator },
 		{ "PlaySfx", l_pigui_play_sfx },
+		{ "PlotHistogram", l_pigui_plot_histogram },
 		{ "DisableMouseFacing", l_pigui_disable_mouse_facing },
 		{ "SetMouseButtonState", l_pigui_set_mouse_button_state },
 		{ "SelectableFlags", l_pigui_check_selectable_flags },
