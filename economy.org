@@ -1,0 +1,91 @@
+#+AUTHOR: Peter
+#+TITLE: Investigations into the Economics and Politics of Pioneer as of 2020-03-04
+#+DATE: 2020-03-04
+#+OPTIONS: html-postamble:nil
+* Current economy and politics (2020-03-04)
+** Commodities
+Each commodity has a name, a number of /inputs/ and an economic type (=MINING=, =AGRICULTURE= or =INDUSTRY=).
+| Commodity            | Inputs                                | Type        |
+|----------------------+---------------------------------------+-------------|
+| None                 |                                       |             |
+| Hydrogen             |                                       | Mining      |
+| Liquid-Oxygen        | Water, Industrial-Machinery           | Mining      |
+| Metal-Ore            | Mining-Machinery                      | Mining      |
+| Carbon-Ore           | Mining-Machinery                      | Mining      |
+| Metal-Alloys         | Metal-Ore, Industrial-Machinery       | Industry    |
+| Plastics             | Carbon-Ore, Industrial-Machinery      | Industry    |
+| Fruit-And-Veg        | Farm-Machinery, Fertilizer            | Agriculture |
+| Animal-Meat          | Farm-Machinery, Fertilizer            | Agriculture |
+| Live-Animals         | Farm-Machinery, Fertilizer            | Agriculture |
+| Liquor               | Farm-Machinery, Fertilizer            | Agriculture |
+| Grain                | Farm-Machinery, Fertilizer            | Agriculture |
+| Textiles             | Plastics                              | Industry    |
+| Fertilizer           | Carbon-Ore                            | Industry    |
+| Water                | Mining-Machinery                      | Mining      |
+| Medicines            | Computers, Carbon-Ore                 | Industry    |
+| Consumer-Goods       | Plastics, Textiles                    | Industry    |
+| Computers            | Precious-Metals, Industrial-Machinery | Industry    |
+| Robots               | Plastics, Computers                   | Industry    |
+| Precious-Metals      | Mining-Machinery                      | Mining      |
+| Industrial-Machinery | Metal-Alloys, Robots                  | Industry    |
+| Farm-Machinery       | Metal-Alloys, Robots                  | Industry    |
+| Mining-Machinery     | Metal-Alloys, Robots                  | Industry    |
+| Air-Processors       | Plastics, Industrial-Machinery        | Industry    |
+| Slaves               |                                       | Agriculture |
+| Hand-Weapons         | Computers                             | Industry    |
+| Battle-Weapons       | Industrial-Machinery, Metal-Alloys    | Industry    |
+| Nerve-Gas            |                                       | Industry    |
+| Narcotics            |                                       | Industry    |
+| Military-Fuel        | Hydrogen                              | Industry    |
+| Rubbish              |                                       | Industry    |
+| Radioactives         |                                       | Industry    |
+** Politics
+/Government types/ consist of an /economic type/, a rarity and a /lawlessness/.
+*** Economic type
+- No-Established-Order (None)
+- Hard-Capitalist (Very-Capitalist)
+- Capitalist (Capitalist)
+- Mixed-Economy (Mixed)
+- Planned-Economy (Planned)
+*** Government Type
+| Name                           | Rarity | Economic Type   | Lawlessness    |
+|--------------------------------+--------+-----------------+----------------|
+| <invalid turd>                 |      0 | None            | fixed(1, 1)    |
+| No-Central-Governance          |      0 | None            | fixed(1, 1)    |
+| Earth-Federation-Colonial-Rule |      2 | Capitalist      | fixed(3, 10)   |
+| Earth-Federation-Democracy     |      3 | Capitalist      | fixed(15, 100) |
+| Imperial-Rule                  |      3 | Planned         | fixed(15, 100) |
+| Liberal-Democracy              |      2 | Capitalist      | fixed(25, 100) |
+| Social-Democracy               |      2 | Mixed           | fixed(20, 100) |
+| Liberal-Democracy              |      2 | Capitalist      | fixed(25, 100) |
+| Corporate-System               |      2 | Capitalist      | fixed(40, 100) |
+| Social-Democracy               |      2 | Mixed           | fixed(25, 100) |
+| Military-Dictatorship          |      5 | Capitalist      | fixed(40, 100) |
+| Military-Dictatorship          |      6 | Capitalist      | fixed(25, 100) |
+| Military-Dictatorship          |      6 | Mixed           | fixed(25, 100) |
+| Military-Dictatorship          |      5 | Mixed           | fixed(40, 100) |
+| Communist                      |     10 | Planned         | fixed(25, 100) |
+| Plutocratic-Dictatorship       |      4 | Very-Capitalist | fixed(45, 100) |
+| Violent-Anarchy                |      2 | None            | fixed(90, 100) |
+** System Generation
+StarSystemGenerator.cpp:1636 =void PopulateStarSystemGenerator::SetSysPolit= seems to be the relevant function.
+- =SystemPath(0, 0, 0, 0)= is hard-coded as =EARTHDEMOC=.
+- If =population= is zero, it is =NONE=.
+- Otherwise, it is picked based on faction. If that fails, it is picked at random.
+- Lawlessness is multiplied by a random number in [0,1].
+*** Commodity Legality
+Each system has a set of illegal commodities. (see StarSystemGenerator.cpp:1675 =void PopulateStarSystemGenerator::SetCommodityLegality=)
+- If there is no government (type =NONE=), nothing is illegal.
+- If there is a faction, set the legality based on the faction commodity legality rate (a chance that each commodity is illegal in a given system).
+- Otherwise:
+| Name           | Chance |
+|----------------+--------|
+| Hand-Weapons   | 1/2    |
+| Battle-Weapons | 1/3    |
+| Nerve-Gas      | 1/10   |
+| Narcotics      | 1/2    |
+| Slaves         | 1/16   |
+*** Economic Type
+- If a system has higher /Industrial/ than /Metallicity/ and higher /Industrial/ than /Agricultural/, it is *INDUSTRY*
+- If it has higher /Metallicity/ than /Agricultural/, then it is *MINING*
+- Otherwise it is *AGRICULTURAL*
